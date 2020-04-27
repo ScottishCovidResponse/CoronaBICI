@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<BICI version="1.0">
+<model>
+	<prior parameter="Φ" class="DS" type="Flat" val1="0" val2="0.000001"/>
+	<prior parameter="β_Time" class="DS" type="Flat" val1="0" val2="2"/>
+	<prior parameter="d" class="DS" type="Fix" val1="1"/>
+	<prior parameter="ρ(E→A)" class="DS" type="Fix" val1="0.4"/>
+	<prior parameter="ρ(A→I)" class="DS" type="Fix" val1="0.3333333333"/>
+	<prior parameter="ρ(A→R)" class="DS" type="Fix" val1="0.2857142857"/>
+	<prior parameter="ρ(I→R)" class="DS" type="Fix" val1="0.0598802395"/>
+	<prior parameter="ρ(I→H)" class="DS" type="Fix" val1="0.3225806452"/>
+	<prior parameter="ρ(I→D)" class="DS" type="Fix" val1="0.0775193798"/>
+	<prior parameter="ρ(H→D)" class="DS" type="Fix" val1="0.125"/>
+	<prior parameter="ρ(H→R)" class="DS" type="Fix" val1="0.0763358779"/>
+	<prior parameter="ξ_DS,loc" class="Initial" type="Dirichlet" val1="1"/>
+	<prior parameter="μ" class="Hyper" type="Fix" val1="0"/>
+	<prior parameter="σ" class="Hyper" type="Flat" val1="0" val2="0.5"/>
+	<prior parameter="G_loc" class="DS" type="Normal" val1="[μ]"  val2="[σ]"/>
+	<derived name="S08000015-E" value="{S08000015,E}"/>
+	<derived name="S08000015-A" value="{S08000015,A}"/>
+	<derived name="S08000015-I" value="{S08000015,I}"/>
+	<derived name="S08000015-H" value="{S08000015,H}"/>
+	<derived name="S08000015-R" value="{S08000015,R}"/>
+	<derived name="S08000015-D" value="{S08000015,D}"/>
+	<derived name="S08000016-E" value="{S08000016,E}"/>
+	<derived name="S08000016-A" value="{S08000016,A}"/>
+	<derived name="S08000016-I" value="{S08000016,I}"/>
+	<derived name="S08000016-H" value="{S08000016,H}"/>
+	<derived name="S08000016-R" value="{S08000016,R}"/>
+	<derived name="S08000016-D" value="{S08000016,D}"/>
+	<derived name="S08000017-E" value="{S08000017,E}"/>
+	<derived name="S08000017-A" value="{S08000017,A}"/>
+	<derived name="S08000017-I" value="{S08000017,I}"/>
+	<derived name="S08000017-H" value="{S08000017,H}"/>
+	<derived name="S08000017-R" value="{S08000017,R}"/>
+	<derived name="S08000017-D" value="{S08000017,D}"/>
+	<derived name="S08000029-E" value="{S08000029,E}"/>
+	<derived name="S08000029-A" value="{S08000029,A}"/>
+	<derived name="S08000029-I" value="{S08000029,I}"/>
+	<derived name="S08000029-H" value="{S08000029,H}"/>
+	<derived name="S08000029-R" value="{S08000029,R}"/>
+	<derived name="S08000029-D" value="{S08000029,D}"/>
+	<derived name="S08000019-E" value="{S08000019,E}"/>
+	<derived name="S08000019-A" value="{S08000019,A}"/>
+	<derived name="S08000019-I" value="{S08000019,I}"/>
+	<derived name="S08000019-H" value="{S08000019,H}"/>
+	<derived name="S08000019-R" value="{S08000019,R}"/>
+	<derived name="S08000019-D" value="{S08000019,D}"/>
+	<derived name="S08000020-E" value="{S08000020,E}"/>
+	<derived name="S08000020-A" value="{S08000020,A}"/>
+	<derived name="S08000020-I" value="{S08000020,I}"/>
+	<derived name="S08000020-H" value="{S08000020,H}"/>
+	<derived name="S08000020-R" value="{S08000020,R}"/>
+	<derived name="S08000020-D" value="{S08000020,D}"/>
+	<derived name="S08000031-E" value="{S08000031,E}"/>
+	<derived name="S08000031-A" value="{S08000031,A}"/>
+	<derived name="S08000031-I" value="{S08000031,I}"/>
+	<derived name="S08000031-H" value="{S08000031,H}"/>
+	<derived name="S08000031-R" value="{S08000031,R}"/>
+	<derived name="S08000031-D" value="{S08000031,D}"/>
+	<derived name="S08000022-E" value="{S08000022,E}"/>
+	<derived name="S08000022-A" value="{S08000022,A}"/>
+	<derived name="S08000022-I" value="{S08000022,I}"/>
+	<derived name="S08000022-H" value="{S08000022,H}"/>
+	<derived name="S08000022-R" value="{S08000022,R}"/>
+	<derived name="S08000022-D" value="{S08000022,D}"/>
+	<derived name="S08000032-E" value="{S08000032,E}"/>
+	<derived name="S08000032-A" value="{S08000032,A}"/>
+	<derived name="S08000032-I" value="{S08000032,I}"/>
+	<derived name="S08000032-H" value="{S08000032,H}"/>
+	<derived name="S08000032-R" value="{S08000032,R}"/>
+	<derived name="S08000032-D" value="{S08000032,D}"/>
+	<derived name="S08000024-E" value="{S08000024,E}"/>
+	<derived name="S08000024-A" value="{S08000024,A}"/>
+	<derived name="S08000024-I" value="{S08000024,I}"/>
+	<derived name="S08000024-H" value="{S08000024,H}"/>
+	<derived name="S08000024-R" value="{S08000024,R}"/>
+	<derived name="S08000024-D" value="{S08000024,D}"/>
+	<derived name="S08000025-E" value="{S08000025,E}"/>
+	<derived name="S08000025-A" value="{S08000025,A}"/>
+	<derived name="S08000025-I" value="{S08000025,I}"/>
+	<derived name="S08000025-H" value="{S08000025,H}"/>
+	<derived name="S08000025-R" value="{S08000025,R}"/>
+	<derived name="S08000025-D" value="{S08000025,D}"/>
+	<derived name="S08000026-E" value="{S08000026,E}"/>
+	<derived name="S08000026-A" value="{S08000026,A}"/>
+	<derived name="S08000026-I" value="{S08000026,I}"/>
+	<derived name="S08000026-H" value="{S08000026,H}"/>
+	<derived name="S08000026-R" value="{S08000026,R}"/>
+	<derived name="S08000026-D" value="{S08000026,D}"/>
+	<derived name="S08000030-E" value="{S08000030,E}"/>
+	<derived name="S08000030-A" value="{S08000030,A}"/>
+	<derived name="S08000030-I" value="{S08000030,I}"/>
+	<derived name="S08000030-H" value="{S08000030,H}"/>
+	<derived name="S08000030-R" value="{S08000030,R}"/>
+	<derived name="S08000030-D" value="{S08000030,D}"/>
+	<derived name="S08000028-E" value="{S08000028,E}"/>
+	<derived name="S08000028-A" value="{S08000028,A}"/>
+	<derived name="S08000028-I" value="{S08000028,I}"/>
+	<derived name="S08000028-H" value="{S08000028,H}"/>
+	<derived name="S08000028-R" value="{S08000028,R}"/>
+	<derived name="S08000028-D" value="{S08000028,D}"/>
+	<classification name="DS" value="S,E,A,I,H,R,D">
+		<transition name="trans0_0" from="S" to="E" type="Exponential" >
+			<value loc="S08000015" rate="[Φ]+exp([G_S08000015])*[β_Time]*((0.0000027051-0.0000002587*[d])*(0.2000000000*{A,S08000015}+1*{I,S08000015})+[d]*(0.0000000076*{A,S08000017}+0.0000000379*{I,S08000017}+0.0000000051*{A,S08000019}+0.0000000254*{I,S08000019}+0.0000000082*{A,S08000031}+0.0000000411*{I,S08000031}+0.0000000100*{A,S08000032}+0.0000000499*{I,S08000032}))"/>
+			<value loc="S08000016" rate="[Φ]+exp([G_S08000016])*[β_Time]*((0.0000086753-0.0000004155*[d])*(0.2000000000*{A,S08000016}+1*{I,S08000016})+[d]*(0.0000000014*{A,S08000017}+0.0000000072*{I,S08000017}+0.0000000059*{A,S08000029}+0.0000000294*{I,S08000029}+0.0000000011*{A,S08000019}+0.0000000054*{I,S08000019}+0.0000000006*{A,S08000032}+0.0000000032*{I,S08000032}+0.0000000069*{A,S08000024}+0.0000000346*{I,S08000024}+0.0000000005*{A,S08000030}+0.0000000024*{I,S08000030}))"/>
+			<value loc="S08000017" rate="[Φ]+exp([G_S08000017])*[β_Time]*((0.0000067209-0.0000000897*[d])*(0.2000000000*{A,S08000017}+1*{I,S08000017})+[d]*(0.0000000033*{A,S08000015}+0.0000000166*{I,S08000015}+0.0000000019*{A,S08000016}+0.0000000097*{I,S08000016}+0.0000000002*{A,S08000031}+0.0000000012*{I,S08000031}+0.0000000012*{A,S08000032}+0.0000000058*{I,S08000032}))"/>
+			<value loc="S08000029" rate="[Φ]+exp([G_S08000029])*[β_Time]*((0.0000026888-0.0000004373*[d])*(0.2000000000*{A,S08000029}+1*{I,S08000029})+[d]*(0.0000000167*{A,S08000016}+0.0000000835*{I,S08000016}+0.0000000196*{A,S08000019}+0.0000000978*{I,S08000019}+0.0000000006*{A,S08000031}+0.0000000029*{I,S08000031}+0.0000000030*{A,S08000032}+0.0000000152*{I,S08000032}+0.0000000140*{A,S08000024}+0.0000000698*{I,S08000024}+0.0000000226*{A,S08000030}+0.0000001130*{I,S08000030}))"/>
+			<value loc="S08000019" rate="[Φ]+exp([G_S08000019])*[β_Time]*((0.0000032672-0.0000005647*[d])*(0.2000000000*{A,S08000019}+1*{I,S08000019})+[d]*(0.0000000038*{A,S08000015}+0.0000000192*{I,S08000015}+0.0000000159*{A,S08000029}+0.0000000795*{I,S08000029}+0.0000000073*{A,S08000031}+0.0000000363*{I,S08000031}+0.0000000163*{A,S08000032}+0.0000000814*{I,S08000032}+0.0000000066*{A,S08000024}+0.0000000332*{I,S08000024}+0.0000000048*{A,S08000030}+0.0000000241*{I,S08000030}))"/>
+			<value loc="S08000020" rate="[Φ]+exp([G_S08000020])*[β_Time]*((0.0000017107-0.0000000068*[d])*(0.2000000000*{A,S08000020}+1*{I,S08000020})+[d]*(0.0000000011*{A,S08000029}+0.0000000054*{I,S08000029}+0.0000000010*{A,S08000030}+0.0000000048*{I,S08000030}))"/>
+			<value loc="S08000031" rate="[Φ]+exp([G_S08000031])*[β_Time]*((0.0000008511-0.0000001396*[d])*(0.2000000000*{A,S08000031}+1*{I,S08000031})+[d]*(0.0000000242*{A,S08000015}+0.0000001208*{I,S08000015}+0.0000000016*{A,S08000017}+0.0000000078*{I,S08000017}+0.0000000018*{A,S08000029}+0.0000000091*{I,S08000029}+0.0000000282*{A,S08000019}+0.0000001409*{I,S08000019}+0.0000000199*{A,S08000032}+0.0000000997*{I,S08000032}+0.0000000013*{A,S08000024}+0.0000000066*{I,S08000024}))"/>
+			<value loc="S08000022" rate="[Φ]+exp([G_S08000022])*[β_Time]*((0.0000031075-0.0000000125*[d])*(0.2000000000*{A,S08000022}+1*{I,S08000022})+[d]*(0.0000000013*{A,S08000019}+0.0000000065*{I,S08000019}+0.0000000010*{A,S08000030}+0.0000000048*{I,S08000030}))"/>
+			<value loc="S08000032" rate="[Φ]+exp([G_S08000032])*[β_Time]*((0.0000015170-0.0000002734*[d])*(0.2000000000*{A,S08000032}+1*{I,S08000032})+[d]*(0.0000000161*{A,S08000015}+0.0000000807*{I,S08000015}+0.0000000043*{A,S08000017}+0.0000000215*{I,S08000017}+0.0000000053*{A,S08000029}+0.0000000264*{I,S08000029}+0.0000000347*{A,S08000019}+0.0000001737*{I,S08000019}+0.0000000110*{A,S08000031}+0.0000000549*{I,S08000031}+0.0000000044*{A,S08000024}+0.0000000220*{I,S08000024}))"/>
+			<value loc="S08000024" rate="[Φ]+exp([G_S08000024])*[β_Time]*((0.0000011139-0.0000001804*[d])*(0.2000000000*{A,S08000024}+1*{I,S08000024})+[d]*(0.0000000475*{A,S08000016}+0.0000002375*{I,S08000016}+0.0000000337*{A,S08000029}+0.0000001686*{I,S08000029}+0.0000000198*{A,S08000019}+0.0000000988*{I,S08000019}+0.0000000010*{A,S08000031}+0.0000000051*{I,S08000031}+0.0000000061*{A,S08000032}+0.0000000306*{I,S08000032}+0.0000000075*{A,S08000030}+0.0000000374*{I,S08000030}))"/>
+			<value loc="S08000025" rate="[Φ]+exp([G_S08000025])*[β_Time]*((0.0000450653-0.0000001795*[d])*(0.2000000000*{A,S08000025}+1*{I,S08000025})+[d]*(0.0000000007*{A,S08000020}+0.0000000034*{I,S08000020}+0.0000000173*{A,S08000026}+0.0000000866*{I,S08000026}))"/>
+			<value loc="S08000026" rate="[Φ]+exp([G_S08000026])*[β_Time]*((0.0000434972-0.0000001733*[d])*(0.2000000000*{A,S08000026}+1*{I,S08000026})+[d]*(0.0000000007*{A,S08000020}+0.0000000034*{I,S08000020}+0.0000000180*{A,S08000025}+0.0000000898*{I,S08000025}))"/>
+			<value loc="S08000030" rate="[Φ]+exp([G_S08000030])*[β_Time]*((0.0000024034-0.0000001989*[d])*(0.2000000000*{A,S08000030}+1*{I,S08000030})+[d]*(0.0000000277*{A,S08000029}+0.0000001385*{I,S08000029}+0.0000000073*{A,S08000019}+0.0000000363*{I,S08000019}+0.0000000004*{A,S08000032}+0.0000000021*{I,S08000032}+0.0000000038*{A,S08000024}+0.0000000190*{I,S08000024}))"/>
+			<value loc="S08000028" rate="[Φ]+exp([G_S08000028])*[β_Time]*((0.0000372717-0.0000001485*[d])*(0.2000000000*{A,S08000028}+1*{I,S08000028})+[d]*(0.0000000012*{A,S08000022}+0.0000000062*{I,S08000022}+0.0000000180*{A,S08000025}+0.0000000898*{I,S08000025}))"/>
+		</transition>
+		<transition name="trans0_1" from="E" to="A" type="Exponential" >
+			<value rate="[ρ(E→A)]"/>
+		</transition>
+		<transition name="trans0_2" from="A" to="I" type="Exponential" >
+			<value rate="[ρ(A→I)]"/>
+		</transition>
+		<transition name="trans0_3" from="A" to="R" type="Exponential" >
+			<value rate="[ρ(A→R)]"/>
+		</transition>
+		<transition name="trans0_4" from="I" to="R" type="Exponential" >
+			<value rate="[ρ(I→R)]"/>
+		</transition>
+		<transition name="trans0_5" from="I" to="H" type="Exponential" >
+			<value rate="[ρ(I→H)]"/>
+		</transition>
+		<transition name="trans0_6" from="I" to="D" type="Exponential" >
+			<value rate="[ρ(I→D)]"/>
+		</transition>
+		<transition name="trans0_7" from="H" to="D" type="Exponential" >
+			<value rate="[ρ(H→D)]"/>
+		</transition>
+		<transition name="trans0_8" from="H" to="R" type="Exponential" >
+			<value rate="[ρ(H→R)]"/>
+		</transition>
+	</classification>
+	<classification name="loc" value="S08000015,S08000016,S08000017,S08000029,S08000019,S08000020,S08000031,S08000022,S08000032,S08000024,S08000025,S08000026,S08000030,S08000028">
+	</classification>
+	<classification name="age" value="allage">
+	</classification>
+	<classification name="Age" value="A0+">
+	</classification>
+	<classification name="Time" value="T<83,T>83">
+		<transition name="trans4_0" from="T<83" to="T>83" type="Set" time="83" />
+	</classification>
+</model>
+
+<data>
+</data>
+<inference nsamp="20000001" tmin="0" tmax="111" indmax="100000"/>
+</BICI>
