@@ -1,6 +1,6 @@
 /*
 Load mpi: module load mpi/openmpi-x86_64
-Compile using:    mpicc bici.cc header/tinyxml2.cc -O3 -o bici
+Compile using:    mpic++ bici.cc header/tinyxml2.cc -O3 -o bici
 
 Run using:        mpirun -n 4 ./bici Scotland_bici_input.xml 1000000
 
