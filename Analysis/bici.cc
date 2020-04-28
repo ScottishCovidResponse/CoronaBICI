@@ -23,7 +23,7 @@ d) "Stats.txt" calculates the posterior means, 90% credible intervals, effective
    Gelman-Rubin diagnostic statics (these last two are used to confirm that MCMC is well mixed).
 */ 
 	 
-//#define MPI                         // The is turned on when performing MPI on multiple chains
+#define MPI                         // The is turned on when performing MPI on multiple chains
 
 const long noout = 0;                 // Suppresses the output when error checking
 const long checkon = 0;               // Determines if checking is done
