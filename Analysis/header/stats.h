@@ -17,7 +17,7 @@ void stats()                                          // Calculates diagnostic s
 	
 	N = paramst[simnum][0].size();
 	
-	#ifdef MPI
+	#ifdef MP
 	double *block;
 	block = new double[N*nparam];
 	
