@@ -38,7 +38,7 @@ This time data is added to finally create the file "Scotland_bici_input.xml", wh
 
 This is done in the "Analysis" directory. The "bici.cc" file is compiled using
 
-mpicc bici.cc header/tinyxml2.cc -O3 -o bici
+mpic++ bici.cc header/tinyxml2.cc -O3 -o bici
 
 and run using:        
 
