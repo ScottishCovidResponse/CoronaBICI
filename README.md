@@ -1,5 +1,5 @@
 
-CoronaBICI
+# CoronaBICI
 
 C. M. Pooley* [1], Andrea Doeschl-Wilson [2], and Glenn Marion [1]
 
@@ -15,7 +15,7 @@ BICI, which stands for "Bayesian Individual-based Compartmental Inference", is a
 
 Analysis proceeds in two stages:
 
-1) GENERATING AN INPUT FILE FOR BICI
+**1) GENERATING AN INPUT FILE FOR BICI
 
 This is performed in the "GenerateInputFile" directory. 
 
@@ -34,7 +34,7 @@ c) The file "Scotland_bici_model.xml" then gets read by "generateinputfile.cc" a
 This time data is added to finally create the file "Scotland_bici_input.xml", which sumarises the model and data in a way that BICI can understand. The data itself consists of daily regional cases from the website https://smazeri.shinyapps.io/Covid19_Scotland/.   
 
 
-2) RUNNING THE ANALYSIS
+**2) RUNNING THE ANALYSIS
 
 This is done in the "Analysis" directory. The "bici.cc" file is compiled using
 
@@ -55,7 +55,7 @@ c) "Bici[X].txt" is an output file which can be read into the BICI GUI for visua
 
 d) "Stats.txt" calculates the posterior means, 90% credible intervals, effective sample sizes and Gelman-Rubin diagnostic statics (these last two are used to confirm that MCMC is well mixed).
 
-METHODOLOGY
+##METHODOLOGY
 
 This is yet to be written up for BICI, but the basic framework is presented here (for a simple SIR model):
 
