@@ -23,7 +23,8 @@ d) "Stats.txt" calculates the posterior means, 90% credible intervals, effective
    Gelman-Rubin diagnostic statics (these last two are used to confirm that MCMC is well mixed).
 */ 
 	 
-#define MPI                         // The is turned on when performing MPI on multiple chains
+// The is turned on when performing MPI on multiple chains
+#define MP 1                        
 
 const long noout = 0;                 // Suppresses the output when error checking
 const long checkon = 0;               // Determines if checking is done
@@ -35,7 +36,7 @@ using namespace tinyxml2;
 
 using namespace std;
 
-#ifdef MPI
+#ifdef MP
 #include <mpi.h>
 #endif
 
@@ -84,7 +85,7 @@ int main(int argc, char** argv)
   string file;
   vector <double> v;
  
-	#ifdef MPI
+	#ifdef MP
 	int process_Rank, size_Of_Cluster;
   MPI_Init(&argc, &argv);
   MPI_Comm_size(MPI_COMM_WORLD, &size_Of_Cluster);
@@ -93,7 +94,7 @@ int main(int argc, char** argv)
 	nrun = size_Of_Cluster;
   #endif
  
-  #ifndef MPI
+  #ifndef MP
 	simnum = 0;
 	nrun = 1;
   #endif
@@ -180,7 +181,7 @@ int main(int argc, char** argv)
       ch[0]->eventplot();
       ch[0]->traceplot();
     }
-		#ifdef MPI
+		#ifdef MP
 		MPI_Finalize();
 		#endif
     return 0;
@@ -212,7 +213,7 @@ int main(int argc, char** argv)
 	ch[0]->diagnosticsfile();
 	stats();
 	
-	#ifdef MPI
+	#ifdef MP
 	MPI_Finalize();
 	#endif
 }
