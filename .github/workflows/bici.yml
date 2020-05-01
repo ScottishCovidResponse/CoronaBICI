@@ -22,3 +22,22 @@ jobs:
       run: |
         cd Analysis
         stdbuf -oL -eL ./bici Scotland_bici_input.xml 1000
+
+    - name: Check output files
+      run: |
+        cd Analysis
+
+        required_files="Output Output/Scotland_bici Output/Scotland_bici/trace0.txt Output/Scotland_bici/diagnostic0.txt Output/Scotland_bici/stats.txt Output/Scotland_bici/bici0.txt"
+        failures=0
+
+        for f in $required_files ; do
+          if [ ! -r "$f" ]; then
+            echo "Required output file $f not found" >&2
+            failures=$((failures+1))
+          fi
+        done
+
+        if [ $failures -gt 0 ]; then
+          echo "Failed due to missing output files" >&2
+          exit 1
+        fi
