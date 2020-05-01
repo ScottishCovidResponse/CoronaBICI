@@ -15,7 +15,7 @@ jobs:
     - name: Compile (serial)
       run: |
         cd Analysis
-        sed -i 's|#define MP|// #define MP|g' Analysis/bici.cc
+        sed -i 's|#define MP|// #define MP|g' bici.cc
         g++ bici.cc header/tinyxml2.cc -O3 -o bici
 
     - name: Run test model
