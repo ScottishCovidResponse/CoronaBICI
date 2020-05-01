@@ -1,6 +1,8 @@
 
 # CoronaBICI
 
+![](https://github.com/ScottishCovidResponse/CoronaBICI/workflows/CI/badge.svg?branch=continuous_integration)
+
 C. M. Pooley* [1], Andrea Doeschl-Wilson [2], and Glenn Marion [1]
 
 [1] Biomathematics and Statistics Scotland, James Clerk Maxwell Building, The King's Buildings, Peter Guthrie Tait Road, Edinburgh, EH9 3FD, UK 
