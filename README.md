@@ -1,7 +1,7 @@
 
 # CoronaBICI
 
-![](https://github.com/ScottishCovidResponse/CoronaBICI/workflows/CI/badge.svg?branch=continuous_integration) (See the [build and test results](https://github.com/ScottishCovidResponse/CoronaBICI/actions?query=workflow%3ACI).)
+![](https://github.com/ScottishCovidResponse/CoronaBICI/workflows/CI/badge.svg?branch=master) (See the [build and test results](https://github.com/ScottishCovidResponse/CoronaBICI/actions?query=workflow%3ACI).)
 
 C. M. Pooley* [1], Andrea Doeschl-Wilson [2], and Glenn Marion [1]
 
