@@ -21,4 +21,4 @@ jobs:
     - name: Run test model
       run: |
         cd Analysis
-        ./bici Scotland_bici_input.xml 300
+        stdbuf -oL -eL ./bici Scotland_bici_input.xml 300
