@@ -1,0 +1,24 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Install packages
+      run: sudo apt-get update && sudo apt-get install -y git build-essential
+
+    - name: Compile (serial)
+      run: |
+        cd Analysis
+        sed -i 's|#define MP|// #define MP|g' Analysis/bici.cc
+        g++ bici.cc header/tinyxml2.cc -O3 -o bici
+
+    - name: Run test model
+      run: |
+        cd Analysis
+        ./bici Scotland_bici_input.xml 2000
