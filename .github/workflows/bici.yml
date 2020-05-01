@@ -21,6 +21,7 @@ jobs:
     - name: Run test model
       run: |
         cd Analysis
+        mkdir -p Output # Remove when https://github.com/ScottishCovidResponse/SCRCIssueTracking/issues/68 is fixed
         stdbuf -oL -eL ./bici Scotland_bici_input.xml 1000
 
     - name: Check output files
