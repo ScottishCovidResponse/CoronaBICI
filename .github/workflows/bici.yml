@@ -1,0 +1,46 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Install packages
+      run: sudo apt-get update && sudo apt-get install -y git build-essential
+
+    - name: Compile (serial)
+      run: |
+        cd Analysis
+        sed -i 's|#define MP|// #define MP|g' bici.cc
+        g++ bici.cc header/tinyxml2.cc -O3 -o bici
+
+    - name: Run test model
+      run: |
+        cd Analysis
+        mkdir -p Output # Remove when https://github.com/ScottishCovidResponse/SCRCIssueTracking/issues/68 is fixed
+        stdbuf -oL -eL ./bici Scotland_bici_input.xml 1000
+
+    - name: Check output files
+      run: |
+        cd Analysis
+
+        required_files="Output Output/Scotland_bici Output/Scotland_bici/trace0.txt Output/Scotland_bici/diagnostic0.txt Output/Scotland_bici/stats.txt Output/Scotland_bici/bici0.txt"
+        failures=0
+
+        for f in $required_files ; do
+          if [ ! -r "$f" ]; then
+            echo "Required output file $f not found" >&2
+            failures=$((failures+1))
+          fi
+        done
+
+        if [ $failures -gt 0 ]; then
+          echo "::error ::Failed due to missing output files" >&2
+          exit 1
+        else
+          echo "All required output files found"
+        fi
