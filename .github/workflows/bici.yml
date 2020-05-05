@@ -10,24 +10,29 @@ jobs:
     - uses: actions/checkout@v2
     
     - name: Install packages
-      run: sudo apt-get update && sudo apt-get install -y git build-essential
+      run: sudo apt-get update && sudo apt-get install -y git build-essential mpich
 
-    - name: Compile (serial)
+    # - name: Compile (serial)
+    #   run: |
+    #     cd Analysis
+    #     sed -i 's|#define MP|// #define MP|g' bici.cc
+    #     g++ bici.cc header/tinyxml2.cc -O3 -o bici
+
+    - name: Compile (MPI)
       run: |
         cd Analysis
-        sed -i 's|#define MP|// #define MP|g' bici.cc
-        g++ bici.cc header/tinyxml2.cc -O3 -o bici
+        make
 
     - name: Run test model
       run: |
         cd Analysis
-        stdbuf -oL -eL ./bici Scotland_bici_input.xml 1000
+        stdbuf -oL -eL mpirun -n 4 ./bici Scotland_bici_input.xml 1000
 
     - name: Check output files
       run: |
         cd Analysis
 
-        required_files="Output Output/Scotland_bici Output/Scotland_bici/trace0.txt Output/Scotland_bici/diagnostic0.txt Output/Scotland_bici/stats.txt Output/Scotland_bici/bici0.txt"
+        required_files="Output Output/Scotland_bici Output/Scotland_bici/trace3.txt Output/Scotland_bici/diagnostic3.txt Output/Scotland_bici/stats.txt Output/Scotland_bici/bici3.txt"
         failures=0
 
         for f in $required_files ; do
