@@ -10,13 +10,19 @@ jobs:
     - uses: actions/checkout@v2
     
     - name: Install packages
-      run: sudo apt-get update && sudo apt-get install -y git build-essential mpich
+      run: sudo apt-get update && sudo apt-get install -y git build-essential mpich clang-tools
 
     # - name: Compile (serial)
     #   run: |
     #     cd Analysis
     #     sed -i 's|#define MP|// #define MP|g' bici.cc
     #     g++ bici.cc header/tinyxml2.cc -O3 -o bici
+
+    - name: Perform static analysis
+      run: |
+        cd Analysis
+        scan-build -o buildhtml make
+        make clean
 
     - name: Compile (MPI)
       run: |
