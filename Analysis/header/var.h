@@ -860,3 +860,15 @@ void emsg2(string msg)
 {
   warning.push_back(msg);
 }
+
+// Create a directory if it doesn't already exist
+void ensuredirectory(const string &path) {
+	struct stat st = {0};
+	if (stat(path.c_str(), &st) == -1)
+	{
+		// Directory not found
+		int ret = mkdir(path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+		if (ret == -1)
+			emsg("Error creating directory "+path);
+	}
+}
