@@ -21,8 +21,10 @@ jobs:
     - name: Perform static analysis
       run: |
         cd Analysis
-        scan-build -o buildhtml make
+        sed -i 's|#define MP|// #define MP|g' bici.cc
+        scan-build -o buildhtml make -e
         make clean
+        git checkout bici.cc
 
     - name: Compile (MPI)
       run: |
