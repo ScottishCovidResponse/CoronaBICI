@@ -99,7 +99,7 @@ int main(int argc, char** argv)
 	nrun = 1;
   #endif
  
-	if(argc != 3) emsg("Not the right numner of arguments");
+	if(argc != 3) emsg("Not the right number of arguments");
 	file = argv[1]; 
 	nsamp = atoi(argv[2]); burnin = nsamp/5;
 	
