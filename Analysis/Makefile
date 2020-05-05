@@ -1,0 +1,15 @@
+
+CXX := mpicxx
+CXXFLAGS := -O3
+
+srcs := bici.cc header/tinyxml2.cc
+hdrs := $(wildcard header/*.h)
+exe := bici
+
+$(exe): $(srcs) $(hdrs)
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(TARGET_ARCH) $(srcs) -o bici
+
+.PHONY : clean
+
+clean:
+	rm -f $(exe)
