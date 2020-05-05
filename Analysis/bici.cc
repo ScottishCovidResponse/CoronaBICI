@@ -105,8 +105,17 @@ int main(int argc, char** argv)
 	
 	stringstream sd; sd << "Output/" << file.substr(0,file.length()-10);
 	root = sd.str();
-	mkdir(root.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+
+	if (simnum == 0) {
+		ensuredirectory("Output");
+		ensuredirectory(root);
+	}
 	
+	// Ensure directories are created before other processes proceed
+#ifdef MP
+	MPI_Barrier(MPI_COMM_WORLD);
+#endif
+
 	stringstream st; st << root << "/trace" << simnum << ".txt";
 	trace.open(st.str().c_str());
 	
