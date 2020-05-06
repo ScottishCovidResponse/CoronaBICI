@@ -31,7 +31,7 @@ jobname=$(basename $dir)
 
 mkdir $dir
 mkdir $dir/Output
-cp -a ./bici $dir
+cp -a ./bici_mpi $dir
 cp $inputfile $dir
 inputbasename=$(basename $inputfile)
 
@@ -50,7 +50,7 @@ cat >$dir/submit.sh <<EOF
 module purge
 module load rhel7/default-peta4
 
-stdbuf -oL -eL mpirun -n $nprocs ./bici $inputbasename $nsamples
+stdbuf -oL -eL mpirun -n $nprocs ./bici_mpi $inputbasename $nsamples
 
 EOF
 
