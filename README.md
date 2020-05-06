@@ -62,7 +62,7 @@ This is done in the "Analysis" directory. There are two ways to run:
 
 1. If running as a single process the "bici.cc" file is compiled using
    ```
-   g++ bici.cc header/tinyxml2.cc -O3 -o bici
+   make bici
    ```
 and run using:
    ```
@@ -72,11 +72,11 @@ and run using:
 
 2. To run multiple chains under MPI the line #define MP 1 is uncommented in bici.cc and code is compiled using:
    ```
-   mpic++ bici.cc header/tinyxml2.cc -O3 -o bici
+   make bici_mpi
    ```
    and run using:        
    ```
-   mpirun -n 4 ./bici Scotland_bici_input.xml 10000
+   mpirun -n 4 ./bici_mpi Scotland_bici_input.xml 10000
    ```
 Here -n 4 represents the number of parallel MCMC chains and 10000 represents the number of samples on each chain. 
 
