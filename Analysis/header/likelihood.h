@@ -30,8 +30,6 @@ void Chain::indchange(long i, long estart, double t, double tend)
   double tt, told, tnew, tob;
   vector <long> remlist, addlist;
 
-	//if(i == 3195){  cout << "\n\n"; oe("st",indev[i]); oe("new",evnew);}
-  
   timeprop[INDCHANGE] -= clock();
 
   if(t == mlarge) whole = 1; else whole = 0;
@@ -147,7 +145,7 @@ void Chain::indchange(long i, long estart, double t, double tend)
 
 void Chain::indremevent(long i, long k)                   // Removes an event for an individual
 {
-  long eq, d, tr, j, ce, fi, kd;
+  long eq, d, tr, j, ce, fi, kd, ddti;
   double t, tt;
   long e, ee;
 
@@ -174,7 +172,9 @@ void Chain::indremevent(long i, long k)                   // Removes an event fo
     if(transdep[eq] == 1){
 			t = indev[i][k].t;
 			if(discon == 1){
-				kd = d*DX + long(t*dfac);
+				ddti = DDconv[long(t*DDfac)]; if(DDt[ddti+1] < t) ddti++;
+				kd = d*nDD + ddti;
+				//kd = d*DX + long(t*dfac);
 				depeq_disc_evn[kd]--;
 				Lir -= log(depeq_disc_evval[kd]);
 			}
@@ -208,7 +208,7 @@ void Chain::indremevent(long i, long k)                   // Removes an event fo
 
 void Chain::indaddevent(long i, long k, EV ev)     // Adds an event for an indivual
 {
-  long eq, d, tr, ce, fi, kd;
+  long eq, d, tr, ce, fi, kd, ddti;
   double t, tt;
   long e, ee;
 
@@ -235,7 +235,9 @@ void Chain::indaddevent(long i, long k, EV ev)     // Adds an event for an indiv
     if(transdep[eq] == 1){
 			t = ev.t;
 			if(discon == 1){
-				kd = d*DX + long(t*dfac);
+				ddti = DDconv[long(t*DDfac)]; if(DDt[ddti+1] < t) ddti++;
+				kd = d*nDD + ddti;
+				//kd = d*DX + long(t*dfac);
 				depeq_disc_evn[kd]++;
 				Lir += log(depeq_disc_evval[kd]);
 			}
@@ -268,8 +270,6 @@ void Chain::secchange(long i, long ci, long cf, double ti, double tf)
   double tt, dt;
   EQCH eqch;
   NDEQCH ndeqch;
-
-  //if(plfl == 1) cout << ci << " " << cf << " " << ti << " "<< tf <<  "sec cha\n";
 
   if(capfl == 1 || popfl == 1 || derfl == 1){
     div = long(ncompcapdiv*ti/tmax);         // Calculates how pd chages for a capture campaign
@@ -405,8 +405,8 @@ void Chain::secchange(long i, long ci, long cf, double ti, double tf)
 
 void Chain::secchange2(long d, long dn, double *ch_popnum, long valch, double ti, double tf)
 {
-	long nold, nnew, efirst, e, ee, enew, jj, eq, kd, kdi, kdf;
-	double valold, valnew, dval, t, tt, fac, kdif, kdff, dt;
+	long nold, nnew, efirst, e, ee, enew, jj, eq, kd, kdi, kdf, ddt, ddti, ddtf;
+	double valold, valnew, dval, t, tt, fac, dt;
 	
 	timeprop[SEC] -= clock();
 		
@@ -414,8 +414,11 @@ void Chain::secchange2(long d, long dn, double *ch_popnum, long valch, double ti
 	n_popnum = neq_popnum[eq];
 	
 	if(discon == 1){
-		kdif = d*DX + ti*dfac; kdi = long(kdif);
-		kdff = d*DX + tf*dfac; kdf = long(kdff);
+		ddti = DDconv[long(ti*DDfac)]; if(DDt[ddti+1] < ti) ddti++;
+		kdi = d*nDD + ddti;
+		
+		ddtf = DDconv[long(tf*DDfac)]; if(DDt[ddtf+1] < tf) ddtf++;
+		kdf = d*nDD + ddtf;
 		
 		if(kdi == kdf){
 			dt = dn*(tf-ti);
@@ -423,7 +426,7 @@ void Chain::secchange2(long d, long dn, double *ch_popnum, long valch, double ti
 			Liexp += depeq_disc_evval[kdi]*dt;
 		}
 		else{
-			//if(valch == 1){
+			if(valch == 1){
 				for(kd = kdi+1; kd <= kdf; kd++){
 					for(jj = 0; jj < n_popnum; jj++) depeq_disc_evpopnum[kd][jj] += ch_popnum[jj];
 					valold = depeq_disc_evval[kd];
@@ -433,19 +436,20 @@ void Chain::secchange2(long d, long dn, double *ch_popnum, long valch, double ti
 					Liexp += depeq_disc_evdt[kd]*(valnew-valold);
 					depeq_disc_evval[kd] = valnew;
 				}
-			//}
+			}
 			
-			dt = dn*(kdi+1-kdif)/dfac;
-			depeq_disc_evdt[kdi] += dt;
+			dt = dn*(DDt[ddti+1]-ti);
+			depeq_disc_evdt[kdi] += dt; 
 			Liexp += depeq_disc_evval[kdi]*dt;
 					
-			for(kd = kdi+1; kd < kdf; kd++){ 
-				dt = dn/dfac;
+			for(ddt = ddti+1; ddt < ddtf; ddt++){
+				dt = dn*DDdt[ddt];
+				kd = d*nDD + ddt;
 				depeq_disc_evdt[kd] += dt;
 				Liexp += depeq_disc_evval[kd]*dt;
 			}
-			
-			dt = dn*(kdff - kdf)/dfac;
+	
+			dt = dn*(tf-DDt[ddtf]);
 			depeq_disc_evdt[kdf] += dt;
 			Liexp += depeq_disc_evval[kdf]*dt;
 		}
@@ -457,6 +461,7 @@ void Chain::secchange2(long d, long dn, double *ch_popnum, long valch, double ti
 			ee = depeq_evnext[e]; tt = depeq_evt[ee]; if(tt > t) break;
 			e = ee;
 		}while(1 == 1);
+
 
 		if(depeq_evt[e] == t){  // Simulataneous event
 			valold = depeq_evval[e];

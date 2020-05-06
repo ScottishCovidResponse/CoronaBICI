@@ -96,6 +96,7 @@ void readinput(string file)    // Reads the input XML file
     }
 
     if(s1.compare("simulation") == 0) simon = 1;
+		
     if(s1.compare("simulation") == 0 || s1.compare("inference") == 0){ 
       const char *a = child->ToElement()->Attribute("nsamp");
       if(a) nsamp = atoi(a);
@@ -105,17 +106,19 @@ void readinput(string file)    // Reads the input XML file
         if(tminactual > tmin) emsg("Readinput: EC2");
         if(tminactual < tmin) tmin = tminactual;
       }
+
       const char *a3 = child->ToElement()->Attribute("tmax");
       if(a3){
         if(simon == 1) tmax = tmin;
         tmaxactual = double(atof(a3));
         if(tmaxactual < tmax) emsg("Readinput: EC3");
         tmax2 = tmaxactual;//+dttiny;
-      }
+		  }
 
       indmax = long(getnum(child,"indmax"));
     }
   }
+	if(corona == 1 && simon == 1){ tmin = 0; tmax = 0;}
 
   if(tmin == large || tmax == -large) emsg("Readinput: EC4 No data!");
 
@@ -357,8 +360,7 @@ void readinput(string file)    // Reads the input XML file
     s1 = child->Value();
     if(s1.compare("data") == 0){  
       for(child2 = child->FirstChild(); child2; child2 = child2->NextSibling()){
-				//if(nind%1000 == 0) cout << nind << "nind\n";
-        s2 = child2->Value();
+				s2 = child2->Value();
 				
 				if(s2.compare("setallinit") == 0){  // Sets the values for a batch of initial individuals
 					indname = get(child2,"id");
@@ -369,7 +371,7 @@ void readinput(string file)    // Reads the input XML file
 					for(cl = 0; cl < nclass-1; cl++){
 						s3 = get(child2,classname[cl].c_str());
 						for(j = 0; j < nclassval[cl]; j++) if(classval[cl][j] == s3) break;
-						if(j == nclassval[cl]){ cout << classname[cl].c_str() <<"prob class\n";}
+						if(j == nclassval[cl]) emsg("readinput: EC99");
 						c += classmult[cl]*j;
 					}
 						
@@ -976,6 +978,22 @@ void createtra(long type, XMLNode* child3, long cl, long i, long f)
       ntra++;
     }
   }
+}
+
+vector<string> getdep(string st)         // gets the dependencies for a string
+{
+	vector<string> pos;
+	long j, jst;
+	
+	j = 0; while(j < st.length() && st.substr(j,1) != "_") j++;
+	j++;
+	while(j < st.length()){
+		jst = j;
+		while(j < st.length() && st.substr(j,1) != ",") j++;
+		pos.push_back(st.substr(jst,j-jst));
+		j++;
+	}
+	return pos;
 }
 
 vector<string> getallpos(string name)    // If class specifiers are given then splits up

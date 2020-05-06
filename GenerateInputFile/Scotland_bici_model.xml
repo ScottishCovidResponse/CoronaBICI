@@ -2,8 +2,8 @@
 <BICI version="1.0">
 <model>
 	<prior parameter="Φ" class="DS" type="Flat" val1="0" val2="0.000001"/>
-	<prior parameter="β_Time" class="DS" type="Flat" val1="0" val2="2"/>
-	<prior parameter="d" class="DS" type="Flat" val1="0" val2="10"/>
+	<prior parameter="β_Time" class="DS" type="Flat" val1="0" val2="3"/>
+	<prior parameter="d" class="DS" type="Fix" val1="1"/>
 	<prior parameter="ρ(E→A)" class="DS" type="Fix" val1="0.4"/>
 	<prior parameter="ρ(A→I)" class="DS" type="Fix" val1="0.3333333333"/>
 	<prior parameter="ρ(A→R)" class="DS" type="Fix" val1="0.2857142857"/>
@@ -14,86 +14,100 @@
 	<prior parameter="ρ(H→R)" class="DS" type="Fix" val1="0.0763358779"/>
 	<prior parameter="ξ_DS,loc" class="Initial" type="Dirichlet" val1="1"/>
 	<prior parameter="μ" class="Hyper" type="Fix" val1="0"/>
-	<prior parameter="σ" class="Hyper" type="Flat" val1="0" val2="0.5"/>
+	<prior parameter="σ" class="Hyper" type="Flat" val1="0.01" val2="0.5"/>
 	<prior parameter="G_loc" class="DS" type="Normal" val1="[μ]"  val2="[σ]"/>
+	<derived name="S08000015-S" value="{S08000015,S}"/>
 	<derived name="S08000015-E" value="{S08000015,E}"/>
 	<derived name="S08000015-A" value="{S08000015,A}"/>
 	<derived name="S08000015-I" value="{S08000015,I}"/>
 	<derived name="S08000015-H" value="{S08000015,H}"/>
 	<derived name="S08000015-R" value="{S08000015,R}"/>
 	<derived name="S08000015-D" value="{S08000015,D}"/>
+	<derived name="S08000016-S" value="{S08000016,S}"/>
 	<derived name="S08000016-E" value="{S08000016,E}"/>
 	<derived name="S08000016-A" value="{S08000016,A}"/>
 	<derived name="S08000016-I" value="{S08000016,I}"/>
 	<derived name="S08000016-H" value="{S08000016,H}"/>
 	<derived name="S08000016-R" value="{S08000016,R}"/>
 	<derived name="S08000016-D" value="{S08000016,D}"/>
+	<derived name="S08000017-S" value="{S08000017,S}"/>
 	<derived name="S08000017-E" value="{S08000017,E}"/>
 	<derived name="S08000017-A" value="{S08000017,A}"/>
 	<derived name="S08000017-I" value="{S08000017,I}"/>
 	<derived name="S08000017-H" value="{S08000017,H}"/>
 	<derived name="S08000017-R" value="{S08000017,R}"/>
 	<derived name="S08000017-D" value="{S08000017,D}"/>
+	<derived name="S08000029-S" value="{S08000029,S}"/>
 	<derived name="S08000029-E" value="{S08000029,E}"/>
 	<derived name="S08000029-A" value="{S08000029,A}"/>
 	<derived name="S08000029-I" value="{S08000029,I}"/>
 	<derived name="S08000029-H" value="{S08000029,H}"/>
 	<derived name="S08000029-R" value="{S08000029,R}"/>
 	<derived name="S08000029-D" value="{S08000029,D}"/>
+	<derived name="S08000019-S" value="{S08000019,S}"/>
 	<derived name="S08000019-E" value="{S08000019,E}"/>
 	<derived name="S08000019-A" value="{S08000019,A}"/>
 	<derived name="S08000019-I" value="{S08000019,I}"/>
 	<derived name="S08000019-H" value="{S08000019,H}"/>
 	<derived name="S08000019-R" value="{S08000019,R}"/>
 	<derived name="S08000019-D" value="{S08000019,D}"/>
+	<derived name="S08000020-S" value="{S08000020,S}"/>
 	<derived name="S08000020-E" value="{S08000020,E}"/>
 	<derived name="S08000020-A" value="{S08000020,A}"/>
 	<derived name="S08000020-I" value="{S08000020,I}"/>
 	<derived name="S08000020-H" value="{S08000020,H}"/>
 	<derived name="S08000020-R" value="{S08000020,R}"/>
 	<derived name="S08000020-D" value="{S08000020,D}"/>
+	<derived name="S08000031-S" value="{S08000031,S}"/>
 	<derived name="S08000031-E" value="{S08000031,E}"/>
 	<derived name="S08000031-A" value="{S08000031,A}"/>
 	<derived name="S08000031-I" value="{S08000031,I}"/>
 	<derived name="S08000031-H" value="{S08000031,H}"/>
 	<derived name="S08000031-R" value="{S08000031,R}"/>
 	<derived name="S08000031-D" value="{S08000031,D}"/>
+	<derived name="S08000022-S" value="{S08000022,S}"/>
 	<derived name="S08000022-E" value="{S08000022,E}"/>
 	<derived name="S08000022-A" value="{S08000022,A}"/>
 	<derived name="S08000022-I" value="{S08000022,I}"/>
 	<derived name="S08000022-H" value="{S08000022,H}"/>
 	<derived name="S08000022-R" value="{S08000022,R}"/>
 	<derived name="S08000022-D" value="{S08000022,D}"/>
+	<derived name="S08000032-S" value="{S08000032,S}"/>
 	<derived name="S08000032-E" value="{S08000032,E}"/>
 	<derived name="S08000032-A" value="{S08000032,A}"/>
 	<derived name="S08000032-I" value="{S08000032,I}"/>
 	<derived name="S08000032-H" value="{S08000032,H}"/>
 	<derived name="S08000032-R" value="{S08000032,R}"/>
 	<derived name="S08000032-D" value="{S08000032,D}"/>
+	<derived name="S08000024-S" value="{S08000024,S}"/>
 	<derived name="S08000024-E" value="{S08000024,E}"/>
 	<derived name="S08000024-A" value="{S08000024,A}"/>
 	<derived name="S08000024-I" value="{S08000024,I}"/>
 	<derived name="S08000024-H" value="{S08000024,H}"/>
 	<derived name="S08000024-R" value="{S08000024,R}"/>
 	<derived name="S08000024-D" value="{S08000024,D}"/>
+	<derived name="S08000025-S" value="{S08000025,S}"/>
 	<derived name="S08000025-E" value="{S08000025,E}"/>
 	<derived name="S08000025-A" value="{S08000025,A}"/>
 	<derived name="S08000025-I" value="{S08000025,I}"/>
 	<derived name="S08000025-H" value="{S08000025,H}"/>
 	<derived name="S08000025-R" value="{S08000025,R}"/>
 	<derived name="S08000025-D" value="{S08000025,D}"/>
+	<derived name="S08000026-S" value="{S08000026,S}"/>
 	<derived name="S08000026-E" value="{S08000026,E}"/>
 	<derived name="S08000026-A" value="{S08000026,A}"/>
 	<derived name="S08000026-I" value="{S08000026,I}"/>
 	<derived name="S08000026-H" value="{S08000026,H}"/>
 	<derived name="S08000026-R" value="{S08000026,R}"/>
 	<derived name="S08000026-D" value="{S08000026,D}"/>
+	<derived name="S08000030-S" value="{S08000030,S}"/>
 	<derived name="S08000030-E" value="{S08000030,E}"/>
 	<derived name="S08000030-A" value="{S08000030,A}"/>
 	<derived name="S08000030-I" value="{S08000030,I}"/>
 	<derived name="S08000030-H" value="{S08000030,H}"/>
 	<derived name="S08000030-R" value="{S08000030,R}"/>
 	<derived name="S08000030-D" value="{S08000030,D}"/>
+	<derived name="S08000028-S" value="{S08000028,S}"/>
 	<derived name="S08000028-E" value="{S08000028,E}"/>
 	<derived name="S08000028-A" value="{S08000028,A}"/>
 	<derived name="S08000028-I" value="{S08000028,I}"/>
@@ -155,5 +169,5 @@
 
 <data>
 </data>
-<inference nsamp="20000001" tmin="0" tmax="111" indmax="100000"/>
+<inference nsamp="20000001" tmin="0" tmax="122" indmax="100000"/>
 </BICI>

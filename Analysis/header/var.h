@@ -2,21 +2,9 @@
 
 long corona = 1;                        // This is set to 1 for analysing the corona virus data
 
-const double gammalim = 0.05;                 // Limit on gamma / beta distribution shape parameter
-
-const long discon = 1;                        // Set to 1 if dependent equations are discretised in time
-const long DX = 400;                          // Number of discretisations 
-double dfac;	                                // Factor converting from t to discretisation
-
-ofstream bout, trace;                         // Used for outputting bici and trace files
-string root;                                  // The directory for output
-vector< vector < vector <double> > > paramst; // Store parameter (for use in stats.h)
-
-long samp, nsamp;                             // The MCMC sample number
-long burnin;                                  // The MCMC number of samples for burnin 
-
 // CORONA SPECIFIC
 long tbin = 100;                              // Temporal discretation when adding/removing inf ind
+vector <long> tbins;                          // Stores the settime
 vector <double> multacf;                      // Number to add/rem from a region
 vector <short> indinit; 											// This sets the initial state of an individual
 
@@ -28,12 +16,32 @@ vector <vector <double> > probsum;
 vector <double> proba;
 vector <double> probsuma;
 double probsumatot;
-double rEA, rAR, rAI, rIR[7], rIH[7], rID[7], rHR[7], rHD[7];
+double rEA, rAR, rAI, rIR[7], rIH[7], rID[7], rHR[7], rHD[7], rAIcor;
 long nregion;                                 // Number of regions
 long nag;                                     // Number of age groups in model
 long nrun;                                    // The number of MCMC runs
-
+double tAbeg, tAend, Afac, tIbeg, tIend, Ifac;
 // END CORONA SPECIFIC
+
+const double gammalim = 0.05;                 // Limit on gamma / beta distribution shape parameter
+
+const long discon = 1;                        // Set to 1 if dependent equations are discretised in time
+const double Dt = 1;                          // Approximate discretisation time step
+long nDD;                                     // Number of discretisations 
+vector <double> DDt;                          // Discretisation times
+vector <double> DDdt;                         // Discretisation times
+vector <long> DDsettime;                      // The time compartment in       
+vector <long> DDcalc;                         // Whether it gets updated (becaause of settime) 
+long DDconvmax;                               // Converts from a time to a discretisation
+vector <long> DDconv;   
+double DDfac;                                 // Converts from time to Dconv
+
+ofstream bout, trace;                         // Used for outputting bici and trace files
+string root;                                  // The directory for output
+vector< vector < vector <double> > > paramst; // Store parameter (for use in stats.h)
+
+long samp, nsamp;                             // The MCMC sample number
+long burnin;                                  // The MCMC number of samples for burnin 
 
 long plfl = 0;                                // Determines if diagnostic information is output
 
@@ -60,8 +68,8 @@ long DERIVEX = 400;                           // Temporal discretisation of deri
 long indmax;                                  // The maximum number of individuals
 const double large = 10000000;                // Used to refer to a large quantity
 const double mlarge = -large;                 // A large negative quantity
-const double tiny = 0.000000001;              // A tiny quantity
-const double ttiny = 0.000000000001;          // A very tiny quantity
+const double tiny = 0.0000001;                // A tiny quantity
+const double ttiny = 0.0000000001;            // A very tiny quantity
 
 const double evdtmin = 0.00000001;            // The smallest seperation time between events
 long logsummax = 10000;                       // The size of the lookup table for logsum
@@ -124,6 +132,7 @@ vector<long> paramorder;                       // Orders the parameters for outp
 struct TT {                                    // Structure used for transitions
   long type; long ci; long cf; long dc; long cl; long i; long f; long eq; long eqshape;
   long capev; long like; long trans; long ntraend; vector<long> traend; long nm;
+	long tramm;
   long nnonexptra; 
 	vector<long> nonexptra;// The nonexponential transitions activated when individual undergoes transition
 };
@@ -341,6 +350,8 @@ vector<long> nmeq;
 
 vector<long> transdep;                         // [eqn]   -1 = not an exponential transitions  
 // 0 = does not depend on population number   1 = depends on population number
+vector<long> transdepsettime;                  // set to settime if appropriate otherwise -1
+vector<long> transdepk;                  // set to settime if appropriate otherwise -1
 
 vector<long> transdepref;                      // [eqn]  references which transdepeq
 long ntransdepeq, ntransnotdepeq;
@@ -373,6 +384,10 @@ vector< vector<NDEQCH> > transnotdepeqch;
 struct TRANS{ long cl; long i; long f;};       // Store all unique transitions in move (used for jump move)
 long ntrans;                                   // Unique transitions
 vector<TRANS> trans;
+
+struct TRAMM{ long ci; long cf; vector <long> tra;};              // Multimove transitions collect together all all those from the top three classifications
+long ntramm;
+vector<TRAMM> tramm;
 
 // Used for particles
 
@@ -725,11 +740,17 @@ class Chain                                    // Store all quantities and funci
 	void multisecend();
 	void multimoveinit();
 	void multimove();
+	//double multial(long tr, double t, double tst);
 	double movecalcgrad(long tr, double t);
 	double transrate(long eq, double t);
 	void checklikedisc(long num);
 	void addparam();
 	void test(short num);
+	void outputcoronadata();
+	void addstartuoinf();
+	void paramstart();
+	void savesimulated();
+	void loadsimulated();
 };
 
 const long chainmax = 1;                       // Stores a single MCMC chain

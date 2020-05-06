@@ -339,7 +339,6 @@ long Chain::start()                                      // Works out the starti
   long c, cc, tr, j, k, ob, per, pernew, loop, i, ctop, ag, agpos[nage+1];
 	long	ob1, ob2, ca, ca1, ca2, numobs, numnotobs, nlifet, loopstart;
   double t, tt, prob, probsum, Ltoti, Ltotf, val, lifet, probmax;
-  vector <double> Lst;
   vector <short> agpostlist;
   vector < vector <EV> > posev;
   vector <double> posevprob;
@@ -385,155 +384,159 @@ long Chain::start()                                      // Works out the starti
   nindtot = 0;
 
   samp = -1; per = 60;
-  for(i = 0; i < nind; i++){
-		if(i%100000 == 0 && simnum == 0) cout << "Initialising individual " << i << " / " << nind << "\n";
-    pernew = long(60+(30.0*i)/nind); 
-	
-		if(pernew != per){ bout << "3|" << pernew << "|\n"; cout.flush(); per = pernew;}
+	if(1 == 0) loadsimulated();
+	else{	
+		for(i = 0; i < nind; i++){
+			if(i%100000 == 0 && simnum == 0) cout << "Initialising individual " << i << " / " << nind << "\n";
+			pernew = long(60+(30.0*i)/nind); 
+		
+			if(pernew != per){ bout << "3|" << pernew << "|\n"; cout.flush(); per = pernew;}
 
-    addemptyind(0);
-	
-		if(corona == 1){
-			indtbirth[i] = 0;
-			c = indinit[i]; 
-			if(c < 0 || c >= ncomp) emsg("Init: EC7");
-			evnew.clear();
+			addemptyind(0);
+		
+			if(corona == 1){
+				indtbirth[i] = 0;
+				c = indinit[i]; 
+				if(c < 0 || c >= ncomp) emsg("Init: EC7");
+				evnew.clear();
 
-			long fi, a, cend;
-			double tIH, tAI, tEA, tSE, tnext;
-			
-			a = (c/(nclassval[0]*nclassval[1]))%nag;
-
-			EV ev; ev.tr = trabeg+c; ev.t = 0; evnew.push_back(ev);
-			if(nindfixev[i] > 1) emsg("Init: EC8");
-			if(nindfixev[i] == 1){
-				fi = indfixev[i][0];
-				tIH = fixev[fi].t;
-				do{
-					tAI = tIH + log(ran())/rIH[a];
-					tEA = tAI + log(ran())/rAI;
-					tSE = tEA + log(ran())/rEA;
-				}while(tSE < 0);
+				long fi, a, cend;
+				double tIH, tAI, tEA, tSE, tnext;
 				
-				EV evm; evm.tr = compiftra[c+SS][c+EE]; evm.t = tSE; evnew.push_back(evm);
-				EV evm2; evm2.tr = compiftra[c+EE][c+AA]; evm2.t = tEA; evnew.push_back(evm2);
-				EV evm3; evm3.tr = compiftra[c+AA][c+II]; evm3.t = tAI; evnew.push_back(evm3);
-				EV evm4; evm4.tr = compiftra[c+II][c+HH]; evm4.t = tIH; evnew.push_back(evm4);
-				cend = c+HH;
-				tnext = tIH - log(ran())/(rHD[a]+rHR[a]);
-				if(tnext < tmax){
-					if(ran()*(rHD[a]+rHR[a]) < rHD[a]){
-						EV evm5; evm5.tr = compiftra[c+HH][c+DD]; evm5.t = tnext; evnew.push_back(evm5);
-						cend = c+DD;
-					}
-					else{
-						EV evm5; evm5.tr = compiftra[c+HH][c+RR]; evm5.t = tnext; evnew.push_back(evm5);
-						cend = c+RR;
-					}
-				}
-			}
-			else cend = c;
+				a = (c/(nclassval[0]*nclassval[1]))%nag;
 
-			EV eve; eve.tr = traend+cend; eve.t = tmax; evnew.push_back(eve);
-			if(nsettime > 0) addsettime();
-			
-			indcha(i);	
-		}
-		else{
-			probsum = 0; posev.clear(); posevprob.clear(); posevprobsum.clear(); posevtbirth.clear();
-			for(loopstart = 0; loopstart < loopstartmax; loopstart++){
-				if(loopstart%4 == 0){ uocapmin = -large; uocapmax = large;}
+				EV ev; ev.tr = trabeg+c; ev.t = 0; evnew.push_back(ev);
+				if(nindfixev[i] > 1) emsg("Init: EC8");
+				if(nindfixev[i] == 1){
+					fi = indfixev[i][0];
+					tIH = fixev[fi].t;
+					do{
+						tAI = tIH + log(ran())/(rIH[a]+rIR[a]+rID[a]);
+						tEA = tAI + log(ran())/(rAI+rAR);
+						tSE = tEA + log(ran())/rEA;
+					}while(tSE < 0);
+					
+					EV evm; evm.tr = compiftra[c+SS][c+EE]; evm.t = tSE; evnew.push_back(evm);
+					EV evm2; evm2.tr = compiftra[c+EE][c+AA]; evm2.t = tEA; evnew.push_back(evm2);
+					EV evm3; evm3.tr = compiftra[c+AA][c+II]; evm3.t = tAI; evnew.push_back(evm3);
+					EV evm4; evm4.tr = compiftra[c+II][c+HH]; evm4.t = tIH; evnew.push_back(evm4);
+					cend = c+HH;
 
-				if(sourcefl == 0) tent = 0;
-				else{
-					if(indfixtenter[i] != large) tent = indfixtenter[i];
-					else{
-						if(tbirthfl == 0){
-							if(ran() < 0.1 || notimerange == 1) tent = 0;
-							else{
-								if(ran() < 0.1) tent = ran()*firstobst[i];
-								else tent = firstobst[i] + log(ran())/muest;
-							}
+					tnext = tIH - log(ran())/(rHD[a]+rHR[a]);
+					if(tnext < tmax){
+						if(ran()*(rHD[a]+rHR[a]) < rHD[a]){
+							EV evm5; evm5.tr = compiftra[c+HH][c+DD]; evm5.t = tnext; evnew.push_back(evm5);
+							cend = c+DD;
 						}
 						else{
-							if(notimerange == 1) tent = 0;
-							else{
-								tent = firstobst[i] - ran()*age[nage];
-								if(tent < 0) tent = 0;
-							}
+							EV evm5; evm5.tr = compiftra[c+HH][c+RR]; evm5.t = tnext; evnew.push_back(evm5);
+							cend = c+RR;
 						}
 					}
 				}
-				if(tent < 0) tent = 0;
-				if(tent < uocapmin){ tent = uocapmin + ran()*(firstobst[i]-uocapmin);}
+				else cend = c;
 
-				if(tbirthfl == 0) indtbirth[i] = tent; 
-				else{
-					ctop = getctop(tent,tent);  // Works out the possible age classifications
-
-					for(ag = 0; ag <= nage; ag++){ agpos[ag] = 0; if(tent - age[ag] < 0) agpos[ag] = 1;}
-
-					for(c = 0; c < ncomps; c++){
-						for(ag = 0; ag <= nage; ag++){
-							tr = compiftra[NOTALIVE][c+ctop+ag*classmult[agecl]];
-							if(tr >= 0) agpos[ag] = 1;
-						}
-					}
-					agpostlist.clear();
-					for(ag = 0; ag <= nage; ag++){ if(agpos[ag] == 1) agpostlist.push_back(ag);}
-
-					if(agpostlist.size() == 0) indtbirth[i] =  -ran()*age[ag];
-					else{
-						ag = agpostlist[long(ran()*agpostlist.size())];
-						if(ag == 0) indtbirth[i] = tent - ran()*age[ag];
-						else indtbirth[i] = tent - age[ag-1] - ran()*(age[ag]-age[ag-1]);
-					}
-				}
-
-				if(sinkfl == 0) tlea = tmax;
-				else{
-					if(indfixtleave[i] != large) tlea = indfixtleave[i];
-					else{
-						if(ran() < 0.1 || notimerange == 1) tlea = tmax;
-						else{
-							if(ran() < 0.1) tlea = lastobst[i] + ran()*(tmax-lastobst[i]);
-							else{
-								tlea = lastobst[i] - log(ran())/muest;
-								if(tlea > tmax) tlea = tmax;
-							}
-						}
-					}
-				}
-
-				if(tlea > uocapmax){ tlea = lastobst[i] + ran()*(uocapmax-lastobst[i]);}
-
-				prob = startseq(i);
-				if(prob > 0){
-					posev.push_back(evnew);
-					probsum += prob;
-					posevprob.push_back(prob);
-					posevprobsum.push_back(probsum);
-					posevtbirth.push_back(indtbirth[i]);
-				}
-				if(posev.size() > 10 || probsum > 3) break;
-			}
-
-			if(loopstart == loopstartmax){
-				if(capwarn != "" && capwarn != "not") emsg2(capwarn);
-				else{
-					stringstream ss; ss << "Could not get initial condition for individual '" << indid[i] << "'.";
-					emsg2(ss.str());
-				}
+				EV eve; eve.tr = traend+cend; eve.t = tmax; evnew.push_back(eve);
+				if(nsettime > 0) addsettime();
+				
+				indcha(i);	
 			}
 			else{
-				probmax =0;
-				for(k = 0; k < posev.size(); k++){ if(posevprob[k] > probmax){ probmax = posevprob[k]; j = k;}}
-				evnew = posev[j];
-				indtbirth[i] = posevtbirth[j];
-				
-				indcha(i);
+				probsum = 0; posev.clear(); posevprob.clear(); posevprobsum.clear(); posevtbirth.clear();
+				for(loopstart = 0; loopstart < loopstartmax; loopstart++){
+					if(loopstart%4 == 0){ uocapmin = -large; uocapmax = large;}
+
+					if(sourcefl == 0) tent = 0;
+					else{
+						if(indfixtenter[i] != large) tent = indfixtenter[i];
+						else{
+							if(tbirthfl == 0){
+								if(ran() < 0.1 || notimerange == 1) tent = 0;
+								else{
+									if(ran() < 0.1) tent = ran()*firstobst[i];
+									else tent = firstobst[i] + log(ran())/muest;
+								}
+							}
+							else{
+								if(notimerange == 1) tent = 0;
+								else{
+									tent = firstobst[i] - ran()*age[nage];
+									if(tent < 0) tent = 0;
+								}
+							}
+						}
+					}
+					if(tent < 0) tent = 0;
+					if(tent < uocapmin){ tent = uocapmin + ran()*(firstobst[i]-uocapmin);}
+
+					if(tbirthfl == 0) indtbirth[i] = tent; 
+					else{
+						ctop = getctop(tent,tent);  // Works out the possible age classifications
+
+						for(ag = 0; ag <= nage; ag++){ agpos[ag] = 0; if(tent - age[ag] < 0) agpos[ag] = 1;}
+
+						for(c = 0; c < ncomps; c++){
+							for(ag = 0; ag <= nage; ag++){
+								tr = compiftra[NOTALIVE][c+ctop+ag*classmult[agecl]];
+								if(tr >= 0) agpos[ag] = 1;
+							}
+						}
+						agpostlist.clear();
+						for(ag = 0; ag <= nage; ag++){ if(agpos[ag] == 1) agpostlist.push_back(ag);}
+
+						if(agpostlist.size() == 0) indtbirth[i] =  -ran()*age[ag];
+						else{
+							ag = agpostlist[long(ran()*agpostlist.size())];
+							if(ag == 0) indtbirth[i] = tent - ran()*age[ag];
+							else indtbirth[i] = tent - age[ag-1] - ran()*(age[ag]-age[ag-1]);
+						}
+					}
+
+					if(sinkfl == 0) tlea = tmax;
+					else{
+						if(indfixtleave[i] != large) tlea = indfixtleave[i];
+						else{
+							if(ran() < 0.1 || notimerange == 1) tlea = tmax;
+							else{
+								if(ran() < 0.1) tlea = lastobst[i] + ran()*(tmax-lastobst[i]);
+								else{
+									tlea = lastobst[i] - log(ran())/muest;
+									if(tlea > tmax) tlea = tmax;
+								}
+							}
+						}
+					}
+
+					if(tlea > uocapmax){ tlea = lastobst[i] + ran()*(uocapmax-lastobst[i]);}
+
+					prob = startseq(i);
+					if(prob > 0){
+						posev.push_back(evnew);
+						probsum += prob;
+						posevprob.push_back(prob);
+						posevprobsum.push_back(probsum);
+						posevtbirth.push_back(indtbirth[i]);
+					}
+					if(posev.size() > 10 || probsum > 3) break;
+				}
+
+				if(loopstart == loopstartmax){
+					if(capwarn != "" && capwarn != "not") emsg2(capwarn);
+					else{
+						stringstream ss; ss << "Could not get initial condition for individual '" << indid[i] << "'.";
+						emsg2(ss.str());
+					}
+				}
+				else{
+					probmax =0;
+					for(k = 0; k < posev.size(); k++){ if(posevprob[k] > probmax){ probmax = posevprob[k]; j = k;}}
+					evnew = posev[j];
+					indtbirth[i] = posevtbirth[j];
+					
+					indcha(i);
+				}
+				if(warning.size() > 10) break;
 			}
-			if(warning.size() > 10) break;
 		}
   }
 	
@@ -545,26 +548,31 @@ long Chain::start()                                      // Works out the starti
   }
 		
   Lpri = priorcalc();
-
-  if(simon == 0){
-    long p; pvel.resize(nparam); for(p = 0; p < nparam; p++) pvel[p] = 0.001;
-
-    samp = 0;
-    do{              // Finds a reasonable parameter set for the initial event sequence
-      Lst.push_back(L());
-      param_prop();
-      param_gradprop(); 
-    
-      if(Lst.size() > 20){
-        if(Lst.size() > 10000) emsg("Init: EC9");	
-        if(L()-tiny <= Lst[Lst.size()-20]) break;
-      }
-    }while(1 == 1);
-  }
-  for(loop = 0; loop < 50; loop++) param_prop();
+	
   timeprop[INIT] += clock();
 
   return 0;
+}
+
+void Chain::paramstart()  // Makes parameter values consistent with the intial event sequence
+{
+	long p, loop; 
+	vector <double> Lst;
+
+	//pvel.resize(nparam); for(p = 0; p < nparam; p++) pvel[p] = 0.001;
+
+	samp = 0;
+	do{              // Finds a reasonable parameter set for the initial event sequence
+		Lst.push_back(L());
+		param_prop();
+		//param_gradprop(); 
+	
+		if(Lst.size() > 20){
+			if(Lst.size() > 10000) emsg("Init: EC9");	
+			if(L()-tiny <= Lst[Lst.size()-20]) break;
+		}
+	}while(1 == 1);
+	for(loop = 0; loop < 50; loop++) param_prop();
 }
 
 void Chain::addemptyind(double tbirth)     // Adds a new empty individual (i.e. in the notalive category)

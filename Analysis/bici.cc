@@ -11,6 +11,7 @@ Run using:        mpirun -n 4 ./bici Scotland_bici_input.xml 1000000
 Once run the software will initialise and show the samples incrementaly increase
 The following outputs are placed into the Outputs/<model name> directory:
 
+
 a) "Trace[X].txt" (where X is the number of the chain) gives trace plots of the model parameters. 
    These can be loaded into other software to visually check that MCMC is mixing well (e.g. Tracer).
 
@@ -21,10 +22,10 @@ c) "Bici[X].txt" is an output file which can be read into the BICI GUI for visua
 
 d) "Stats.txt" calculates the posterior means, 90% credible intervals, effective sample sizes and 
    Gelman-Rubin diagnostic statics (these last two are used to confirm that MCMC is well mixed).
-*/ 
+*/
 	 
 // The is turned on when performing MPI on multiple chains
-#define MP 1                        
+//#define MP 1                        
 
 const long noout = 0;                 // Suppresses the output when error checking
 const long checkon = 0;               // Determines if checking is done
@@ -101,7 +102,7 @@ int main(int argc, char** argv)
  
 	if(argc != 3) emsg("Not the right number of arguments");
 	file = argv[1]; 
-	nsamp = atoi(argv[2]); burnin = nsamp/5;
+	nsamp = atoi(argv[2]); burnin = nsamp/3;
 	
 	stringstream sd; sd << "Output/" << file.substr(0,file.length()-10);
 	root = sd.str();
@@ -166,35 +167,48 @@ int main(int argc, char** argv)
 	if(corona == 1) ch[0]->addreminfinit();
 
   if(simon == 0) ch[0]->start();
-  
+ 
   bout << "3|90|\n"; bout.flush();
-  
-	if(corona == 1) ch[0]->initinflist();
-	
-	ch[0]->multimoveinit();
-
+  //
 	if(corona == 0) ch[0]->addreminit(); 
 	
   bout << "3|95|\n"; bout.flush();
 
   if(nderive > 0) ch[0]->deriveplotinit();
 
-  if(corona == 0) siminit();
-	
   bout << "3|100|\n"; bout.flush();
 
   traceinit();
+	
+	/*
+	ch[0]->eventplot();
+  ch[0]->traceplot();
+	return 0;
+	*/
+	
   if(simon == 1){
-    bout << "8|\n"; bout << "3|0|\n"; bout.flush();
+		bout << "8|\n"; bout << "3|0|\n"; bout.flush();
     for(samp = 0; samp < nsamp; samp++){ 
       ch[0]->eventplot();
       ch[0]->traceplot();
     }
+		
+		if(corona == 1){
+			ch[0]->outputcoronadata();
+			ch[0]->savesimulated();
+		}
+		
 		#ifdef MP
 		MPI_Finalize();
 		#endif
     return 0;
   }
+	
+	if(corona == 1)	ch[0]->initinflist();
+	ch[0]->multimoveinit();
+	
+	if(corona == 1) ch[0]->addstartuoinf();
+	ch[0]->paramstart(); 
 	
   ch[0]->check(-1);
 
@@ -208,7 +222,7 @@ int main(int argc, char** argv)
     if(samp%100 == 0 && simnum == 0) cout << "Sample: " << samp << " / " << nsamp << "\n";
 	
     if(samp%(nsamp/1000) == 0){ ch[0]->traceplot(); ch[0]->tracefile();}
-		if(samp >= burnin && samp%(nsamp/200) == 0) ch[0]->eventplot();
+		if(samp >= burnin && samp%(nsamp/20) == 0) ch[0]->eventplot();
 		if(samp >= burnin && samp%(nsamp/1000) == 0) ch[0]->addparam();
     
     if(samp != 0 && samp%(nsamp/10) == 0){

@@ -14,7 +14,7 @@ vector< vector<double> > comppopnumchweight;
 
 vector<double> sim_Rtransdep, sim_Rtransnotdep;                // Stores transition rates
 
-const long ntdiv = 200;                                        // Discretises the future events
+const long ntdiv = 1000;                                        // Discretises the future events
 
 double tdivmin, tdivmax;
 vector <vector <long> > tdiv;
@@ -41,9 +41,9 @@ void rem_transdeplist(long d, long k);
 
 void Chain::sim(double tmin)              // Simulates from the model starting at time tmin
 {
-  long ob, c, cc, ag, p, j, d, cl, ti, index, ts, fl, flag, e, ee, dep, k, ci, cf;
+  long ob, c, cc, ag, p, j, d, cl, ti, index, ts, fl, flag, e, ee, dep, k, ci, cf, flindex=0;
   long i, tr, trr, eq, kmax, di, per, pernew;
-  double  t, R, z, tmi, tma, tadd, tt, kshape, mean, lam, probsum[ncompswa], sum;
+  double  t, R, z, tmi, tma, tadd, tt, kshape, mean, lam, probsum[ncompswa], sum, indext;
   vector <double> Rst;
   vector <long> postr;
 
@@ -51,6 +51,8 @@ void Chain::sim(double tmin)              // Simulates from the model starting a
 	
   tdivmin = tmin; tdivmax = tmax2; tdiv.resize(ntdiv); for(i = 0; i < ntdiv; i++) tdiv[i].clear();
 
+	//for(p = 0; p < nparam; p++) cout << paramname[p] << " " << param[p] << " \n";
+	
   futev.clear();
 
   switch(simon){
@@ -63,19 +65,30 @@ void Chain::sim(double tmin)              // Simulates from the model starting a
       indev_sim.clear();
       nindev_sim.resize(nind); indev_sim.resize(nind); 
 			indtbirth_sim.resize(nind); sim_statind.resize(nind);
+			
+			if(corona == 1){ tmin = 40; indext = 39.9;}
+			
       for(i = 0; i < nind; i++){
-        if(nindobs[i] != 1) emsg("Sim: EC2");
-        ob = indobs[i][0];
-        cc = -1;
-        for(c = 0; c < ncomp; c++){
-          if(obsprobeqn[ob][c] != -1){
-            if(cc == -1) cc = c; else emsg("Sim: EC3");
-          }
-        }
-
+				if(corona == 1) cc = indinit[i];
+				else{
+					if(nindobs[i] != 1) emsg("Sim: EC2");
+					ob = indobs[i][0];
+					cc = -1;
+					for(c = 0; c < ncomp; c++){
+						if(obsprobeqn[ob][c] != -1){
+							if(cc == -1) cc = c; else emsg("Sim: EC3");
+						}
+					}
+				}
+				
         nindev_sim[i] = 1;
         EV evbeg; evbeg.t = 0; evbeg.tr = trabeg+cc; indev_sim[i].push_back(evbeg);
 
+				if(corona == 1 && flindex < 3 && compname[cc] == "S_T<80"){
+					EV evindex; evindex.t = indext; evindex.tr = compiftra[cc][cc+EE]; indev_sim[i].push_back(evindex);
+					flindex++;
+					cc = cc+EE;
+				}
         sim_statind[i] = cc;
 
         ag = compval[cc][agecl];
@@ -84,7 +97,7 @@ void Chain::sim(double tmin)              // Simulates from the model starting a
 
         if(cc != NOTALIVE){ for(cl = 0; cl < nclass-1; cl++) addfuture(i,cc,cl,tmin);}
       }
-      break;
+			break;
 
     case 0:
       if(tmin > 0){     // When doing inference
@@ -181,7 +194,7 @@ void Chain::sim(double tmin)              // Simulates from the model starting a
   sim_transdeplist.clear(); sim_transnotdeplist.clear();
   sim_transdeplist.resize(ntransdepeq); sim_transnotdeplist.resize(ntransnotdepeq);
 
-  sim_Rtransdep.resize(ntransdepeq);
+	sim_Rtransdep.resize(ntransdepeq);
   for(d = 0; d < ntransdepeq; d++) sim_Rtransdep[d] = ratecalc(transdepeq[d],sim_popnum,param);
 
   sim_Rtransnotdep.resize(ntransnotdepeq);
@@ -190,16 +203,18 @@ void Chain::sim(double tmin)              // Simulates from the model starting a
   for(i = 0; i < nindtot_sim; i++){         // Finds the composition in popluation at tmax
     c = sim_statind[i]; if(c != NOTALIVE) sim_indchange(i,NOTALIVE,c);
   }
+		 
+	if(1 == 0){
+		for(d = 0; d < ntransnotdepeq; d++){
+			cout << sim_transnotdeplist[d].size() << "   "  << eqnstr[transnotdepeq[d]] << " " 
+						<< sim_Rtransnotdep[d] << "  notdep\n";
+		}
 
-  for(d = 0; d < -ntransnotdepeq; d++){
-    cout << sim_transnotdeplist[d].size() << "   "  << eqnstr[transnotdepeq[d]] << " " 
-					<< sim_Rtransnotdep[d] << "  notdep\n";
-  }
-
-  for(d = 0; d < -ntransdepeq; d++){
-    cout << sim_transdeplist[d].size() << " "  << eqnstr[transdepeq[d]] << "  dep\n";
-  }
-
+		for(d = 0; d < ntransdepeq; d++){
+			cout << sim_transdeplist[d].size() << " "  << eqnstr[transdepeq[d]] << "  dep\n";
+		}
+	}
+	
   ti = 0; index = 0;
 
   Rst.resize(ntransdepeq+ntransnotdepeq);
@@ -241,11 +256,11 @@ void Chain::sim(double tmin)              // Simulates from the model starting a
 
     t = tmi;
     do{
-      if(simon == 1){ 
+		  if(simon == 1){ 
 				pernew = long(100*(samp + t/tmax2)/nsamp); 
 				if(pernew > per){ per = pernew; cout << "3|" << per << "|\n"; cout.flush();}
 			}
-
+			 
       R = 0;
       for(d = 0; d < ntransdepeq; d++){
 				R += long(sim_transdeplist[d].size())*sim_Rtransdep[d]; Rst[d] = R;
@@ -254,7 +269,7 @@ void Chain::sim(double tmin)              // Simulates from the model starting a
       for(d = 0; d < ntransnotdepeq; d++){ 
 				R += long(sim_transnotdeplist[d].size())*sim_Rtransnotdep[d]; Rst[ntransdepeq+d] = R;
 			}
-			
+		
 			if(1 == 0){
 				for(d = 0; d < ntransdepeq; d++){
 					cout << sim_transdeplist[d].size() << " "<< eqnstr[transdepeq[d]]
@@ -268,23 +283,23 @@ void Chain::sim(double tmin)              // Simulates from the model starting a
 			
       //if(checkon == 1) sim_check(R,t);
 
-      if(R == 0) t = large;
+      if(R == 0) t = tma;
       else{
         t -= log(ran())/R;
-        if(t > tma) t = large;
+        if(t > tma) t = tma;
       }
-
-      postr.clear();
+			
+		  postr.clear();
 
       fl = 0;
       while(ti < ntdiv){        // Checks to see if a future event has occured
-        while(index < tdiv[ti].size() && futev[tdiv[ti][index]].t <= t){
+        while(index < tdiv[ti].size() && futev[tdiv[ti][index]].t < t){
           j = tdiv[ti][index]; index++;
           cl = futev[j].cl;
           tr = futev[j].tr;
           i = futev[j].i;
           c = sim_statind[i];
-          if(c != NOTALIVE){
+				  if(c != NOTALIVE){
             if(compval[sim_statind[i]][cl] == tra[tr].i){
               flag = 0; e = nindev_sim[i]-1; 
 							while(e >= 0 && indev_sim[i][e].t > futev[j].tnow){ // Checks for intervening events
@@ -294,7 +309,7 @@ void Chain::sim(double tmin)              // Simulates from the model starting a
                 cf = c + (tra[tr].f-tra[tr].i)*classmult[cl];
                 tr = compiftra[c][cf]; if(tr == -1) emsg("Sim: EC7");
                 postr.push_back(tr); t = futev[j].t; fl = 1;
-                break;
+								break;
               }
             }
           }
@@ -363,7 +378,7 @@ void Chain::sim(double tmin)              // Simulates from the model starting a
 
       if(t >= tma){ t = tma; break;}
 
-      if(postr.size() == 0) emsg("Sim: EC10");
+			if(postr.size() == 0) emsg("Sim: EC10");
       j = long(ran()*postr.size());
 
       tr = postr[j];
@@ -416,7 +431,7 @@ void Chain::addfuture(long i, long c, long cl, double tstart)  // When simulatin
 
   for(k = 0; k < ncompclleave[c][cl]; k++){
     tr = compclleave[c][cl][k];
-    switch(tra[tr].type){
+		switch(tra[tr].type){
       case EXP_TR: emsg("Sim: EC12"); break;
 
       case FIXED_TR:
@@ -443,7 +458,7 @@ void Chain::addfuture(long i, long c, long cl, double tstart)  // When simulatin
         break;
 
       case SETTIME_TR:
-        if(cl != settimecl) emsg("Sim: EC14");
+			  if(cl != settimecl) emsg("Sim: EC14");
         j = compval[c][settimecl];
 				
         if(j < settime.size()) dt = settime[j] - tstart-tiny;
@@ -457,7 +472,7 @@ void Chain::addfuture(long i, long c, long cl, double tstart)  // When simulatin
 		
     tadd = tstart + dt;
     if(tadd < tdivmin) emsg("Sim: EC16");
-
+	   
     if(tadd < tdivmax) addfuturetra(i,tr,tstart,tadd);
   }
 }
@@ -467,8 +482,12 @@ void Chain::addfuturetra(long i, long tr, double tstart, double tadd)
   long  di, j;
 
   di = long(ntdiv*(tadd-tdivmin)/(tdivmax-tdivmin)); if(di < 0 || di >= ntdiv) emsg("Sim: EC17");
-  j = 0; while(j < tdiv[di].size() && tadd > futev[tdiv[di][j]].t) j++;
-  tdiv[di].insert(tdiv[di].begin()+j,futev.size());
+	j = tdiv[di].size()-1; while(j >= 0 && tadd < futev[tdiv[di][j]].t) j--;
+	if(j == tdiv[di].size()-1) tdiv[di].push_back(futev.size());
+	else tdiv[di].insert(tdiv[di].begin()+j+1,futev.size());	
+
+  //j = 0; while(j < tdiv[di].size() && tadd > futev[tdiv[di][j]].t) j++;
+  //tdiv[di].insert(tdiv[di].begin()+j,futev.size());
 
   FUTEV fev; 
 	fev.tr = tr; fev.cl = tra[tr].cl; fev.t = tadd; fev.tnow = tstart; fev.i = i; futev.push_back(fev);
@@ -772,5 +791,5 @@ void Chain::sim_check(double R, double t)   // Checks that the simulation is bei
   }
 
   dd = R-sum;
-  if(dd*dd > tiny){ cout << R << " " << sum << " " << dd << "\n";  emsg("Sim: EC31");}
+  if(dd*dd > tiny) emsg("Sim: EC31");
 }

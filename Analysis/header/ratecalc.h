@@ -176,7 +176,7 @@ double Chain::transra(long eq, double t, long cnow)   // Transition rate but rem
 
 double Chain::transradep(long eq, double t, long cnow) // Transition rate but removes individual at cnow
 {
-  long d, e, ee, kd;
+  long d, e, ee, kd, ddti;
 
   if(eq == -1 || transdep[eq] != 1) emsg("Ratecalc: EC11");                     
 
@@ -184,7 +184,8 @@ double Chain::transradep(long eq, double t, long cnow) // Transition rate but re
   t *= onefac;
 
 	if(discon == 1){
-		kd = d*DX + long(t*dfac);
+		ddti = DDconv[long(t*DDfac)]; if(DDt[ddti+1] < t) ddti++;
+		kd = d*nDD + ddti;
 		if(transdepeqrecalc[d][cnow] == 0) return depeq_disc_evval[kd];
 		else{ return ratecalcdeptakeoff(d,depeq_disc_evpopnum[kd],param,cnow);}
 	}
@@ -204,13 +205,15 @@ double Chain::transradep(long eq, double t, long cnow) // Transition rate but re
 double Chain::transrate(long eq, double t)     // Calculates the transition rate 
 {
 	long d;
-  long e, ee;
+  long e, ee, ddti;
 
 	if(eq == -1 || transdep[eq] != 1) emsg("Ratecalc: EC13");   
   d = transdepref[eq];
 	
 	if(discon == 1){
-		return depeq_disc_evval[d*DX + long(t*dfac)];
+		ddti = DDconv[long(t*DDfac)]; if(DDt[ddti+1] < t) ddti++;
+		if(DDcalc[d*nDD + ddti] == 0) emsg("Ratecalc: EC13b");
+		return depeq_disc_evval[d*nDD + ddti];
 	}
 	else{	
 		t *= onefac;

@@ -84,8 +84,8 @@ void readdata(string cont)                               // Reads in the case da
 	double t;
 	
 	nregion = 0;
-	
-	ifstream input("Data/covid-19-cases-uk.txt");
+
+	ifstream input("Data/covid-19-cases-uk-02.05.txt");
 	getline(input,line);
 	tmax = 0;
   do{
@@ -96,10 +96,19 @@ void readdata(string cont)                               // Reads in the case da
 		getline(ss,date,'\t');
 
 		// converts the date to a time
-		if(date.substr(4,1) == "3") t = 31+29+atoi(line.substr(0,2).c_str())-1; 
+		if(date.substr(4,1) == "1") t = atoi(line.substr(0,2).c_str())-1; 
 		else{
-			if(line.substr(4,1) == "4") t = 31+29+31+atoi(line.substr(0,2).c_str())-1;
-			else cout << "prob\n";
+			if(date.substr(4,1) == "2") t = 31+atoi(line.substr(0,2).c_str())-1; 
+			else{
+				if(date.substr(4,1) == "3") t = 31+29+atoi(line.substr(0,2).c_str())-1; 
+				else{
+					if(line.substr(4,1) == "4") t = 31+29+31+atoi(line.substr(0,2).c_str())-1;
+					else{
+						if(line.substr(4,1) == "5") t = 31+29+31+30+atoi(line.substr(0,2).c_str())-1;
+						else cout << line.substr(4,1) << "prob\n";
+					}
+				}
+			}
 		}
 					
 		getline(ss,country,'\t');
@@ -107,7 +116,7 @@ void readdata(string cont)                               // Reads in the case da
 		getline(ss,name,'\t');
 		getline(ss,nums,'\t'); num = atoi(nums.c_str());
 		
-		if((country == cont || cont == "UK" || (cont == "Single" && code == "S08000031")) && code != ""){
+		if((country == cont || cont == "UK" || (cont == "Single" && code == "S08000030")) && code != ""){
 			for(r = 0; r < nregion; r++) if(region[r].code == code) break;
 			if(r == nregion){
 				REG reg; reg.name = name; reg.code = code; reg.numcase = 0; reg.pop = 0; reg.popscot = 0;
@@ -242,8 +251,7 @@ void createbici(string geo)                    // Creates a model file which can
 	
 	outp << "setprior param='Φ' prior='flat' min='0' max='0.000001'\n";
 	outp << "setprior param='β_Time' prior='flat' min='0' max='3'\n";
-	outp << "setprior param='d' prior='flat' min='0' max='10'\n";
-	//outp << "setprior param='d' prior='Fix' value='1'\n";
+	outp << "setprior param='d' prior='Fix' value='1'\n";
 	outp << "setprior param='ρ(E→A)' prior='Fix' value='" << 1.0/tEA << "'\n";
 	outp << "setprior param='ρ(A→I)' prior='Fix' value='" << 1.0/tAI << "'\n";
 	outp << "setprior param='ρ(A→R)' prior='Fix' value='" << 1.0/tAR << "'\n";
@@ -253,12 +261,12 @@ void createbici(string geo)                    // Creates a model file which can
 	outp << "setprior param='ρ(H→D)' prior='Fix' value='" << 1.0/tHD << "'\n";
 	outp << "setprior param='ρ(H→R)' prior='Fix' value='" << 1.0/tHR << "'\n";
 	outp << "setdistribution param='G_loc' prior='Normal' mean='[μ]' sd='[σ]'\n";
-	outp << "setprior param='σ' prior='flat' min='0' max='0.5'\n";
-	//outp << "setprior param='σ' prior='Fix' value='0.0001'\n";
+	outp << "setprior param='σ' prior='flat' min='0.01' max='0.5'\n";
 	outp << "setprior param='μ' prior='Fix' value='0'\n";
 	outp << "inftimerange min='0' max='" << tmax << "'\n";
 	
 	for(r = 0; r < nregion; r++){
+		outp << "addderived param='" << region[r].code << "-S' expression='{" << region[r].code << ",S}'\n";
 		outp << "addderived param='" << region[r].code << "-E' expression='{" << region[r].code << ",E}'\n";
 		outp << "addderived param='" << region[r].code << "-A' expression='{" << region[r].code << ",A}'\n";
 		outp << "addderived param='" << region[r].code << "-I' expression='{" << region[r].code << ",I}'\n";
@@ -321,12 +329,10 @@ void generatexml(string geo)
 	string line;
 	double sumst[nage], Nsum[nage], sum, z;
 
-	//stringstream ss; ss << geo << "_bici_input.xml";
-	stringstream ss; ss << geo << "_bici_fixdg_input.xml";
+	stringstream ss; ss << geo << "_bici_inputsmall.xml";
 	ofstream bfile(ss.str().c_str());
 	
-	//stringstream ss2; ss2 << geo << "_bici_model.xml";
-	stringstream ss2; ss2 << geo << "_bici_fixdg_model.xml";
+	stringstream ss2; ss2 << geo << "_bici_model.xml";
 	ifstream bhead(ss2.str().c_str());
 	do{
 		getline(bhead,line);
@@ -346,14 +352,15 @@ void generatexml(string geo)
 	pop = 0;
 	for(r = 0; r < nregion; r++){
 		cout << region[r].name << "   Total population:" << pop << " r\n";
-		pp = region[r].pop;
+		pp = region[r].pop; pp /= 10000;
 
 		vector <vector <double> > agedist;
 		agedist.resize(nage);
 		for(jj = 0; jj < region[r].inf.size(); jj++){
 			z = ran(); a = 0; while(a < nage && z > sumst[a]) a++;
 			if(a == nage) cout << "pr\n";
-			agedist[a].push_back(region[r].inf[jj]);
+			if(ran() < 0.001) agedist[a].push_back(region[r].inf[jj]);
+			//agedist[a].push_back(region[r].inf[jj]);
 		}
 		//for(a = 0; a < nage; a++) cout << a << " " << agedist[a].size() << " agedist\n";
 	
@@ -389,5 +396,4 @@ void generatexml(string geo)
 
 	cout << pop << " " << "Done!\n";	
 }
-
 

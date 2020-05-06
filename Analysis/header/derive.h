@@ -31,7 +31,7 @@ void Chain::derivepl()                // Plots graphs for derived quantities (re
 			}
       sort(list.begin(),list.end());
       n = list.size(); av = 0; for(j = 0; j < n; j++) av += list[j]; av /= n;
-
+			
       v = long((n-1)*0.025); f = (n-1)*0.025 - v; CImin = list[v]*(1-f) +  list[v+1]*f;	
       v = long((n-1)*0.975); f = (n-1)*0.975 - v; CImax = list[v]*(1-f) +  list[v+1]*f;
 
@@ -53,6 +53,8 @@ void Chain::deriveplotcalc()                       // Calculates data for plots 
   }
   sort(ev.begin(),ev.end(),compareev);
 
+	short ccc; for(ccc = 0; ccc < ncomp; ccc++) if(compname[ccc] == "S_S08000030_T<50") break;
+	
   nc.resize(ncomp+1); for(c = 0; c < ncomp; c++) nc[c] = 0; nc[NOTALIVE] = nindtot_sim;
   j = 0;
   for(i = 0; i < DERIVEX; i++){
@@ -69,8 +71,9 @@ void Chain::deriveplotcalc()                       // Calculates data for plots 
 			}
       popnum[p] = sum;
     }
-    for(dt = 0; dt < nderivetemporal; dt++){
-      derivetemporalplot[dt][i].push_back(calculate(derive[derivetemporal[dt]],popnum,param));
+		
+		for(dt = 0; dt < nderivetemporal; dt++){
+			derivetemporalplot[dt][i].push_back(calculate(derive[derivetemporal[dt]],popnum,param));
     }
   }
   nderivetemporalplot++;

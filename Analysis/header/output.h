@@ -153,8 +153,8 @@ void oe(string st, vector<EV> ev)                 // Outputs an event sequence
       for(e = 0; e < ev.size(); e++){
         tr = ev[e].tr; t = ev[e].t;
         if(tra[tr].ci == NOTALIVE) cout << "NA";
-        cout << " -> "; outcomp(tra[tr].cf); cout << " " << t << ",       "; 
-        //outcomp(tra[tr].ci); cout << " -> "; outcomp(tra[tr].cf); cout << " " << t << ",       "; 
+        //cout << " -> "; outcomp(tra[tr].cf); cout << " " << t << ",       "; 
+        outcomp(tra[tr].ci); cout << " -> "; outcomp(tra[tr].cf); cout << " " << t << ",       "; 
       }
     }
     else{
@@ -422,7 +422,7 @@ void Chain::diagnosticsfile()       // Outputs a file giving MCMC diagnostic inf
   dia << "MULTIMOVE\n";
 	dia << "ac:";
 	f =0; nf = 0; fmin = 100; fmax = 0;
-	for(tr = 0; tr < ntra; tr++){
+	for(tr = 0; tr < ntramm; tr++){
 		if(ntr_multimove[tr] > 0){ 
 			v = nac_multimove[tr]/ntr_multimove[tr]; 
 			f += v; nf++; if(v > fmax) fmax = v; if(v < fmin) fmin = v;
@@ -432,7 +432,7 @@ void Chain::diagnosticsfile()       // Outputs a file giving MCMC diagnostic inf
 	 	
 	dia << "fa:";
 	f =0; nf = 0; fmin = 100; fmax = 0;
-	for(tr = 0; tr < ntra; tr++){
+	for(tr = 0; tr < ntramm; tr++){
 		if(ntr_multimove[tr] > 0){ 
 			v = nfa_multimove[tr]/ntr_multimove[tr]; 
 			f += v; nf++; if(v > fmax) fmax = v; if(v < fmin) fmin = v;
@@ -443,7 +443,7 @@ void Chain::diagnosticsfile()       // Outputs a file giving MCMC diagnostic inf
 	
 	dia << "actot:";
 	f =0; nf = 0; fmin = 100; fmax = 0;
-	for(tr = 0; tr < ntra; tr++){
+	for(tr = 0; tr < ntramm; tr++){
 		if(ntr_multimove[tr] > 0){ 
 			v = nac_multimovetot[tr]/ntr_multimovetot[tr]; 
 			f += v; nf++; if(v > fmax) fmax = v; if(v < fmin) fmin = v;
@@ -453,7 +453,7 @@ void Chain::diagnosticsfile()       // Outputs a file giving MCMC diagnostic inf
 	 	
 	dia << "jump:";
 	f =0; nf = 0; fmin = 100; fmax = 0;
-	for(tr = 0; tr < ntra; tr++){
+	for(tr = 0; tr < ntramm; tr++){
 		if(ntr_multimove[tr] > 0){ 
 			v = jump_multimove[tr]; 
 			f += v; nf++; if(v > fmax) fmax = v; if(v < fmin) fmin = v;
@@ -463,7 +463,7 @@ void Chain::diagnosticsfile()       // Outputs a file giving MCMC diagnostic inf
 	 	
 	dia << "pr:";
 	f =0; nf = 0; fmin = 100; fmax = 0;
-	for(tr = 0; tr < ntra; tr++){
+	for(tr = 0; tr < ntramm; tr++){
 		if(ntr_multimove[tr] > 0){ 
 			v = multimovepr[tr]; 
 			f += v; nf++; if(v > fmax) fmax = v; if(v < fmin) fmin = v;
@@ -478,7 +478,7 @@ void Chain::diagnosticsfile()       // Outputs a file giving MCMC diagnostic inf
 	dia << "\n";
 	
 	dia << "CPU TIME FOR PROPOSALS\n";
-	dia << "Sec: " << long(100*timeprop[PARAM_PROP]/totaltime) << "%\n";
+	dia << "Sec: " << long(100*timeprop[SEC]/totaltime) << "%\n";
   dia << "Sampprob: " << long(100*timeprop[SAMPPROB]/totaltime) << "%\n";
   dia << "Paramameters: " << long(100*timeprop[PARAM_PROP]/totaltime) << "%\n";
 	dia << "Add/rem inf: " << long(100*timeprop[ADDREMINF_PROP]/totaltime) << "%\n";
@@ -875,4 +875,99 @@ void Chain::tracefile()               // Outputs the trace file
 	trace << tot << "\t" << L() << "\t";
 	
 	for(r = 0; r < nregion; r++) trace << multacf[r] << "\t"; trace << "0\n";
+}
+
+void Chain::loadsimulated()
+{
+	long i, e, nev, tr, c;
+	double t;
+	string id;
+	
+	ifstream savesim("savesim");
+	savesim >> nindtot_sim; //if(nindtot_sim != nindtot) emsg("output: EC67");
+	for(i = 0; i < nindtot_sim; i++){
+		addemptyind(0);
+			
+		if(i%100000 == 0) cout << i << " " << Lir << " " << Liexp << " " << L() << " Load simulated\n";
+		savesim >> id >> c >> nev;
+		
+		indinit[i] = c;
+		
+		evnew.clear();
+    for(e = 0; e < nev; e++){
+			savesim >> t >> tr;
+			if(i == 415091 && e == 2) t += 0.1;
+			EV ev; ev.t = t; ev.tr = tr;
+			evnew.push_back(ev);
+		}
+		cout << i << " indi\n";
+		oe("ind",evnew);
+		indcha(i);
+	if(isinf(L())){ cout << i << " indpr\n"; emsg("pro");}
+  }
+	cout << i << " " << Lir << " " << Liexp << " " << L() << " Load simulated done\n";
+}
+
+void Chain::savesimulated()
+{
+	long i, e;
+	
+	ofstream savesim("savesim");
+	savesim << nindtot_sim << "\n";
+	savesim.precision(17);
+	for(i = 0; i < nindtot_sim; i++){
+		savesim << indid[i] << " " << indinit[i] << " " << nindev_sim[i] << " ";
+    for(e = 0; e < nindev_sim[i]; e++) savesim << indev_sim[i][e].t << " " << indev_sim[i][e].tr << " ";
+		savesim << "\n";
+  }
+}
+
+void Chain::outputcoronadata()
+{
+	long r, day, tr, i, e, ci, cf, j;
+	double t;
+	vector <long> ncase, ncaserec, ninf;
+	vector <EV> ev;
+
+  for(i = 0; i < nindtot_sim; i++){
+    for(e = 0; e < nindev_sim[i]; e++) ev.push_back(indev_sim[i][e]);
+  }
+	
+	sort(ev.begin(),ev.end(),compareev);
+
+	ncase.resize(nclassval[1]); ncaserec.resize(nclassval[1]); ninf.resize(nclassval[1]);
+	for(r = 0; r < nclassval[1]; r++){ ncase[r] = 0; ncaserec[r] = 0; ninf[r] = 0;}
+	
+	stringstream sdi; sdi << root << "/case" << simnum << ".txt";
+	ofstream casedata(sdi.str().c_str());
+	j = 0;
+	for(day = 0; day < tmax2; day++){
+		t = day;
+    while(j < ev.size() && ev[j].t <= t){
+			tr = ev[j].tr;
+			ci = tra[tr].ci;
+			cf = tra[tr].cf;
+			if(ci != NOTALIVE && cf != NOTALIVE){
+				r = compval[cf][1];
+				if(compval[ci][0] == SS && compval[cf][0] == EE) ninf[r]++;
+				if(compval[ci][0] == II && compval[cf][0] == HH) ncase[r]++;
+				//if(compval[ci][0] == AA && compval[cf][0] == II) ncase[r]++;
+				//if(compval[ci][0] == AA && compval[cf][0] == RR) ncaserec[r]++;
+				//if(compval[ci][0] == II && compval[cf][0] == RR) ncaserec[r]++;
+			}
+	    j++;
+    }
+		
+		for(r = 0; r < nclassval[1]; r++){
+			//casedata << day << "\tname\t" << classval[1][r] << "\tname\t" << ncase[r] << "\t" << ncaserec[r] <<  "\t" << ninf[r] << "\n";
+			casedata << day << "\tname\t" << classval[1][r] << "\tname\t" << ncase[r] << "\n";
+		}
+	}
+	
+	double probh, fac;
+	probh = (rAI/(rAR+rAI))*(rIH[0]/(rIH[0]+rID[0]+rIR[0]));
+	fac = (1-probh)/probh;
+	cout << probh << " " << fac << "probh\n";
+	cout << rAI << " " << rAR << " " <<rIH[0]<< " " <<rID[0] << " " <<rIR[0] << " uu\n"; 
+	cout << ninf[0] << " " <<  ncase[0] << " " << ncase[0]*fac << "  inf\n";
 }

@@ -18,7 +18,7 @@ void Chain::param_prop()          // Makes random walk proposals on model parame
 				al = exp(Ltotf-Ltoti);
 			}
 
-      ntr_param[p]++;
+			ntr_param[p]++;
       if(ran() < al){
 				nac_param[p]++;
 				if(samp < burnin){ if(samp < 50) jump_param[p] *= 1.4; else jump_param[p] *= 1.1;}
@@ -29,7 +29,7 @@ void Chain::param_prop()          // Makes random walk proposals on model parame
 			}
     }
   }
-
+if(isinf(L()) || isnan(L())) emsg("dp");
   for(s = 0; s < nsmooth; s++){    // Makes changes to all smooth parameters at the same time
     dparam = normal(0,jump_smooth[s]);
 
@@ -168,7 +168,7 @@ void Chain::param_gradprop()             // Makes proposals to increase posterio
 void Chain::changeparam(long dir, long p, double param_new)    // Makes changes to parameters
 {
   long j, d, eq, pr, m, s, kd, lin;
-  double t, tt, valold, valnew, valold2, valnew2, pd, op, dval;
+  double t, tt, valold, valnew, valold2, valnew2, pd, op;
   long e, ee, i;
   
   pr = paramprior[p];
@@ -186,30 +186,22 @@ void Chain::changeparam(long dir, long p, double param_new)    // Makes changes 
   for(j = 0; j < paramsmooth[p].size(); j++){
 		s = paramsmooth[p][j]; i = paramsmoothi[p][j]; Lpri += priorsmooth(s,i)+priorsmooth(s,i-1);
 	}
-
-	lin = 1;   // linear relationship TODO
-	if(corona == 1){
-		if(paramname[p].length() > 1){ 
-			if(paramname[p].substr(0,2) == "G_") lin = 0;
-		}
-	}
 	
   for(j = 0; j < nparam_dep[p]; j++){
     d = param_dep[p][j];
     eq = transdepeq[d];
 
 		if(discon == 1){
-			for(kd = d*DX; kd < d*DX+DX; kd++){
-				valold = depeq_disc_evval[kd];
-				if(kd == d*DX || lin == 0 || 1 == 1){
-					dval = ratecalcdep(d,depeq_disc_evpopnum[kd],param) - valold;
-				}
-				valnew = valold+dval;
-				depeq_disc_evval[kd] = valnew;
-				
-				if(dval != 0){
-					Liexp += dval*depeq_disc_evdt[kd];
-					Lir += log(valnew/valold)*depeq_disc_evn[kd];
+			for(kd = d*nDD; kd < d*nDD+nDD; kd++){
+				if(DDcalc[kd] == 1){
+					valold = depeq_disc_evval[kd];
+					valnew = ratecalcdep(d,depeq_disc_evpopnum[kd],param);
+					depeq_disc_evval[kd] = valnew;
+					
+					if(valnew != valold){
+						Liexp += (valnew-valold)*depeq_disc_evdt[kd];
+						Lir += log(valnew/valold)*depeq_disc_evn[kd];
+					}
 				}
 			}
 		}
@@ -334,7 +326,7 @@ void Chain::paramgrad(long p)              // Calculates the gradient and curvat
     eq = transdepeq[d];
 
 		if(discon == 1){
-			for(kd = d*DX; kd < d*DX+DX; kd++){
+			for(kd = d*nDD; kd < d*nDD+nDD; kd++){
 				valold = depeq_disc_evval[kd];
 				param[p] = val + dd; valnewup = ratecalcdep(d,depeq_disc_evpopnum[kd],param);
 				param[p] = val - dd; valnewdo = ratecalcdep(d,depeq_disc_evpopnum[kd],param);
