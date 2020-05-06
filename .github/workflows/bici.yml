@@ -26,13 +26,13 @@ jobs:
     - name: Run test model
       run: |
         cd Analysis
-        stdbuf -oL -eL mpirun -n 4 ./bici_mpi Scotland_bici_input.xml 1000
+        stdbuf -oL -eL mpirun -n 2 ./bici_mpi Scotland_bici_input.xml 1000
 
     - name: Check output files
       run: |
         cd Analysis
 
-        required_files="Output Output/Scotland_bici Output/Scotland_bici/trace3.txt Output/Scotland_bici/diagnostic3.txt Output/Scotland_bici/stats.txt Output/Scotland_bici/bici3.txt"
+        required_files="Output Output/Scotland_bici Output/Scotland_bici/trace1.txt Output/Scotland_bici/diagnostic1.txt Output/Scotland_bici/stats.txt Output/Scotland_bici/bici1.txt"
         failures=0
 
         for f in $required_files ; do
