@@ -53,18 +53,18 @@ void Chain::addreminf()
 					EV evm; evm.tr = compiftra[c][cc]; evm.t = t; evnew.push_back(evm);
 					c = cc;
 					
-					tt = t - log(ran())/(rAR+rAI);
-					if(tt >= tmax) probif += -(rAR+rAI)*(tmax-t);
+					tt = t - log(ran())/(rAR+rAIcor);
+					if(tt >= tmax) probif += -(rAR+rAIcor)*(tmax-t);
 					else{
-						if(ran()*(rAR+rAI) < rAR){
-							probif += log(rAR) - (rAR+rAI)*(tt-t);
+						if(ran()*(rAR+rAIcor) < rAR){
+							probif += log(rAR) - (rAR+rAIcor)*(tt-t);
 							t = tt;
 							cc = c + RR-AA;
 							EV evm; evm.tr = compiftra[c][cc]; evm.t = t; evnew.push_back(evm);
 							c = cc;
 						}
 						else{
-							probif += log(rAI) - (rAR+rAI)*(tt-t);
+							probif += log(rAIcor) - (rAR+rAIcor)*(tt-t);
 							t = tt;
 							cc = c + II-AA;
 							EV evm; evm.tr = compiftra[c][cc]; evm.t = t; evnew.push_back(evm);
@@ -97,7 +97,7 @@ void Chain::addreminf()
 				notinflist[r][a][l] = notinflist[r][a][long(notinflist[r][a].size())-1];
 				indinflist[notinflist[r][a][l]] = l;
 				notinflist[r][a].pop_back();
-					
+				
 				indinflist[i] = inflist[r][a].size();
 				inflist[r][a].push_back(i);		
 				
@@ -182,13 +182,13 @@ void Chain::addreminf()
 							probfi += log(rEA);
 							t = tt;
 							tt = evnew[3].t;
-							probfi += -(rAR+rAI)*(tt-t);
+							probfi += -(rAR+rAIcor)*(tt-t);
 							if(tt < tmax){
 								t = tt;
 								if(evnew[3].tr == compiftra[c+AA][c+RR]) probfi += log(rAR);
 								else{
 									if(evnew[3].tr != compiftra[c+AA][c+II]) emsg("addreminf: EC3");
-									probfi += log(rAI);
+									probfi += log(rAIcor);
 									tt = evnew[4].t;
 									probfi +=  -(rIR[a]+rID[a])*(tt-t);
 									if(tt < tmax){
@@ -205,7 +205,7 @@ void Chain::addreminf()
 					dd = probif - probfist; if(dd*dd > 0.0000001) emsg("addreminf: EC4");
 					dd = probfi - probifst; if(dd*dd > 0.0000001) emsg("addreminf: EC5");
 					
-					cout << probif << " "<< probfi << " " << probifst <<" " << probfist << " Check\n";
+					//cout << probif << " "<< probfi << " " << probifst <<" " << probfist << " Check\n";
 					// CHECKEND
 				}
 			}
@@ -295,13 +295,13 @@ void Chain::addreminf()
 						probfi += log(rEA);
 						t = tt;
 						tt = evnew[3].t;
-						probfi += -(rAR+rAI)*(tt-t);
+						probfi += -(rAR+rAIcor)*(tt-t);
 						if(tt < tmax){
 							t = tt;
 							if(evnew[3].tr == compiftra[c+AA][c+RR]) probfi += log(rAR);
 							else{
 								if(evnew[3].tr != compiftra[c+AA][c+II]) emsg("addreminf: EC7");
-								probfi += log(rAI);
+								probfi += log(rAIcor);
 								tt = evnew[4].t;
 								probfi +=  -(rIR[a]+rID[a])*(tt-t);
 								if(tt < tmax){
@@ -348,7 +348,7 @@ void Chain::addreminf()
 
 void Chain::getprob(long r)      // Calculates probability distribution for samping infection times
 {
-	long e, ee, tb, d, ci, cf, a, eq, d1, d2;
+	long e, ee, tb, d, ci, cf, a, eq, dst[nsettime+1], s, ddti;
 	double sum, suma, t, tt, val;
 	
 	timeprop[SAMPPROB] -= clock();
@@ -356,21 +356,22 @@ void Chain::getprob(long r)      // Calculates probability distribution for samp
 	for(a = 0; a < nag; a++){
 		ci = SS*classmult[0] + r*classmult[1] + a*classmult[2];
 		cf = EE*classmult[0] + r*classmult[1] + a*classmult[2];
-		if(nsettime == 1){
-			d1 = transdepref[tra[compiftra[ci][cf]].eq]; 
-			d2 = transdepref[tra[compiftra[ci+classmult[settimecl]][cf+classmult[settimecl]]].eq]; 
-		}
-		else{
-			d = transdepref[tra[compiftra[ci][cf]].eq]; 
+		
+		for(s = 0; s <= nsettime; s++){
+			dst[s] = transdepref[tra[compiftra[ci+s*classmult[settimecl]][cf+s*classmult[settimecl]]].eq]; 
 		}
 		
 		sum = 0;
 		for(tb = tbin-1; tb >= 0; tb--){
 			t = (tb+0.5)*tmax/tbin;
 			
-			if(nsettime == 1){ if(t < settime[0]) d = d1; else d = d2;}
+			d = dst[tbins[tb]];
 			
-			if(discon == 1) prob[a][tb] = depeq_disc_evval[d*DX + long(t*dfac)];
+			if(discon == 1){
+				ddti = DDconv[long(t*DDfac)]; if(DDt[ddti+1] < t) ddti++;
+				prob[a][tb] = depeq_disc_evval[d*nDD + ddti];
+				if(DDcalc[d*nDD + ddti] == 0) emsg("addreinf: EC88");
+			}
 			else{
 				e = depeqdiv[d][long(onefac*t*depeqdivmax/tmax)];      // finds where we are on the timeline
 				do{
@@ -383,6 +384,7 @@ void Chain::getprob(long r)      // Calculates probability distribution for samp
 			sum += prob[a][tb];
 			probsum[a][tb] = sum; 
 		}
+		
 		suma += sum;
 		proba[a] = sum;
 		probsuma[a] = suma;
@@ -391,9 +393,10 @@ void Chain::getprob(long r)      // Calculates probability distribution for samp
 	
 	timeprop[SAMPPROB] += clock();
 }
+
 void Chain::addreminfinit()     // Initialises the procedure
 {
-	long tb, r, a;
+	long tb, r, a, s;
 	double t;
 
 	nregion = nclassval[1];
@@ -409,9 +412,17 @@ void Chain::addreminfinit()     // Initialises the procedure
 		rHR[a] = calculatenotdep(tra[compiftra[HH+a*classmult[2]][RR+a*classmult[2]]].eq,param);
 		rHD[a] = calculatenotdep(tra[compiftra[HH+a*classmult[2]][DD+a*classmult[2]]].eq,param);
 	}
-	
-	rAI *= rIH[0]/(rIH[0]+rIR[0]+rID[0]);
 
+	rAIcor = rAI*(1-(rIH[0]/(rIH[0]+rIR[0]+rID[0]))); 
+
+	s = 0;
+	tbins.resize(tbin);
+	for(tb = 0; tb < tbin; tb++){
+		t = (tb+0.5)*tmax/tbin;
+		while(s < nsettime && settime[s] < t) s++; 
+		tbins[tb] = s;
+	}
+	
 	prob.resize(nag); probsum.resize(nag); proba.resize(nag); probsuma.resize(nag);
 	for(a = 0; a < nag; a++){
 		prob[a].resize(tbin); probsum[a].resize(tbin);
@@ -419,4 +430,107 @@ void Chain::addreminfinit()     // Initialises the procedure
 	
 	multacf.resize(nregion);
 	for(r = 0; r < nregion; r++) multacf[r] = 10;
+}
+
+void Chain::addstartuoinf()                                  // Adds infected unobserved individuals in the initial state
+{
+	long r, div, ndiv = 20, c, cc, tr, e, i, num, numadd, a, l;
+	double probH, fac, t, tt;
+	vector <vector <long> > bin;
+	
+	bin.resize(nregion);
+	for(r = 0; r < nregion; r++){
+		bin[r].resize(ndiv);
+		for(div = 0; div < ndiv; div++) bin[r][div] = 0;
+	}
+			
+  for(i = 0; i < nindtot; i++){
+		c = indinit[i];
+		r = compval[c][1];
+		for(e = 1; e < nindev[i]-1; e++){
+			tr = indev[i][e].tr; 
+			if(compval[tra[tr].ci][0] == SS && compval[tra[tr].cf][0] == EE){
+				div = long(indev[i][e].t*ndiv/tmax); if(div < 0 || div >= ndiv) emsg("addreminf:EC77");
+				bin[r][div]++;
+			}
+		}	
+	}
+	
+	a = 0; if(nag != 1) emsg("addreminf: EC66");
+
+	probH = (rAI/(rAR+rAI))*(rIH[0]/(rIH[0]+rID[0]+rIR[0]));
+	fac = (1-probH)/probH;
+	
+	for(r = 0; r < nregion; r++){
+		for(div = 0; div < ndiv; div++){
+			numadd = long((bin[r][div]*fac) + 0.5);	
+			
+			for(num = 0; num < numadd; num++){
+				t = (div+ran())*tmax/ndiv;
+				if(notinflist[r][a].size()==0) emsg("addreminf: EC67");
+				l = long(ran()*notinflist[r][a].size());
+				i = notinflist[r][a][l];
+				
+				notinflist[r][a][l] = notinflist[r][a][long(notinflist[r][a].size())-1];
+				indinflist[notinflist[r][a][l]] = l;
+				notinflist[r][a].pop_back();
+				
+				indinflist[i] = inflist[r][a].size();
+				inflist[r][a].push_back(i);		
+				
+				c = indinit[i];
+				
+				evnew.clear();
+				EV ev; ev.tr = trabeg+c; ev.t = 0; evnew.push_back(ev);
+				cc = c+EE-SS;
+				EV evm; evm.tr = compiftra[c][cc]; evm.t = t; evnew.push_back(evm);
+				c = cc;
+			
+				tt = t - log(ran())/rEA;
+				if(tt < tmax){
+					t = tt;
+					cc = c + AA - EE;
+					EV evm; evm.tr = compiftra[c][cc]; evm.t = t; evnew.push_back(evm);
+					c = cc;
+					
+					tt = t - log(ran())/(rAR+rAIcor);
+					if(tt < tmax){
+						if(ran()*(rAR+rAIcor) < rAR){
+							t = tt;
+							cc = c + RR-AA;
+							EV evm; evm.tr = compiftra[c][cc]; evm.t = t; evnew.push_back(evm);
+							c = cc;
+						}
+						else{
+							t = tt;
+							cc = c + II-AA;
+							EV evm; evm.tr = compiftra[c][cc]; evm.t = t; evnew.push_back(evm);
+							c = cc;
+							
+							tt = t -log(ran())/(rIR[a]+rID[a]);
+							if(tt < tmax){
+								if(ran()*(rIR[a]+rID[a]) < rIR[a]){
+									t = tt;
+									cc = c + RR-II;
+									EV evm; evm.tr = compiftra[c][cc]; evm.t = t; evnew.push_back(evm);
+									c = cc;
+								}
+								else{
+									t = tt;
+									cc = c + DD-II;
+									EV evm; evm.tr = compiftra[c][cc]; evm.t = t; evnew.push_back(evm);
+									c = cc;
+								}
+							}
+						}
+					}
+				}
+				EV eve; eve.tr = traend+c; eve.t = tmax; evnew.push_back(eve);	
+				
+				if(nsettime > 0) addsettime();
+		
+				indcha(i);
+			}
+		}	
+	}
 }

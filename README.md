@@ -1,5 +1,5 @@
 
-# CoronaBICI
+CoronaBICI
 
 C. M. Pooley* [1], Andrea Doeschl-Wilson [2], and Glenn Marion [1]
 
@@ -15,7 +15,7 @@ BICI, which stands for "Bayesian Individual-based Compartmental Inference", is a
 
 Analysis proceeds in two stages:
 
-## 1) GENERATING AN INPUT FILE FOR BICI
+1) GENERATING AN INPUT FILE FOR BICI
 
 This is performed in the "GenerateInputFile" directory. 
 
@@ -34,9 +34,21 @@ c) The file "Scotland_bici_model.xml" then gets read by "generateinputfile.cc" a
 This time data is added to finally create the file "Scotland_bici_input.xml", which sumarises the model and data in a way that BICI can understand. The data itself consists of daily regional cases from the website https://smazeri.shinyapps.io/Covid19_Scotland/.   
 
 
-## 2) RUNNING THE ANALYSIS
+2) RUNNING THE ANALYSIS
 
-This is done in the "Analysis" directory. The "bici.cc" file is compiled using
+This is done in the "Analysis" directory. There are two ways to run: 
+
+a) If running as a single process the "bici.cc" file is compiled using
+
+g++ bici.cc header/tinyxml2.cc -O3 -o bici
+
+and run using:        
+
+./bici Scotland_bici_input.xml 10000
+
+Here 10000 represents the number of samples on each chain. 
+
+b) To run multiple chains under MPI the line #define MP 1 is uncommented in bici.cc and code is compiled using:
 
 mpic++ bici.cc header/tinyxml2.cc -O3 -o bici
 
@@ -45,6 +57,9 @@ and run using:
 mpirun -n 4 ./bici Scotland_bici_input.xml 10000
 
 Here -n 4 represents the number of parallel MCMC chains and 10000 represents the number of samples on each chain. 
+
+3) OUTPUT
+
 BICI creates the "Scotland_bici" subdirectory in "Outputs" and  writes to a number of different file during program execution:
 
 a) "Trace[X].txt" (where X is the number of the chain) gives trace plots of the model parameters. These can be loaded into other software to visually check that MCMC is mixing well (e.g. Tracer).
@@ -55,7 +70,7 @@ c) "Bici[X].txt" is an output file which can be read into the BICI GUI for visua
 
 d) "Stats.txt" calculates the posterior means, 90% credible intervals, effective sample sizes and Gelman-Rubin diagnostic statics (these last two are used to confirm that MCMC is well mixed).
 
-## METHODOLOGY
+METHODOLOGY
 
 This is yet to be written up for BICI, but the basic framework is presented here (for a simple SIR model):
 

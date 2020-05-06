@@ -7,7 +7,7 @@ void Chain::test(short num)
 {
 }
 
-void Chain::check(long num)                       // Used to chech the algorithm is working
+void Chain::check(long num)                       // Used to check the algorithm is working
 {
   long e, nev, j, f, cl, c, p, ce, r,	i, fev, tr, d;
   double t;
@@ -246,8 +246,8 @@ void checkevseqsimp(vector<EV> &vec)       // Checks that an event sequnece is c
 
 void Chain::checklikedisc(long num)             // Checks the likelihood based on a discretises timeline
 {
-	long i, kd, d, k, eq, c, p, j, jj, e, tr, kdi, kdf, s1, s2, r, a, ii;
-	double dd, t, tt, Lr, Lexp, kdif, kdff, dpop;
+	long i, kd, d, k, eq, c, p, j, jj, e, tr, kdi, kdf, s1, s2, r, a, ii, s, ddt, ddti, ddtf;
+	double dd, t, tt, Lr, Lexp, dpop;
 	vector<long> depeq_disc_evn_ch;  
 	vector<double> depeq_disc_evdt_ch;
 	vector<double> depeq_disc_evval_ch;
@@ -266,14 +266,14 @@ void Chain::checklikedisc(long num)             // Checks the likelihood based o
     }
   }
 
-	depeq_disc_evn_ch.resize(ntransdepeq*DX);
-	depeq_disc_evdt_ch.resize(ntransdepeq*DX);
-	depeq_disc_evval_ch.resize(ntransdepeq*DX);
-	depeq_disc_evpopnum_ch.resize(ntransdepeq*DX);
-	for(kd = 0; kd < ntransdepeq*DX; kd++){
+	depeq_disc_evn_ch.resize(ntransdepeq*nDD);
+	depeq_disc_evdt_ch.resize(ntransdepeq*nDD);
+	depeq_disc_evval_ch.resize(ntransdepeq*nDD);
+	depeq_disc_evpopnum_ch.resize(ntransdepeq*nDD);
+	for(kd = 0; kd < ntransdepeq*nDD; kd++){
 		depeq_disc_evn_ch[kd] = 0;  
 		depeq_disc_evdt_ch[kd] = 0;
-		d = kd/DX; eq = transdepeq[d];
+		d = kd/nDD; eq = transdepeq[d];
 		depeq_disc_evpopnum_ch[kd] = new double[neq_popnum[eq]];
 		for(jj = 0; jj < neq_popnum[eq]; jj++) depeq_disc_evpopnum_ch[kd][jj] = 0;
 	}
@@ -296,7 +296,9 @@ void Chain::checklikedisc(long num)             // Checks the likelihood based o
 								tt = indev[i][e].t;
 								dpop = dpopnum[c][p];
 								if(dpop != 0){
-									for(kd = long(d*DX + t*dfac)+1; kd <= long(d*DX + tt*dfac); kd++){
+									ddti = DDconv[long(t*DDfac)]; if(DDt[ddti+1] < t) ddti++;
+									ddtf = DDconv[long(tt*DDfac)]; if(DDt[ddtf+1] < tt) ddtf++;
+									for(kd = long(d*nDD + ddti+1); kd <= long(d*nDD + ddtf); kd++){
 										depeq_disc_evpopnum_ch[kd][jj] += dpop;
 									}
 								}
@@ -318,7 +320,9 @@ void Chain::checklikedisc(long num)             // Checks the likelihood based o
 				t = indev[i][0].t;
 				for(e = 1; e < nindev[i]; e++){
 					tt = indev[i][e].t;
-					for(kd = long(d*DX + t*dfac)+1; kd <= long(d*DX + tt*dfac); kd++){
+					ddti = DDconv[long(t*DDfac)]; if(DDt[ddti+1] < t) ddti++;
+					ddtf = DDconv[long(tt*DDfac)]; if(DDt[ddtf+1] < tt) ddtf++;
+					for(kd = long(d*nDD + ddti+1); kd <= long(d*nDD + ddtf); kd++){
 						for(jj = 0; jj < neq_popnum[eq]; jj++){
 							p = eq_popnum[eq][jj];
 							depeq_disc_evpopnum_ch[kd][jj] += dpopnum[c][p];
@@ -340,7 +344,8 @@ void Chain::checklikedisc(long num)             // Checks the likelihood based o
 			d = transdepref[eq];
 			switch(transdep[eq]){
 			case 1:
-				kd = d*DX + long(t*dfac);
+				ddti = DDconv[long(t*DDfac)]; if(DDt[ddti+1] < t) ddti++;
+				kd = d*nDD + ddti;
 				depeq_disc_evn_ch[kd]++;
 				break;
 			case 0:
@@ -360,17 +365,20 @@ void Chain::checklikedisc(long num)             // Checks the likelihood based o
 					d = transdepref[eq];
 					switch(transdep[eq]){
 					case 1:
-						kdif = d*DX + t*dfac; kdff = d*DX + tt*dfac;
-						kdi = long(kdif); kdf = long(kdff);
+						ddti = DDconv[long(t*DDfac)]; if(DDt[ddti+1] < t) ddti++;
+						ddtf = DDconv[long(tt*DDfac)]; if(DDt[ddtf+1] < tt) ddtf++;
+						kdi = d*nDD + ddti;
+						kdf = d*nDD + ddtf;	
 						if(kdi == kdf){
 							depeq_disc_evdt_ch[kdi] += tt-t;
 						}
 						else{
-							depeq_disc_evdt_ch[kdi] += (kdi+1-kdif)/dfac;
-							for(kd = kdi+1; kd < kdf; kd++){
-								depeq_disc_evdt_ch[kd] += 1.0/dfac;
+							depeq_disc_evdt_ch[kdi] += DDt[ddti+1]-t;
+							for(ddt = ddti+1; ddt < ddtf; ddt++){
+								kd = d*nDD + ddt;
+								depeq_disc_evdt_ch[kd] += DDdt[ddt];
 							}
-							depeq_disc_evdt_ch[kdf] += (kdff-kdf)/dfac;
+							depeq_disc_evdt_ch[kdf] += tt-DDt[ddtf];
 						}
 						break;
 					case 0:
@@ -385,42 +393,63 @@ void Chain::checklikedisc(long num)             // Checks the likelihood based o
 		}
 	}
 	
-	for(kd = 0; kd < ntransdepeq*DX; kd++){
-		d = kd/DX;
-		Lr += depeq_disc_evn[kd]*log(depeq_disc_evval[kd]);
-		Lexp += depeq_disc_evdt[kd]*depeq_disc_evval[kd];
+	for(kd = 0; kd < ntransdepeq*nDD; kd++){
+		d = kd/nDD;
+		if(DDcalc[kd] == 1) depeq_disc_evval_ch[kd] = ratecalcdep(d,depeq_disc_evpopnum[kd],param);
+		else depeq_disc_evval_ch[kd] = 0;
 	}
 	
-	for(kd = 0; kd < ntransdepeq*DX; kd++){
-		d = kd/DX;
-		depeq_disc_evval_ch[kd] = ratecalcdep(d,depeq_disc_evpopnum[kd],param);
+	for(kd = 0; kd < ntransdepeq*nDD; kd++){
+		d = kd/nDD;
+		if(DDcalc[kd] == 1){
+			Lr += depeq_disc_evn_ch[kd]*log(depeq_disc_evval_ch[kd]);
+			Lexp += depeq_disc_evdt_ch[kd]*depeq_disc_evval_ch[kd];
+		}
 	}
 	
-	for(kd = 0; kd < ntransdepeq*DX; kd++){
-		d = kd/DX; eq = transdepeq[d];
+	for(d = 0; d < ntransdepeq; d++){
+		eq = transdepeq[d];
+		for(i= 0; i < nDD; i++){
+			kd = d*nDD+i;
+		
+			jj = 0;
+			if(DDcalc[kd] == 1) dd = depeq_disc_evpopnum[kd][jj] - depeq_disc_evpopnum_ch[kd][jj];
+			else dd = depeq_disc_evpopnum[kd][jj];
+				
+			if(dd > tiny || dd < -tiny) emsg("Check: EC57");
+		}
+	}
+	
+	for(kd = 0; kd < ntransdepeq*nDD; kd++){
+		d = kd/nDD; eq = transdepeq[d];
 		
 		if(depeq_disc_evn_ch[kd] != depeq_disc_evn[kd]) emsg("Check: EC57");
 		
-		dd = depeq_disc_evdt_ch[kd] - depeq_disc_evdt[kd];
+		dd = depeq_disc_evdt_ch[kd] - depeq_disc_evdt[kd];		
 		if(dd*dd > tiny) emsg("Check: EC58");
-		depeq_disc_evdt[kd] = depeq_disc_evdt_ch[kd]; 
 		
+		depeq_disc_evdt[kd] = depeq_disc_evdt_ch[kd]; 
+	
 		for(jj = 0; jj < neq_popnum[eq]; jj++){
-			dd = depeq_disc_evpopnum[kd][jj] - depeq_disc_evpopnum_ch[kd][jj];
-			if(dd > tiny || dd < -tiny) emsg("Check: EC59");
-			depeq_disc_evpopnum[kd][jj] = depeq_disc_evpopnum_ch[kd][jj];
+			if(DDcalc[kd] == 1){
+				dd = depeq_disc_evpopnum[kd][jj] - depeq_disc_evpopnum_ch[kd][jj];
+				if(dd > tiny || dd < -tiny) emsg("Check: EC59");
+				depeq_disc_evpopnum[kd][jj] = depeq_disc_evpopnum_ch[kd][jj];
+			}
+			else{	
+				if(depeq_disc_evpopnum[kd][jj] != 0) emsg("Check: EC59b");
+			}
 		}
 		
 		dd = depeq_disc_evval_ch[kd] - depeq_disc_evval[kd];
-		if(dd > tiny || dd < -tiny) emsg("Check: EC60");
+		if(dd*dd > 0.001) emsg("Check: EC60",dd);
 		depeq_disc_evval[kd] = depeq_disc_evval_ch[kd];
 	}
 
-	dd = Lir-Lr; if(dd*dd > tiny) emsg("Check: EC61");
+	dd = Lir-Lr; if(dd*dd > 0.001) emsg("Check: EC61",dd);
 	Lir = Lr;
 	
-	dd = Liexp-Lexp; 
-	if(dd*dd > 0.1) emsg("Check: EC62");
+	dd = Liexp-Lexp; if(dd*dd > 0.001) emsg("Check: EC62",dd);
 	Liexp = Lexp;
 }
 
@@ -467,8 +496,7 @@ void Chain::checklike(long num)                  // Checks that the likelihood i
 
   numd = 0; numnd = 0;
   for(e = 0; e <= nev; e++){
-		//if(e%1000 == 0) cout << e << " / " << nev <<" Event number\n";
-    if(e == nev) tt = tmax; else tt = ev[e].t;
+		if(e == nev) tt = tmax; else tt = ev[e].t;
     if(stim < nsettime && t >= settime[stim]) stim++;
 
     for(p = 0; p < npopnum; p++){

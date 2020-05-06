@@ -2,9 +2,9 @@
 
 void likelihoodinit()           // Initialises quantities needed to make fast likelihood calculations
 {
-  long eq, p, i, tr, k, j, c, d, jmax, ci, cf, n, flag, kmax, nn, cl, f, ki, kf, cff;
+  long eq, p, i, tr, k, j, c, d, jmax, ci, cf, n, flag, kmax, nn, cl, f, ki, kf, cff, s, num, ddti;
   long popnum_flag[npopnum], param_flag[nparam];
-	double dd;
+	double dd, t, tma;
   long ref, refi, reff;
  
   vector< vector<double> > dpopnum;
@@ -14,8 +14,34 @@ void likelihoodinit()           // Initialises quantities needed to make fast li
   vector< vector<long> > mapdepi, mapnotdepi;
 	vector< vector <long> > transdepeq_n, transnotdepeq_n;
 
-	dfac = onefac*DX/tmax;
-
+	if(discon == 1){   // Makes the grid to discretise on
+		nDD = 0;
+		t = 0;
+		for(s = 0; s <= nsettime; s++){
+			if(s < nsettime) tma = settime[s]; else tma = tmax;
+			num = (tma-t)/Dt;
+			for(i = 0; i < num; i++){
+				DDt.push_back(t + i*(tma-t)/num);
+				DDsettime.push_back(s);
+			}
+			t = tma;
+		}
+		nDD = DDt.size();
+		DDt.push_back(tmax);
+		DDdt.resize(nDD); 
+		for(i = 0; i < nDD; i++) DDdt[i] = DDt[i+1]-DDt[i];
+			
+		DDconvmax = nDD*2;
+		DDconv.resize(DDconvmax);
+		i = 0;
+		for(j = 0; j < DDconvmax; j++){
+			t = j*tmax/DDconvmax;
+			while(DDt[i+1] < t) i++;
+			DDconv[j] = i;
+		}
+		DDfac = onefac*DDconvmax/tmax;
+	}
+	
   for(eq = 0; eq < eqnstr.size(); eq++){
     eq_popnum.push_back(vector<long>());
     eq_param.push_back(vector<long>());
@@ -55,16 +81,16 @@ void likelihoodinit()           // Initialises quantities needed to make fast li
     neq_param.push_back(eq_param[eq].size());
   }
 
-  /*(
-  for(eq = 0; eq < eqnstr.size(); eq++){
-    cout << eqnstr[eq] << ":  popnum ";
-    for(i = 0; i < eq_popnum[eq].size(); i++) cout << popnumname[eq_popnum[eq][i]] << ", "; 
+  if(1 == 0){
+		for(eq = 0; eq < eqnstr.size(); eq++){
+			cout << eqnstr[eq] << ":  popnum ";
+			for(i = 0; i < eq_popnum[eq].size(); i++) cout << popnumname[eq_popnum[eq][i]] << ", "; 
 
-    cout << "    params: ";
-    for(i = 0; i < eq_param[eq].size(); i++) cout << paramname[eq_param[eq][i]] << ",  ";
-    cout << "\n";
-  }
-  */
+			cout << "    params: ";
+			for(i = 0; i < eq_param[eq].size(); i++) cout << paramname[eq_param[eq][i]] << ",  ";
+			cout << "\n";
+		}
+	}
 
   // Creates look up table
   for(eq = 0; eq < eqnstr.size(); eq++){ transdep.push_back(-1); transdepref.push_back(-1);}
@@ -96,9 +122,44 @@ void likelihoodinit()           // Initialises quantities needed to make fast li
   ntransdepeq = transdepeq.size();
   ntransnotdepeq = transnotdepeq.size();
 
-  //for(j = 0; j < ntransdepeq; j++) cout << eqnstr[transdepeq[j]] << " dep\n";
-  //for(j = 0; j < ntransnotdepeq; j++) cout << eqnstr[transnotdepeq[j]] << " notdep\n";
-
+	transdepsettime.resize(ntransdepeq);
+	for(d = 0; d < ntransdepeq; d++){			
+		transdepsettime[d] = -1;	
+		eq = transdepeq[d];
+		for(k = 0; k < neq_param[eq]; k++){
+			p = eq_param[eq][k];
+			vector <string> dep = getdep(paramname[p]);  
+			
+			for(j = 0; j < dep.size(); j++){
+				for(s = 0; s < nclassval[settimecl]; s++){
+					if(dep[j] == classval[settimecl][s]){
+						if(transdepsettime[d] != s){
+							if(transdepsettime[d] != -1) emsg("Likelihood: EC50");
+							transdepsettime[d] = s;
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	if(discon == 1){
+		DDcalc.resize(nDD*ntransdepeq);
+		for(d = 0; d < ntransdepeq; d++){
+			for(ddti = 0; ddti < nDD; ddti++){
+				if(transdepsettime[d] == -1 || transdepsettime[d] == DDsettime[ddti]) DDcalc[d*nDD+ddti] = 1;
+				else DDcalc[d*nDD+ddti] = 0;
+			}
+		}
+	}
+	
+	if(1 == 0){
+		for(j = 0; j < ntransdepeq; j++){
+			cout << transdepsettime[j] << " " << eqnstr[transdepeq[j]] << " dep\n";
+		}
+		for(j = 0; j < ntransnotdepeq; j++) cout << eqnstr[transnotdepeq[j]] << " notdep\n";
+	}
+	\
   dpopnum.resize(ncomp+1);     // Precalculated the change in population number
   for(c = 0; c <= ncomp; c++){
     dpopnum[c].resize(npopnum);
@@ -145,30 +206,33 @@ void likelihoodinit()           // Initialises quantities needed to make fast li
     transnotdepeqch.push_back(vector<NDEQCH> ());
 
     for(d = 0; d < ntransdepeq; d++){
-      eq = transdepeq[d];
+			s = (cf/classmult[settimecl])%nclassval[settimecl];
+			if(transdepsettime[d] == -1 || s == transdepsettime[d]){
+				eq = transdepeq[d];
 
-      n = transdepeq_n[d][cf];
+				n = transdepeq_n[d][cf];
 
-      flag = 0;                         // Works out change in population numbers
-      if(n != 0) flag = 1;
-      kmax = neq_popnum[eq];
-      if(kmax > 0){
-        dpopvec.resize(kmax);
-        for(k = 0; k < kmax; k++){
-          p = eq_popnum[eq][k];
-          dd = dpopnum[cf][p];
-          if(dd > -ttiny && dd < ttiny) dd = 0;
-          if(dd != 0) flag = 2;
-          dpopvec[k] = dd;
-        }
-      }
+				flag = 0;                         // Works out change in population numbers
+				if(n != 0) flag = 1;
+				kmax = neq_popnum[eq];
+				if(kmax > 0){
+					dpopvec.resize(kmax);
+					for(k = 0; k < kmax; k++){
+						p = eq_popnum[eq][k];
+						dd = dpopnum[cf][p];
+						if(dd > -ttiny && dd < ttiny) dd = 0;
+						if(dd != 0) flag = 2;
+						dpopvec[k] = dd;
+					}
+				}
 
-      if(flag != 0){
-        EQCH eqch;
-        eqch.d = d; eqch.n = n; if(flag == 2) eqch.valch = 1; else eqch.valch = 0; 
-        if(kmax > 0){ eqch.popnum = new double[kmax]; for(k = 0; k < kmax; k++) eqch.popnum[k] = dpopvec[k];}
-		    transdepeqch[ref].push_back(eqch);
-      }
+				if(flag != 0){
+					EQCH eqch;
+					eqch.d = d; eqch.n = n; if(flag == 2) eqch.valch = 1; else eqch.valch = 0; 
+					if(kmax > 0){ eqch.popnum = new double[kmax]; for(k = 0; k < kmax; k++) eqch.popnum[k] = dpopvec[k];}
+					transdepeqch[ref].push_back(eqch);
+				}
+			}
     }
 
     for(d = 0; d < ntransnotdepeq; d++){        // Goes through not dependent equations
@@ -181,40 +245,43 @@ void likelihoodinit()           // Initialises quantities needed to make fast li
   }
 
   cf = NOTALIVE;
-  for(ci = 0; ci < ncomp; ci++){        // First looks at the case when individuals are simply created
+  for(ci = 0; ci < ncomp; ci++){        // First looks at the case when individuals are simply removed
     transchref[ci][cf].push_back(ref);
 
     transdepeqch.push_back(vector<EQCH> ());
     transnotdepeqch.push_back(vector<NDEQCH> ());
 
     for(d = 0; d < ntransdepeq; d++){
-      eq = transdepeq[d];
+			s = (ci/classmult[settimecl])%nclassval[settimecl];
+			if(transdepsettime[d] == -1 || s == transdepsettime[d]){
+				eq = transdepeq[d];
 
-      n = -transdepeq_n[d][ci];
+				n = -transdepeq_n[d][ci];
 
-      flag = 0;                         // Works out change in population numbers
-      if(n != 0) flag = 1;
-      kmax = neq_popnum[eq];
-      if(kmax > 0){
-        dpopvec.resize(kmax);
-        for(k = 0; k < kmax; k++){
-          p = eq_popnum[eq][k];
-          dd = -dpopnum[ci][p];
-          if(dd > -ttiny && dd < ttiny) dd = 0;
-          if(dd != 0) flag = 2;
-          dpopvec[k] = dd;
-        }
-      }
-
-      if(flag != 0){
-        EQCH eqch;
-        eqch.d = d; eqch.n = n; if(flag == 2) eqch.valch = 1; else eqch.valch = 0; 
-        if(kmax > 0){ 
-					eqch.popnum = new double[kmax]; 
-					for(k = 0; k < kmax; k++) eqch.popnum[k] = dpopvec[k];
+				flag = 0;                         // Works out change in population numbers
+				if(n != 0) flag = 1;
+				kmax = neq_popnum[eq];
+				if(kmax > 0){
+					dpopvec.resize(kmax);
+					for(k = 0; k < kmax; k++){
+						p = eq_popnum[eq][k];
+						dd = -dpopnum[ci][p];
+						if(dd > -ttiny && dd < ttiny) dd = 0;
+						if(dd != 0) flag = 2;
+						dpopvec[k] = dd;
+					}
 				}
-        transdepeqch[ref].push_back(eqch);
-      }
+
+				if(flag != 0){
+					EQCH eqch;
+					eqch.d = d; eqch.n = n; if(flag == 2) eqch.valch = 1; else eqch.valch = 0; 
+					if(kmax > 0){ 
+						eqch.popnum = new double[kmax]; 
+						for(k = 0; k < kmax; k++) eqch.popnum[k] = dpopvec[k];
+					}
+					transdepeqch[ref].push_back(eqch);
+				}
+			}
     }
 
     for(d = 0; d < ntransnotdepeq; d++){        // Goes through not dependent equations
@@ -418,18 +485,20 @@ void Chain::eqtimelineinit()     // Initialises timelines used for dependent/not
   }
 
 	if(discon == 1){
-		depeq_disc_evn.resize(ntransdepeq*DX);
-		depeq_disc_evdt.resize(ntransdepeq*DX);
-		depeq_disc_evval.resize(ntransdepeq*DX);
-		depeq_disc_evpopnum.resize(ntransdepeq*DX);
-		for(kd = 0; kd < ntransdepeq*DX; kd++){
-			d = kd/DX; eq = transdepeq[d];
+		depeq_disc_evn.resize(ntransdepeq*nDD);
+		depeq_disc_evdt.resize(ntransdepeq*nDD);
+		depeq_disc_evval.resize(ntransdepeq*nDD);
+		depeq_disc_evpopnum.resize(ntransdepeq*nDD);
+		for(kd = 0; kd < ntransdepeq*nDD; kd++){
+			d = kd/nDD; eq = transdepeq[d];
 				
 			depeq_disc_evn[kd] = 0;  
 			depeq_disc_evdt[kd] = 0;
 			depeq_disc_evpopnum[kd] = new double[neq_popnum[eq]];
 			for(jj = 0; jj < neq_popnum[eq]; jj++) depeq_disc_evpopnum[kd][jj] = 0;
-			depeq_disc_evval[kd] = ratecalcdep(d,depeq_disc_evpopnum[kd],param);
+			
+			if(DDcalc[kd] == 1) depeq_disc_evval[kd] = ratecalcdep(d,depeq_disc_evpopnum[kd],param);
+			else depeq_disc_evval[kd] = 0;
 		}
 	}
 	else{

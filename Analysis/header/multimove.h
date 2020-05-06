@@ -4,62 +4,84 @@ void Chain::multimove()   // Each transition type is considered in turn and mult
 {
 	double facup = 1.005, facdo = 0.995, facup2 = 1.05, facdo2 = 0.95;
 	
-	long ci, cf, k, i, e, tr, c, eq, loop, loopmax;
+	long ci, cf, k, i, e, trr, trm, c, eq, loop, loopmax, ddti, ddtf, ddi, ddf;
 	double t, tst, List, gr, al, probif, probfi, Ltoti, Ltotf, pr, jump;
-	vector <double> timest, timeoldst;
-	vector <long> ist, est, mv;
+	vector <double> timest, timeoldst, grst;
+	vector <long> ist, est, mv, ddist, ddfst;
 	vector <vector <long> > movetri, movetre;
+	
+	if(discon == 0) emsg("multimove: EC1");
 	
 	movetri.clear(); movetre.clear();              // Finds out which events need moving
 	movetri.resize(ntra); movetre.resize(ntra);
 	
 	for(i = 0; i < nind; i++){
 		for(e = 0; e < nindev[i]; e++){
-			tr = indev[i][e].tr;
-			if(indev[i][e].t != 0 && indev[i][e].t != tmax && tra[tr].cl < agecl){
-				movetri[tr].push_back(i);
-				movetre[tr].push_back(e);
+			trm = tra[indev[i][e].tr].tramm;
+			if(trm >= 0){
+				movetri[trm].push_back(i);
+				movetre[trm].push_back(e);
 			}
 		}
 	}
 	
-	for(tr = 0; tr < ntra; tr++){
-		loopmax = movetri[tr].size();
+	for(trm = 0; trm < ntramm; trm++){
+		loopmax = movetri[trm].size();
 		if(loopmax > 0){
-			jump = jump_multimove[tr]; pr = multimovepr[tr];
+			jump = jump_multimove[trm]; pr = multimovepr[trm];
 			
-			timest.clear(); timeoldst.clear(); ist.clear(); est.clear(); mv.clear();
+			timest.clear(); timeoldst.clear(); ist.clear(); est.clear(); mv.clear(); grst.clear(); ddist.clear(); ddfst.clear();
 	
 			Ltoti = L();
 			probif = 0; probfi = 0;
-			
+		
 			for(loop = 0; loop < loopmax; loop++){
 				if(ran() < pr){
-					i = movetri[tr][loop];
-					e = movetre[tr][loop];
+					i = movetri[trm][loop];
+					e = movetre[trm][loop];
 					c = indinit[i];
 
 					tst = indev[i][e].t;
 					if(checkiffixed(i,tst) == 0){ 
 						t = normal(tst,jump);
 			
-						ntr_multimove[tr]++;
+						ntr_multimove[trm]++;
 						if(t < 0 || t > tmax || 
 							(e > 0 && t <= indev[i][e-1].t) || (e < nindev[i]-1 && t >= indev[i][e+1].t)){
-							nfa_multimove[tr]++;
+							nfa_multimove[trm]++;
 							if(samp < burnin) jump *= facdo;
 						}
 						else{
-							al = exp(movecalcgrad(tr,tst)*(t-tst));
+							trr = indev[i][e].tr;
+							gr = movecalcgrad(trr,tst);  // TO DO this assumes that the gradient is time invarient...
 						
-							eq = tra[tr].eq; if(transdep[eq] == 1) al *= transrate(eq,t)/transrate(eq,tst);  
+							ist.push_back(i); est.push_back(e); timest.push_back(t); timeoldst.push_back(tst); grst.push_back(gr);
+						
+							al = exp(gr*(t-tst));
 							
+							eq = tra[trr].eq;
+							if(transdep[eq] == 1){       // TODO assumes both initial and final states are dependent
+								ddti = DDconv[long(tst*DDfac)]; if(DDt[ddti+1] < tst) ddti++;
+								if(tramm[trm].tra[DDsettime[ddti]] != trr) emsg("multimove: EC80");
+								ddi = transdepref[eq]*nDD + ddti;  
+							
+								ddtf = DDconv[long(t*DDfac)]; if(DDt[ddtf+1] < t) ddtf++;
+								trr = tramm[trm].tra[DDsettime[ddtf]];
+								eq = tra[trr].eq;
+								ddf = transdepref[eq]*nDD + ddtf; 
+
+								if(DDcalc[ddf] == 0 || DDcalc[ddi] == 0) emsg("multimove: EC81");
+								
+								al *= depeq_disc_evval[ddf]/depeq_disc_evval[ddi];
+								ddist.push_back(ddi); ddfst.push_back(ddf);
+							}
+							else{
+								ddist.push_back(-1); ddfst.push_back(-1);
+							}
 							if(al > 1) al = 1;
 							
-							ist.push_back(i); est.push_back(e); timest.push_back(t); timeoldst.push_back(tst);
-							
 							if(ran() < al){
-								nac_multimove[tr]++;
+								nac_multimove[trm]++;
 								if(samp < burnin) jump *= facup;
 				
 								probif += log(al);
@@ -84,28 +106,27 @@ void Chain::multimove()   // Each transition type is considered in turn and mult
 			multisec();
 			
 			for(loop = 0; loop < ist.size(); loop++){
-				i = ist[loop]; e = est[loop]; t = timest[loop]; tst = timeoldst[loop];
+				i = ist[loop]; e = est[loop]; t = timest[loop]; tst = timeoldst[loop]; gr = grst[loop]; ddi = ddist[loop]; ddf = ddfst[loop];		
 				if(mv[loop] == 0){
-					al = exp(movecalcgrad(tr,tst)*(t-tst));
-					eq = tra[tr].eq; if(transdep[eq] == 1) al *= transrate(eq,t)/transrate(eq,tst);  
+					al = exp(gr*(t-tst));
+					if(ddi >= 0) al *= depeq_disc_evval[ddf]/depeq_disc_evval[ddi];
 					if(al > 1) al = 1;
 					probfi += log(1-al);
 				}
 				else{
-					al = exp(movecalcgrad(tr,t)*(tst-t));
-					eq = tra[tr].eq; if(transdep[eq] == 1) al *= transrate(eq,tst)/transrate(eq,t);  
-						
+					al = exp(gr*(tst-t));
+					if(ddi >= 0) al *= depeq_disc_evval[ddi]/depeq_disc_evval[ddf];
 					if(al > 1) al = 1;
 					probfi += log(al);
 				}
 			}
 			Ltotf = L();
-			
+						
 			al = exp(Ltotf - Ltoti + probfi - probif);
-		
-			ntr_multimovetot[tr]++;
+			
+			ntr_multimovetot[trm]++;
 			if(ran() < al){
-				nac_multimovetot[tr]++;
+				nac_multimovetot[trm]++;
 				if(samp < burnin){ pr *= facup2; if(pr > 0.3) pr = 0.3;}
 			}
 			else{
@@ -117,11 +138,49 @@ void Chain::multimove()   // Each transition type is considered in turn and mult
 				}
 			}
 			
-			jump_multimove[tr] = jump; multimovepr[tr] = pr;
+			jump_multimove[trm] = jump; multimovepr[trm] = pr;
 			multisecend();
 		}
 	}
 }
+
+/*
+double Chain::multial(long tr, double t, double tst)     // Predicts the acceptance rate for a move
+{
+	long ci, cf, k, kmax, ref, j, jmax;
+	double grad;
+	NDEQCH ndeqch;
+	
+	ddti = DDconv[long(t*DDfac)]; if(DDt[ddti+1] < t) ddti++;
+		
+	ci = tra[tr].ci; cf = tra[tr].cf;
+	
+	grad = 0;
+	kmax = transchref[ci][cf].size();   
+	for(k = 0; k < kmax; k++){
+    ref = transchref[ci][cf][k];
+		
+		jmax = transnotdepeqch[ref].size();
+		for(j = 0; j < jmax; j++){        
+			ndeqch = transnotdepeqch[ref][j];
+			grad += transnotdepeq_val[ndeqch.d]*ndeqch.n;
+		}
+	}
+	
+	al = exp(grad*(t-tst));
+	 
+	eq = tra[tr].eq; 
+	if(transdep[eq] == 1){
+		
+		al *= transrate(eq,tst)/transrate(eq,t);  
+	
+		if(DDcalc[d*nDD + ddti] == 0)
+	}	
+
+	if(al > 1) al = 1;
+	return al;
+}
+*/
 
 double Chain::movecalcgrad(long tr, double t)            // Works out the gradient in the loglikelihood
 {
@@ -168,13 +227,46 @@ double Chain::movecalcgrad(long tr, double t)            // Works out the gradie
 
 void Chain::multimoveinit()              // Initialises multimove proposals
 {
-	long tr;
+	long tr, tr2, ci, cf, s;
 	
-	for(tr = 0; tr < ntra; tr++){
+	ntramm = 0;                            // Multimove transitions collect together all all those from the top three classifications
+	for(tr = 0; tr < ntra; tr++){	
+		ci = tra[tr].ci; cf =  tra[tr].cf;
+		
+		if(tra[tr].cl >= agecl || tra[tr].cl < 0 || ci == NOTALIVE || cf == NOTALIVE) tr2 = -1;
+		else{		 
+			ci = ci%classmult[nclass-3];
+			cf = cf%classmult[nclass-3];
+			
+			for(tr2 = 0; tr2 < ntramm; tr2++) if(ci == tramm[tr2].ci && cf == tramm[tr2].cf) break;
+			if(tr2 == ntramm){
+				TRAMM tram;
+				tram.ci = ci; tram.cf = cf; for(s = 0; s <= nsettime; s++) tram.tra.push_back(-1);
+				tramm.push_back(tram); 
+				ntramm++; 
+			}	
+			tramm[tr2].tra[compval[tra[tr].ci][settimecl]] = tr;
+		}
+		tra[tr].tramm = tr2;
+	} 
+	
+	if(1 == 0){
+		for(tr = 0; tr < ntramm; tr++){
+			cout << compname[tramm[tr].ci] << "->" << compname[tramm[tr].cf] << "  tramm\n";
+			for(s = 0; s <= nsettime; s++) cout << tramm[tr].tra[s] << ","; cout << "tra\n";
+		}
+	}
+	
+	for(tr = 0; tr < ntramm; tr++){
+		for(s = 0; s <= nsettime; s++) if(tramm[tr].tra[s] == -1) emsg("multimove: EC77");
+	}
+	
+	for(tr = 0; tr < ntramm; tr++){
 		jump_multimove.push_back(1); multimovepr.push_back(0.1);
 		ntr_multimove.push_back(0); nac_multimove.push_back(0);	nfa_multimove.push_back(0);
 		ntr_multimovetot.push_back(0); nac_multimovetot.push_back(0);
 	}
+
 }
 
 void addsettime()                       // Adds settimes to a constructed event sequence evnew
