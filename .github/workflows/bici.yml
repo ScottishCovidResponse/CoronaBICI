@@ -48,3 +48,18 @@ jobs:
         else
           echo "All required output files found"
         fi
+
+    # - uses: actions/upload-artifact@v2
+    #   with:
+    #     path: Analysis/Output
+
+    # - name: Archive results
+    #   run: |
+    #     cd Analysis
+    #     cp --exclude "Output/*/bici*.txt" Output.tar.gz Output
+
+    - name: Upload results
+      uses: actions/upload-artifact@v2
+      with:
+        name: Output
+        path: Analysis/Output
