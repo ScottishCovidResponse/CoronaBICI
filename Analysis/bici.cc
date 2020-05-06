@@ -25,7 +25,7 @@ d) "Stats.txt" calculates the posterior means, 90% credible intervals, effective
 */
 	 
 // The is turned on when performing MPI on multiple chains
-//#define MP 1                        
+//#define USE_MPI 1                        
 
 const long noout = 0;                 // Suppresses the output when error checking
 const long checkon = 0;               // Determines if checking is done
@@ -37,7 +37,7 @@ using namespace tinyxml2;
 
 using namespace std;
 
-#ifdef MP
+#ifdef USE_MPI
 #include <mpi.h>
 #endif
 
@@ -86,7 +86,7 @@ int main(int argc, char** argv)
   string file;
   vector <double> v;
  
-	#ifdef MP
+	#ifdef USE_MPI
 	int process_Rank, size_Of_Cluster;
   MPI_Init(&argc, &argv);
   MPI_Comm_size(MPI_COMM_WORLD, &size_Of_Cluster);
@@ -95,7 +95,7 @@ int main(int argc, char** argv)
 	nrun = size_Of_Cluster;
   #endif
  
-  #ifndef MP
+  #ifndef USE_MPI
 	simnum = 0;
 	nrun = 1;
   #endif
@@ -113,7 +113,7 @@ int main(int argc, char** argv)
 	}
 	
 	// Ensure directories are created before other processes proceed
-#ifdef MP
+#ifdef USE_MPI
 	MPI_Barrier(MPI_COMM_WORLD);
 #endif
 
@@ -198,7 +198,7 @@ int main(int argc, char** argv)
 			ch[0]->savesimulated();
 		}
 		
-		#ifdef MP
+		#ifdef USE_MPI
 		MPI_Finalize();
 		#endif
     return 0;
@@ -236,7 +236,7 @@ int main(int argc, char** argv)
 	ch[0]->diagnosticsfile();
 	stats();
 	
-	#ifdef MP
+	#ifdef USE_MPI
 	MPI_Finalize();
 	#endif
 }
