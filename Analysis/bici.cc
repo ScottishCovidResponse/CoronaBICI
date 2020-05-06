@@ -99,6 +99,15 @@ int main(int argc, char** argv)
 	simnum = 0;
 	nrun = 1;
   #endif
+
+	if (simnum == 0) {
+		cout << "CoronaBICI running ";
+#ifdef USE_MPI
+		cout << "on " << size_Of_Cluster << " MPI processes" << endl;
+#else
+		cout << "in serial" << endl;
+#endif
+	}
  
 	if(argc != 3) emsg("Not the right number of arguments");
 	file = argv[1]; 
