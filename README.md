@@ -15,7 +15,29 @@ Email: chris.pooley@bioss.ac.uk
 
 BICI, which stands for "Bayesian Individual-based Compartmental Inference", is a general purpose software for analysing individual and population-wide data using compartmental models. CoronaBICI is a version of BICI specifically designed to analyse Corona virus data (with bespoke efficient MCMC proposals suitable for large population sizes).
 
-Analysis proceeds in two stages:
+Analysis proceeds in two stages, summarised here:
+
+```
+Data/censustable.txt
+    |
+    |  # Generate a BICI model
+    |  ./gen Scotland model
+    ↓
+Scotland_model.txt
+    |
+    |  # Convert to XML
+    |  (BICI GUI)
+    ↓
+Scotland_bici_model.xml      Data/covid-19-cases-uk.txt
+    |                                 |
+    |_________________________________|
+    |  # Add COVID case data
+    |  ./gen Scotland input
+    ↓
+Scotland_bici_input.xml
+```
+
+In more detail:
 
 1) GENERATING AN INPUT FILE FOR BICI
 
