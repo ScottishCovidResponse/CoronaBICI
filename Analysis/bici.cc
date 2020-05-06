@@ -23,9 +23,8 @@ c) "Bici[X].txt" is an output file which can be read into the BICI GUI for visua
 d) "Stats.txt" calculates the posterior means, 90% credible intervals, effective sample sizes and 
    Gelman-Rubin diagnostic statics (these last two are used to confirm that MCMC is well mixed).
 */
-	 
-// The is turned on when performing MPI on multiple chains
-//#define USE_MPI 1                        
+
+// In order to use MPI, compile with -DUSE_MPI
 
 const long noout = 0;                 // Suppresses the output when error checking
 const long checkon = 0;               // Determines if checking is done

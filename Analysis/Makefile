@@ -1,6 +1,7 @@
 
 CXX := mpicxx
 CXXFLAGS := -O3
+CPPFLAGS := -DUSE_MPI
 
 srcs := bici.cc header/tinyxml2.cc
 hdrs := $(wildcard header/*.h)
