@@ -20,7 +20,7 @@ vector<string> staterate;
 
 void readinput(string file)    // Reads the input XML file
 {
-  long fi, cl, i, f, fl, tr, j, eq, c, cc, ci, cf, fmi, fma, jj, k, p, pp, leng;
+  long fi, cl, i, f, fl, tr, j, eq, c, cc, ci, cf, fmi, fma, jj, k, p, pp;
 	long min, max, ob, cap, trai, traf, d, dm, ty, ce, a;
   long s, nsmoothst, numtrans = 0;
   string s1, s2, s3, s4, name, id, st, na, type, capna, capevna, par, indname;
@@ -33,7 +33,6 @@ void readinput(string file)    // Reads the input XML file
   XMLNode* child;
   XMLNode* child2;
   XMLNode* child3;
-  XMLNode* child4;
   XMLDocument doc;
 
   ifstream inFile(file.c_str());
@@ -1140,7 +1139,7 @@ string repla(string st, string sub1, string sub2)   // Replaces one substring wi
 // Works out all the compartments consistent with a given transition
 void getalltrans(XMLNode* node, XMLNode* node2, long cl, long in, string rate) 
 {
-  long cl2, filt[nclass], count[nclass], c, j, flag, i, ii;
+  long cl2, filt[nclass], count[nclass], c, j, flag, ii;
   string st, s, name;
 
   state.clear(); staterate.clear();

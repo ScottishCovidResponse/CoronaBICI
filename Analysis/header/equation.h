@@ -41,7 +41,7 @@ long popcombine(long i);                            // Works out population can 
 
 long addequation(string s)                          // Adds a new equatrion to the list
 {
-  long len, i, j, jst, jst2, doneflag, numi, flag, eq, st, p, ist, npopnum, plfl = 0, c;
+  long len, i, j, jst, doneflag, numi, flag, eq, st, p, ist, npopnum, plfl = 0, c;
   double num;
   string a, name;
   vector<long> state, vec;
@@ -456,7 +456,7 @@ void printop()                                // Outputs the operations for an e
 
 long getparamname(string text, long i)                  // Tries to get a parameter from a string
 {
-  long p, l, num, maxlen, pmax;
+  long p, l, maxlen, pmax;
 
   maxlen = 0; pmax = -1;
   for(p = 0; p < paramname.size(); p++){

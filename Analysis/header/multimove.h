@@ -4,8 +4,8 @@ void Chain::multimove()   // Each transition type is considered in turn and mult
 {
 	double facup = 1.005, facdo = 0.995, facup2 = 1.05, facdo2 = 0.95;
 	
-	long ci, cf, k, i, e, trr, trm, c, eq, loop, loopmax, ddti, ddtf, ddi, ddf;
-	double t, tst, List, gr, al, probif, probfi, Ltoti, Ltotf, pr, jump;
+	long i, e, trr, trm, c, eq, loop, loopmax, ddti, ddtf, ddi, ddf;
+	double t, tst, gr, al, probif, probfi, Ltoti, Ltotf, pr, jump;
 	vector <double> timest, timeoldst, grst;
 	vector <long> ist, est, mv, ddist, ddfst;
 	vector <vector <long> > movetri, movetre;

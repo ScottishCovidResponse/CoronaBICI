@@ -2,7 +2,7 @@
 
 void Chain::indsim_prop(long i)            // Proposal which resimulates the trajectory for an individual
 {
-  long c, a, e;
+  long c, a;
   double al, probif, probfi, Ltoti, Ltotf, pr, fac, t;
 
   partcl = clall;
@@ -74,7 +74,6 @@ double Chain::indsimulate(long i)                        // Simulates event sequ
 
 double Chain::probindsimulate(long i)              // Probability of event sequence for an individual
 {
-  long c;
   double prob;
 
   indsim_init(i,indtbirth[i],0);
@@ -87,8 +86,8 @@ double Chain::probindsimulate(long i)              // Probability of event seque
 
 double Chain::indsim(long i, long c)                  // Simulates a new sequence for an individual
 {
-  long e, ee, k, co, j, ch, cf, p, m, n, fl, cl, fev;
-  double t, tt, tst, tnext, tnextold, z, R, r, val, kshape, mean, lam, futnext, tmid, tsta, prob = 0;
+  long e, k, co, j, n, cl, fev;
+  double t, tt, tst, tnext, tnextold, z, R, r, futnext, tmid, prob = 0;
   long tr;
 
   t = evp[0].t;
@@ -181,7 +180,7 @@ double Chain::indsim(long i, long c)                  // Simulates a new sequenc
 
 long Chain::addevnew(long tr, double t)           // Adds a new event and considers future events
 {
-  long n, c, cl, fref, m;
+  long n, c, cl, m;
   long trr;
   double tt, val, kshape;
 
@@ -229,8 +228,8 @@ long Chain::addevnew(long tr, double t)           // Adds a new event and consid
 
 double Chain::probindsim(vector<EV> &ev)     // Probability of simulating a new sequence for an individual
 {
-  long e, k, co, j, ch, cf, p, m, n, fl, c, ee, nev, fev, cl;
-  double t, tt, tst, tnext, tnextold, z, R, r, val, tmid, prob = 0, kshape, mean, lam;
+  long e, k, co, j, cf, c, ee, nev, fev, cl;
+  double t, tt, tst, tnext, tnextold, R, r, tmid, prob = 0;
   long tr;
 
   c = tra[ev[0].tr].cf; ee = 1; nev = ev.size();

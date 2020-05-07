@@ -133,9 +133,9 @@ void Chain::gap_prop(long i)       // Resample event sequences between the gaps 
 // Local resamples event sequence (estart is first event in time window)
 long Chain::localresamp(long i, long cl, long estart, double t, double tend, long type, long evfac)  
 {
-  long e, nval, c, eend, ii, ff, np, ci, cf, nev, nevadd, ji, jf, k, numi, n, fl, nevnew;
+  long e, nval, c, eend, ii, ff, ci, cf, nev, nevadd, ji, jf, k, numi, n, fl, nevnew;
   long tr, tr2, p;
-  double z, tt, Ltoti, Ltotf, al, fac = 1, t1, t2, addtime[3];
+  double tt, Ltoti, Ltotf, al, fac = 1, t1, t2, addtime[3];
   vector <long> inter;
 
   if(tend <= t){ if(t - tend > 2*tiny) emsg("Local: EC3"); return 0;}
@@ -393,9 +393,8 @@ long Chain::localresamp(long i, long cl, long estart, double t, double tend, lon
 
 void localpropinit()           // Initialisation of local proposals
 {
-  long cl, nval, j, ii, jj, iii, jjj, iiii, ci, ff, k, kk;
+  long cl, nval, j, ii, jj, iii, jjj, iiii, ff, k, kk;
   long tr, p;
-  double sum;
   vector<long> vec;
   vector< vector<long> > transleave;
 

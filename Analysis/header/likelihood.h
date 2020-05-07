@@ -26,7 +26,7 @@ void Chain::indrev(long i)     // Reverses the change to individual i
 // Makes a change to the event sequence on individual i
 void Chain::indchange(long i, long estart, double t, double tend) 
 {
-  long e, tr, trold, trnew, ci, cf, nevold, nevnew, eold, enew, cold, cnew, k, ob, o, co, nob, whole;
+  long e, trold, trnew, ci, cf, nevold, nevnew, eold, enew, cold, cnew, k, ob, o, co, nob, whole;
   double tt, told, tnew, tob;
   vector <long> remlist, addlist;
 
@@ -266,7 +266,7 @@ void Chain::indaddevent(long i, long k, EV ev)     // Adds an event for an indiv
 // Changes the state of an individual for a particular time span
 void Chain::secchange(long i, long ci, long cf, double ti, double tf)         
 {
-  long k, kmax, j, jmax, p, co, cap, cpe, ob, div, dm, d, ref;
+  long k, kmax, j, jmax, p, cap, cpe, ob, div, dm, d, ref;
   double tt, dt;
   EQCH eqch;
   NDEQCH ndeqch;

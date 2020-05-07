@@ -81,7 +81,6 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-	long i, p, r, a;
   string file;
   vector <double> v;
  

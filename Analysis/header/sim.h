@@ -42,8 +42,8 @@ void rem_transdeplist(long d, long k);
 void Chain::sim(double tmin)              // Simulates from the model starting at time tmin
 {
   long ob, c, cc, ag, p, j, d, cl, ti, index, ts, fl, flag, e, ee, dep, k, ci, cf, flindex=0;
-  long i, tr, trr, eq, kmax, di, per, pernew;
-  double  t, R, z, tmi, tma, tadd, tt, kshape, mean, lam, probsum[ncompswa], sum, indext;
+  long i, tr, trr, eq, kmax, per, pernew;
+  double  t, R, z, tmi, tma, tadd, tt, kshape, mean, lam, indext;
   vector <double> Rst;
   vector <long> postr;
 
@@ -429,7 +429,7 @@ void Chain::sim(double tmin)              // Simulates from the model starting a
 
 void Chain::addfuture(long i, long c, long cl, double tstart)  // When simulating adds future events 
 {
-  long k, j, loop, loopmax = 100;
+  long k, j, loop;
   long tr;
   double mean, shape, lam, kk, dt, tadd;
 

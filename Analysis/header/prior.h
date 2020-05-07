@@ -2,7 +2,7 @@
  
 double Chain::priorcalc()              // The total prior probability
 {
-  long pr, i, c, s;
+  long pr, i, s;
   double Lpri = 0;
 
   if(tbirthfl == 1){ for(i = 0; i < nindtot; i++) Lpri += agprior[compval[tra[indev[i][0].tr].cf][agecl]];}

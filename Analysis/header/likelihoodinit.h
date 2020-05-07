@@ -2,7 +2,7 @@
 
 void likelihoodinit()           // Initialises quantities needed to make fast likelihood calculations
 {
-  long eq, p, i, tr, k, j, c, d, jmax, ci, cf, n, flag, kmax, nn, cl, f, ki, kf, cff, s, num, ddti;
+  long eq, p, i, tr, k, j, c, d, ci, cf, n, flag, kmax, cl, f, ki, kf, cff, s, num, ddti;
   long popnum_flag[npopnum], param_flag[nparam];
 	double dd, t, tma;
   long ref, refi, reff;
@@ -481,7 +481,7 @@ void likelihoodinit()           // Initialises quantities needed to make fast li
 
 void Chain::eqtimelineinit()     // Initialises timelines used for dependent/not dependent equations
 {
-  long d, loop, eq, nn, nnew, tr, jj, e, ti, kd;
+  long d, eq, nn, nnew, tr, jj, e, ti, kd;
   long div, divnew, stim;
   double val, sum, dt, t, tnext;
 

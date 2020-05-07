@@ -2,7 +2,7 @@
 
 void Chain::deriveplotinit()         // Initialises plots graphs for derived quantities 
 {
-  long d, j, k;
+  long d;
 
   nderivetemporalplot = 0;
   derivetemporalplot.resize(nderivetemporal);
@@ -43,7 +43,7 @@ void Chain::derivepl()                // Plots graphs for derived quantities (re
 
 void Chain::deriveplotcalc()                       // Calculates data for plots of derived values
 {
-  long d, dt, i, j, k, e, tr, p, c;
+  long dt, i, j, k, e, tr, p, c;
   double t, popnum[npopnum], sum;
   vector <EV> ev;
   vector <long> nc;

@@ -96,8 +96,8 @@ void traceinit()                                        // Initialises the trace
 
 void Chain::traceplot()                                   // Plots traces for the parameter values
 {
-  long p, pp, cl, k, d, c, e;
-  long i, j, tr, evtotst, nindtotst;
+  long p, pp, d, c;
+  long i, j, evtotst, nindtotst;
   double Ltot, Lobtot;
 
   if(noout == 1) return;
@@ -303,14 +303,13 @@ void outputmodel()      // Outputs the model (used in debugging)
 
 void outcomp(long c)                // Outputs the state of a compartment
 {
-  long cl;
   if(c == NOTALIVE) cout << "NA";
   else cout << compname[c];
 }
 
 void Chain::eventplot()            // Outputs an events sample
 {
-  long cl, k, loop, tr, cf, i, j, e;
+  long k, loop, tr, cf, i, j, e;
   double fac;
   vector <long> list;
   vector <double> listt;
@@ -494,9 +493,9 @@ void Chain::diagnosticsfile()       // Outputs a file giving MCMC diagnostic inf
 
 void Chain::diagnosticschain()        // Outputs the success of MCMC proposals
 {
-  long p, e, cl, fl1=0, fl2=0, fl3=0, fl4=0, fl5=0, fl6=0, fl7=0, c, tr;
+  long p, cl, fl1=0, fl2=0, fl3=0, fl4=0, fl5=0, fl6=0, fl7=0, c;
   long i;
-  double nf, f, fmin, fmax, fav;
+  double f, fmin, fmax, fav;
 
   if(noout == 1) return;
 

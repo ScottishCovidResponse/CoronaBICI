@@ -12,7 +12,7 @@ double Chain::startseq(long i)
 {
   long e, c, cc, ob, j, p, cf, cs, csf, fev, cl, ti, tf, si, k, ctopp;
   double val, val2, sum, t, z;
-  long tr, timeback, timefor;
+  long tr;
 
   vector< vector <double> > prob;
   vector <long> pos;
