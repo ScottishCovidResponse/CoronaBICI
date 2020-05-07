@@ -35,6 +35,8 @@ double Chain::likenm(long i)         // The likelikelihood of non-Markovian tran
             kshape = nmeq_val[tra[tr].eqshape];
             L += weibullprob(t-tstnm[cl],lam,kshape);
             break;
+          default:
+            emsg("Invalid default on " LINE_STRING " in " __FILE__);
         }
       }
       else{  // This is added for the "move" data
@@ -50,6 +52,8 @@ double Chain::likenm(long i)         // The likelikelihood of non-Markovian tran
             kshape = nmeq_val[tra[tr].eqshape];
             L += weibullup(t-tstnm[cl],lam,kshape);
             break;
+          default:
+            emsg("Invalid default on " LINE_STRING " in " __FILE__);
         } 
       }
     }
@@ -71,6 +75,8 @@ double Chain::likenm(long i)         // The likelikelihood of non-Markovian tran
           kshape = nmeq_val[tra[tr2].eqshape];
           L += weibullup(t-tstnm[tra[tr2].cl],lam,kshape);
           break;
+        default:
+          emsg("Invalid default on " LINE_STRING " in " __FILE__);
       }
     }
     c = tra[tr].cf; if(c == NOTALIVE) break;
@@ -95,6 +101,8 @@ void Chain::nmchange(long tr, double dt, double dt2)   // The chnage in Linm fro
       Linm += dweibullprob(dt,dt2,lam,kshape);
       break;
     case FIXED_TR: emsg("Dist: EC2"); break;
+    default:
+      emsg("Invalid default on " LINE_STRING " in " __FILE__);
   }
 }
 
@@ -121,6 +129,8 @@ void Chain::nmcha(vector <EV> &ev, long e, long dir)  // The chnage in Linm from
         Linm += weibullprob(dt,lam,kshape)*dir;
         break;
         case FIXED_TR: emsg("Dist: EC3"); break;
+      default:
+        emsg("Invalid default on " LINE_STRING " in " __FILE__);
     }
   }
 
@@ -139,7 +149,9 @@ void Chain::nmcha(vector <EV> &ev, long e, long dir)  // The chnage in Linm from
         lam = nmeq_val[tra[trr].eq]; kshape = nmeq_val[tra[trr].eqshape];
         Linm += weibullup(dt,lam,kshape)*dir;
         break;
-        case FIXED_TR: emsg("Dist: EC4"); break;
+      case FIXED_TR: emsg("Dist: EC4"); break;
+      default:
+        emsg("Invalid default on " LINE_STRING " in " __FILE__);
     }
   }
 }

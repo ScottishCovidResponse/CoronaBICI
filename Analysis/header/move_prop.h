@@ -231,5 +231,7 @@ void Chain::nmupchange(long tr, double dt, double dt2)
       Linm += weibullup(dt2,lam,kshape) - weibullup(dt,lam,kshape);
       break;
       case FIXED_TR: emsg("Move: EC5"); break;
+    default:
+      emsg("Invalid default on " LINE_STRING " in " __FILE__);
   }
 }

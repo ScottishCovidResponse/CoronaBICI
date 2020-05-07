@@ -547,6 +547,8 @@ void readinput(string file)    // Reads the input XML file
 									}
 								}
 								break;
+              default:
+                emsg("Invalid default on " LINE_STRING " in " __FILE__);
 						}
 
 						for(jj = 0; jj < state.size(); jj++) capevfilt[ncapev][state[jj]] = 1;
@@ -612,6 +614,8 @@ void readinput(string file)    // Reads the input XML file
 								if(s2.compare("transition") == 0) fev.like = 1; else{ fev.like = 0; movefl = 1;}
 								fixev.push_back(fev); nfixev++;
 								break;
+              default:
+                emsg("Invalid default on " LINE_STRING " in " __FILE__);
 						}
 					}
         }
@@ -953,6 +957,8 @@ void createtra(long type, XMLNode* child3, long cl, long i, long f)
           getalltrans(child3,child4,cl,i,get(child4,"k"));
           for(j = 0; j < state.size(); j++) eqmap2[state[j]] = addequation(staterate[j]);
           break;
+        default:
+          emsg("Invalid default on " LINE_STRING " in " __FILE__);
       }
     }
     else emsg("Readinput: EC38");
@@ -972,6 +978,8 @@ void createtra(long type, XMLNode* child3, long cl, long i, long f)
         case WEI: 
 					tt.type = WEI_TR; tt.ci = c; tt.cf = c+(f-i)*classmult[cl]; tt.eqshape = eqmap2[c];
 					break;
+        default:
+          emsg("Invalid default on " LINE_STRING " in " __FILE__);
       }
       tt.cl = cl; tt.i = i; tt.f = f; tt.eq = eq; tt.capev = -1; tt.like = 1;
       tra.push_back(tt);
@@ -1035,6 +1043,7 @@ string get(XMLNode* node, string attr)            // This gets an XML attribute
   else{
     stringstream ss; ss << "Cannot find attribute get " << attr;
     emsg(ss.str());
+    return ss.str();
   }
 }
 
@@ -1051,6 +1060,7 @@ double getnum(XMLNode* node, string attr)         // Gets a number from an XML a
   else{
     stringstream ss; ss << "Cannot find attribute " << attr;
     emsg(ss.str());
+    return 0;
   }
 }
 
@@ -1075,6 +1085,7 @@ long getint(XMLNode* node, string attr)           // Gets an integer XML attribu
   else{
     stringstream ss; ss << "Cannot find attribute " << attr;
     emsg(ss.str());
+    return 0;
   }
 }
 

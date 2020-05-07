@@ -21,6 +21,7 @@ double ratecalcdep(long d, double *popnum, double *param) // Calculates the rate
     case POPNUM: num1 = popnum[eqncalcfastnum1[d][i]]; break;
     case REG: num1 = regcalc[eqncalcnum1[eq][i]]; break;
     case NUMERIC: num1 = numeric[eqncalcnum1[eq][i]]; break;
+    default: ; // empty
     }
 
     switch(eqncalc2[eq][i]){
@@ -28,6 +29,8 @@ double ratecalcdep(long d, double *popnum, double *param) // Calculates the rate
     case POPNUM: num2 = popnum[eqncalcfastnum2[d][i]]; break;
     case REG: num2 = regcalc[eqncalcnum2[eq][i]]; break;
     case NUMERIC: num2 = numeric[eqncalcnum2[eq][i]]; break;
+    default:
+      emsg("Invalid default on " LINE_STRING " in " __FILE__);
     }
 
     switch(eqncalcop[eq][i]){
@@ -41,6 +44,8 @@ double ratecalcdep(long d, double *popnum, double *param) // Calculates the rate
     case COSFUNC: num = cos(num2); break;
     case LOGFUNC: if(num2 <= 0) emsg("Ratecalc: EC2 Log cannot be calculated"); num = log(num2); break;
     case STEPFUNC: if(num2 > 0) num = 1; else num = 0; break;
+    default:
+      emsg("Invalid default on " LINE_STRING " in " __FILE__);
     }
 
     regcalc[eqncalcstore[eq][i]] = num;
@@ -51,6 +56,8 @@ double ratecalcdep(long d, double *popnum, double *param) // Calculates the rate
   case POPNUM: r = popnum[eqncalcansfastnum[d]]; break;
   case REG: r = regcalc[eqncalcansnum[eq]]; break;
   case NUMERIC: r = numeric[eqncalcansnum[eq]]; break;
+  default:
+    emsg("Invalid default on " LINE_STRING " in " __FILE__);
   }
 
   if(r < ratesmall) r = ratesmall;
@@ -69,6 +76,8 @@ double ratecalcnotdep(long eq, double *paramval)    // Calculates the rate of a 
     case POPNUM: emsg("Ratecalc: EC3"); break;
     case REG: num1 = regcalc[eqncalcnum1[eq][i]]; break;
     case NUMERIC: num1 = numeric[eqncalcnum1[eq][i]]; break;
+    default:
+      emsg("Invalid default on " LINE_STRING " in " __FILE__);
     }
 
     switch(eqncalc2[eq][i]){
@@ -76,6 +85,8 @@ double ratecalcnotdep(long eq, double *paramval)    // Calculates the rate of a 
     case POPNUM: emsg("Ratecalc: EC4"); break;
     case REG: num2 = regcalc[eqncalcnum2[eq][i]]; break;
     case NUMERIC: num2 = numeric[eqncalcnum2[eq][i]]; break;
+    default:
+      emsg("Invalid default on " LINE_STRING " in " __FILE__);
     }
 
     switch(eqncalcop[eq][i]){
@@ -89,6 +100,8 @@ double ratecalcnotdep(long eq, double *paramval)    // Calculates the rate of a 
     case COSFUNC: num = cos(num2); break;
     case LOGFUNC: if(num2 <= 0) emsg("Log cannot be calculated"); num = log(num2); break;
     case STEPFUNC: if(num2 > 0) num = 1; else num = 0; break;
+    default:
+      emsg("Invalid default on " LINE_STRING " in " __FILE__);
     }
 
     regcalc[eqncalcstore[eq][i]] = num;
@@ -99,6 +112,8 @@ double ratecalcnotdep(long eq, double *paramval)    // Calculates the rate of a 
   case POPNUM: emsg("Ratecalc: EC6"); break;
   case REG: r = regcalc[eqncalcansnum[eq]]; break;
   case NUMERIC: r = numeric[eqncalcansnum[eq]]; break;
+  default:
+    emsg("Invalid default on " LINE_STRING " in " __FILE__);
   }
 
   if(r < ratesmall) r = ratesmall;
@@ -126,6 +141,8 @@ double ratecalcdeptakeoff(long d, double *popnum, double *param, long c)
       default:
         switch(eqncalcop[eq][i]){
           case ADD: case TAKE: case MULTIPLY: case DIVIDE: case POWER: emsg("Ratecalc: EC7"); break;
+          default:
+            emsg("Invalid default on " LINE_STRING " in " __FILE__);
         }
         break;
     }

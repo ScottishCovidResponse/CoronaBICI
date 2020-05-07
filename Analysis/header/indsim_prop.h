@@ -116,6 +116,8 @@ double Chain::indsim(long i, long c)                  // Simulates a new sequenc
         if(fixev[fev].like == 0) tr += moventra;
         c = addevnew(tr,t);
         break;
+      default:
+        emsg("Invalid default on " LINE_STRING " in " __FILE__);
     }
 
     tnext = evp[e+1].t;
@@ -209,6 +211,8 @@ long Chain::addevnew(long tr, double t)           // Adds a new event and consid
           case GAMMA_TR: kshape = nmeq_val[tra[trr].eqshape]; tt = t+gammasamp(kshape,kshape/val); break;
           case WEI_TR: kshape = nmeq_val[tra[trr].eqshape]; tt = t+weibullsamp(val,kshape); break;
           case FIXED_TR: tt = t+val; break;
+          default:
+            emsg("Invalid default on " LINE_STRING " in " __FILE__);
         }
 
         m = 0; while(m < nfuteref && tt < futev[futeref[m]].t) m++;
@@ -255,6 +259,8 @@ double Chain::probindsim(vector<EV> &ev)     // Probability of simulating a new 
         c = cf; ee++;
         getnotdep(compleavesimclnotdep[partcl][c]); 
         break;
+      default:
+        emsg("Invalid default on " LINE_STRING " in " __FILE__);
     }
 
     tnext = evp[e+1].t;

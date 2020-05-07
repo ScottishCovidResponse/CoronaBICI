@@ -187,6 +187,8 @@ void Chain::life_prop(long i)    // Makes changes to entry and leaving times as 
         }
       }
       break;
+    default:
+      emsg("Invalid default on " LINE_STRING " in " __FILE__);
   }
 }
 

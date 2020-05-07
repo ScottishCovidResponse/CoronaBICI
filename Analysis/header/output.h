@@ -329,6 +329,8 @@ void Chain::eventplot()            // Outputs an events sample
       switch(loop){
         case 0: sim(tmax); bout << "5|"; break;
         case 1: sim(0); bout << "a|"; break;
+        default:
+          emsg("Invalid default on " LINE_STRING " in " __FILE__);
       }
     }
 

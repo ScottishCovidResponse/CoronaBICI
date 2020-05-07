@@ -308,6 +308,8 @@ void Chain::secchange(long i, long ci, long cf, double ti, double tf)
 						}
             if(dermap[dm] == 0){ derlist.push_back(dm); dermap[dm] = 1;}
             break;
+          default:
+            emsg("Invalid default on " LINE_STRING " in " __FILE__);
         }
 
         j++; tt = compcap[ci][j].t;
@@ -344,6 +346,8 @@ void Chain::secchange(long i, long ci, long cf, double ti, double tf)
 						}
             if(dermap[dm] == 0){ derlist.push_back(dm); dermap[dm] = 1;}
             break;
+          default:
+            emsg("Invalid default on " LINE_STRING " in " __FILE__);
         }
         j++; tt = compcap[cf][j].t;
       }
@@ -389,6 +393,7 @@ void Chain::secchange(long i, long ci, long cf, double ti, double tf)
 				refl.t = tf; refl.sign = -1;
 				depmaprefl[d].push_back(refl);
 				break;
+      default: ; // empty
 			}
 		}
 

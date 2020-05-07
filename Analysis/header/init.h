@@ -93,6 +93,7 @@ void init()
     switch(tra[tr].type){
       case GAMMA_TR: case WEI_TR: eqfl[tra[tr].eq] = 1; eqfl[tra[tr].eqshape] = 1; break;
       case FIXED_TR: eqfl[tra[tr].eq] = 1; break;
+      default: ; // empty
     }
   }
 
@@ -161,6 +162,7 @@ void Chain::initparamsamp()                   // Finds an initial parameter set
               eq = prioreq1[pr];
               for(j = 0; j < neq_param[eq]; j++) if(paramset[eq_param[eq][j]] == 0) flag = 1;
               break;
+            default: ; // empty
           }
 
           switch(priortype[pr]){
@@ -168,6 +170,7 @@ void Chain::initparamsamp()                   // Finds an initial parameter set
               eq = prioreq2[pr];
               for(j = 0; j < neq_param[eq]; j++) if(paramset[eq_param[eq][j]] == 0) flag = 1;
               break;
+            default: ; // empty
           }
 
           if(flag == 0){

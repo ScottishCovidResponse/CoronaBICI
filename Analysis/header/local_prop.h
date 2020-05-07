@@ -32,6 +32,8 @@ void Chain::sing_prop(long i)        // Swaps between single and two events
     switch(res){
       case 1: nac_sing[i][cl]++; break;
       case -1: nfa_sing[i][cl]++; break;
+      default:
+        emsg("Invalid default on " LINE_STRING " in " __FILE__);
     }
   }
   else{             // Fixes left event
@@ -39,6 +41,8 @@ void Chain::sing_prop(long i)        // Swaps between single and two events
     switch(res){
       case 1: nac_sing[i][cl]++; break;
       case -1: nfa_sing[i][cl]++;  break;
+      default:
+        emsg("Invalid default on " LINE_STRING " in " __FILE__);
     }
   }
 }
@@ -64,6 +68,8 @@ void Chain::twothree_prop(long i)             // Interchanges between two and th
   switch(localresamp(i,cl,e,indev[i][e].t,indev[i][ee].t,1,1)){
     case 1: nac_twothree[i][cl]++; break;
     case -1: nfa_twothree[i][cl]++; break;
+    default:
+      emsg("Invalid default on " LINE_STRING " in " __FILE__);
   }
 }
 
@@ -92,6 +98,8 @@ void Chain::pair_prop(long i)       // Interchanges a pair of events
   switch(localresamp(i,cl,e+1,indev[i][e].t+tiny,indev[i][ee].t-tiny,0,1)){
     case 1: nac_pair[i][cl]++; if(samp < burnin) pairac[cl][fl]++; break;
     case -1: nfa_pair[i][cl]++; break;
+    default:
+      emsg("Invalid default on " LINE_STRING " in " __FILE__);
   }
 }
 
@@ -116,6 +124,8 @@ void Chain::gap_prop(long i)       // Resample event sequences between the gaps 
     switch(localresamp(i,cl,e,tmi,tma,ty,0)){
       case 1: nac_gap[i][cl]++; break;
       case -1: nfa_gap[i][cl]++; break;
+      default:
+        emsg("Invalid default on " LINE_STRING " in " __FILE__);
     }
   }
 }
@@ -305,6 +315,8 @@ long Chain::localresamp(long i, long cl, long estart, double t, double tend, lon
         default: return -1;
       }
       break;
+    default:
+      emsg("Invalid default on " LINE_STRING " in " __FILE__);
   }
 
   if(p == -1 || nevadd < 0 || estart > nev) emsg("Local: EC16");

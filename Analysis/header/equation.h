@@ -332,12 +332,14 @@ long addequation(string s)                          // Adds a new equatrion to t
                       reg.push_back(0);
                     }
                     break;
+                  default: ; // empty
                 }
               }
               flag = 1;
             }
           }
           break;
+        default: ; // empty
       }
     }
 
@@ -388,12 +390,14 @@ long popcombine(long i)                        // Works out if a population can 
     switch(op[i-1]){
       case MULTIPLY: case DIVIDE: case POWER: return 0;
       case TAKE: popcombnum *= -1; break;
+      default: ; // empty
     }
   }
 
   if(i+3 < op.size()){
     switch(op[i+3]){
       case MULTIPLY: case DIVIDE: case POWER: return 0;
+      default: ; // empty
     }
   }
 
@@ -442,6 +446,8 @@ void printop()                                // Outputs the operations for an e
       case DIVIDE: cout << "/"; break;
       case REG: cout << "R" << opnum[i]; break;
       case NUMERIC: cout << numeric[opnum[i]]; break;
+      default:
+        emsg("Invalid default on " LINE_STRING " in " __FILE__);
     }
     cout << " ";
   }
@@ -531,6 +537,8 @@ void printcalc(long eq)                             // Outputs a calculation
         case POPNUM: cout << "'" << popnumname[eqncalcnum1[eq][i]] << "'"; break;
         case REG: cout << "R" << eqncalcnum1[eq][i]; break;
         case NUMERIC: cout <<  numeric[eqncalcnum1[eq][i]]; break;
+        default:
+          emsg("Invalid default on " LINE_STRING " in " __FILE__);
       }
     }
 
@@ -547,6 +555,8 @@ void printcalc(long eq)                             // Outputs a calculation
       case COSFUNC: cout <<  "cos"; break;
       case LOGFUNC: cout <<  "log"; break;
       case STEPFUNC: cout <<  "step"; break;
+      default:
+        emsg("Invalid default on " LINE_STRING " in " __FILE__);
     }
 
     cout <<  " ";
@@ -556,6 +566,8 @@ void printcalc(long eq)                             // Outputs a calculation
       case POPNUM: cout << "'" << popnumname[eqncalcnum2[eq][i]] << "'"; break;
       case REG: cout <<  "R" << eqncalcnum2[eq][i]; break;
       case NUMERIC: cout <<  numeric[eqncalcnum2[eq][i]]; break;
+      default:
+        emsg("Invalid default on " LINE_STRING " in " __FILE__);
     }
 
     cout <<  "  > ";
@@ -568,6 +580,8 @@ void printcalc(long eq)                             // Outputs a calculation
     case POPNUM: cout << popnumname[eqncalcansnum[eq]]; break;
     case REG: cout <<  "R" << eqncalcansnum[eq]; break;
     case NUMERIC: cout <<  numeric[eqncalcansnum[eq]]; break;
+    default:
+      emsg("Invalid default on " LINE_STRING " in " __FILE__);
   }
   cout <<  " Answer\n";
 }
@@ -583,6 +597,7 @@ double calculate(long eq, double *popnum, double *paramval)          // Calculat
       case POPNUM: num1 = popnum[eqncalcnum1[eq][i]]; break;
       case REG: num1 = regcalc[eqncalcnum1[eq][i]]; break;
       case NUMERIC: num1 = numeric[eqncalcnum1[eq][i]]; break;
+      default: ; // empty
     }
 
     switch(eqncalc2[eq][i]){
@@ -590,6 +605,8 @@ double calculate(long eq, double *popnum, double *paramval)          // Calculat
       case POPNUM: num2 = popnum[eqncalcnum2[eq][i]]; break;
       case REG: num2 = regcalc[eqncalcnum2[eq][i]]; break;
       case NUMERIC: num2 = numeric[eqncalcnum2[eq][i]]; break;
+      default:
+        emsg("Invalid default on " LINE_STRING " in " __FILE__);
     }
 
     switch(eqncalcop[eq][i]){
@@ -603,6 +620,8 @@ double calculate(long eq, double *popnum, double *paramval)          // Calculat
       case COSFUNC: num = cos(num2); break;
       case LOGFUNC: if(num2 <= 0) emsg("Equation: EC6 Log cannot be calculated"); num = log(num2); break;
       case STEPFUNC: if(num2 > 0) num = 1; else num = 0; break;
+      default:
+        emsg("Invalid default on " LINE_STRING " in " __FILE__);
     }
 
     regcalc[eqncalcstore[eq][i]] = num;
@@ -613,6 +632,7 @@ double calculate(long eq, double *popnum, double *paramval)          // Calculat
     case POPNUM: return popnum[eqncalcansnum[eq]]; break;
     case REG: return regcalc[eqncalcansnum[eq]]; break;
     case NUMERIC: return numeric[eqncalcansnum[eq]]; break;
+    default: emsg("Invalid default reached in __FILE__ on __LINE__") ; return 0;
   }
 }
 
@@ -627,6 +647,8 @@ double calculatenotdep(long eq, double *param)              // Calculates an equ
       case POPNUM: emsg("Equation: EC8"); break;
       case REG: num1 = regcalc[eqncalcnum1[eq][i]]; break;
       case NUMERIC: num1 = numeric[eqncalcnum1[eq][i]]; break;
+      default:
+        emsg("Invalid default on " LINE_STRING " in " __FILE__);
     }
 
     switch(eqncalc2[eq][i]){
@@ -634,6 +656,8 @@ double calculatenotdep(long eq, double *param)              // Calculates an equ
       case POPNUM: emsg("Equation: EC9"); break;
       case REG: num2 = regcalc[eqncalcnum2[eq][i]]; break;
       case NUMERIC: num2 = numeric[eqncalcnum2[eq][i]]; break;
+      default:
+        emsg("Invalid default on " LINE_STRING " in " __FILE__);
     }
 
     switch(eqncalcop[eq][i]){
@@ -647,6 +671,8 @@ double calculatenotdep(long eq, double *param)              // Calculates an equ
       case COSFUNC: num = cos(num2); break;
       case LOGFUNC: if(num2 <= 0) emsg("Equation: EC11 Log cannot be calculated"); num = log(num2); break;
       case STEPFUNC: if(num2 > 0) num = 1; else num = 0; break;
+      default:
+        emsg("Invalid default on " LINE_STRING " in " __FILE__);
     }
 
     regcalc[eqncalcstore[eq][i]] = num;
@@ -657,8 +683,10 @@ double calculatenotdep(long eq, double *param)              // Calculates an equ
     case POPNUM: emsg("Equation: EC12"); break;
     case REG: return regcalc[eqncalcansnum[eq]]; break;
     case NUMERIC: return numeric[eqncalcansnum[eq]]; break;
+      default:
+        emsg("Invalid default on " LINE_STRING " in " __FILE__);
   }
-  emsg("Equation: EC13");
+  emsg("Equation: EC13"); return 0;
 }
 
 vector<long> getallcomp(string st)                      // Gets all the comprtments from a string

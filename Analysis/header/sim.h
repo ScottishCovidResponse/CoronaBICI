@@ -129,6 +129,8 @@ void Chain::sim(double tmin)              // Simulates from the model starting a
                   break;
 
                 case FIXED_TR: emsg("Sim: EC4"); break;
+                default:
+                  emsg("Invalid default on " LINE_STRING " in " __FILE__);
               }
               if(tadd < tmin) emsg("Sim: EC5");
               if(tadd < tmax2) addfuturetra(i,tr,tt,tadd);
@@ -163,6 +165,8 @@ void Chain::sim(double tmin)              // Simulates from the model starting a
         }
       }
       break;
+    default:
+      emsg("Invalid default on " LINE_STRING " in " __FILE__);
   }
 
   for(p = 0; p < npopnum; p++) sim_popnum[p] = 0;
@@ -464,6 +468,8 @@ void Chain::addfuture(long i, long c, long cl, double tstart)  // When simulatin
         if(j < settime.size()) dt = settime[j] - tstart-tiny;
         else dt = large;
         break;
+      default:
+        emsg("Invalid default on " LINE_STRING " in " __FILE__);
     }
 
     if(dt < 0){

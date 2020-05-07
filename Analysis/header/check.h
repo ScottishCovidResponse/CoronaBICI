@@ -351,6 +351,7 @@ void Chain::checklikedisc(long num)             // Checks the likelihood based o
 			case 0:
 				Lr += log(transnotdepeq_val[d]);
 				break;
+			default: ; // empty
 			}
 		}
 		

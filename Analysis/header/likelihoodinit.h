@@ -55,19 +55,23 @@ void likelihoodinit()           // Initialises quantities needed to make fast li
           switch(eqncalc1[eq][i]){
             case PARAM: param_flag[eqncalcnum1[eq][i]] = 1; break;
             case POPNUM: popnum_flag[eqncalcnum1[eq][i]] = 1; break;
+            default: ; // empty
           }
           break;
+        default: ; // empty
       }
 
       switch(eqncalc2[eq][i]){
         case PARAM: param_flag[eqncalcnum2[eq][i]] = 1; break;
         case POPNUM: popnum_flag[eqncalcnum2[eq][i]] = 1; break;
+        default: ; // empty
       }
     }
 
     switch(eqncalcans[eq]){
       case PARAM: param_flag[eqncalcansnum[eq]] = 1; break;
       case POPNUM: popnum_flag[eqncalcansnum[eq]] = 1; break;
+      default: ; // empty
     }
 
     for(p = 0; p < npopnum; p++){
@@ -442,6 +446,7 @@ void likelihoodinit()           // Initialises quantities needed to make fast li
           if(j == neq_popnum[eq]) emsg("Likelihoodinit: EC5");
           eqncalcfastnum1[d][i] = j;
           break;
+        default: ; // empty
       }
 
       switch(eqncalc2[eq][i]){
@@ -451,6 +456,7 @@ void likelihoodinit()           // Initialises quantities needed to make fast li
           if(j == neq_popnum[eq]) emsg("Likelihoodinit: EC6");
           eqncalcfastnum2[d][i] = j;
           break;
+        default: ; // empty
       }
     }
 
@@ -461,6 +467,7 @@ void likelihoodinit()           // Initialises quantities needed to make fast li
         if(j == neq_popnum[eq]) emsg("Likelihoodinit: EC7");
         eqncalcansfastnum[d] = j;
         break;
+      default: ; // empty
     }
   }
 

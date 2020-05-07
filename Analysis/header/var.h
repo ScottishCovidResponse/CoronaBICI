@@ -853,6 +853,10 @@ void storeemsg(string msg)
 	err.flush();
 }
 
+#define STRING(x) STRING2(x)
+#define STRING2(x) #x
+#define LINE_STRING STRING(__LINE__)
+
 void emsg(string msg)
 {
   cout << "e|ERROR MSG: " << msg << "    Sample number:" << samp << "\n";

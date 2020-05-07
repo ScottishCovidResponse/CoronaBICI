@@ -97,6 +97,8 @@ void Chain::part_prop(long i)                      // Makes a particle proposal 
               if(tr < 0) w = 0; else{ if(tra[tr].type == EXP_TR) w *= transra(tra[tr].eq,t,co);}
             }
             break;
+          default:
+            emsg("Invalid default on " LINE_STRING " in " __FILE__);
         }
       }
       if(w == 0) numzero++;
@@ -283,6 +285,8 @@ void Chain::insertexisting(vector<EV> &ev)     // Populates particles with the e
                   break;
 
                 case FIXED_TR: emsg("Part: EC8"); break;
+                default:
+                  emsg("Invalid default on " LINE_STRING " in " __FILE__);
               }
               if(ttt < t) emsg("Part: EC9");
               li2 = li-1; 
@@ -370,6 +374,8 @@ void Chain::part_simsec(long i, long evpbeg, long evpend, PART &pa)      // Simu
         if(fixev[fev].like == 0) tr += moventra;
         c = addevnew(tr,t);
         break;
+      default:
+        emsg("Invalid default on " LINE_STRING " in " __FILE__);
     }
 
     tnext = evp[e+1].t;
@@ -613,6 +619,8 @@ void partinit()                               // Initialises quantities used whe
       switch(transdep[eq]){
         case 0: compleavesimclnotdep[clall][tra[tr].ci].push_back(tr); break;
         case 1: compleavesimcldep[clall][tra[tr].ci].push_back(tr); break;
+        default:
+          emsg("Invalid default on " LINE_STRING " in " __FILE__);
       }
 
       cl = tra[tr].cl;
@@ -620,6 +628,8 @@ void partinit()                               // Initialises quantities used whe
         switch(transdep[eq]){
           case 0: compleavesimclnotdep[cl][tra[tr].ci].push_back(tr); break;
           case 1: compleavesimcldep[cl][tra[tr].ci].push_back(tr); break;
+          default:
+            emsg("Invalid default on " LINE_STRING " in " __FILE__);
         }
       }
     }
@@ -632,6 +642,8 @@ void partinit()                               // Initialises quantities used whe
       switch(transdep[eq]){
         case 0: compleavenotdep[tra[tr].ci].push_back(tr); break;
         case 1: compleavedep[tra[tr].ci].push_back(tr); break;
+        default:
+          emsg("Invalid default on " LINE_STRING " in " __FILE__);
       }
     }
   }
@@ -673,6 +685,7 @@ void partinit()                               // Initialises quantities used whe
         case FIXED_TR: case GAMMA_TR: case WEI_TR:
           nonexpc[tra[tr].ci].push_back(tr);
           break;
+        default: ; // empty
       }
     }
   }

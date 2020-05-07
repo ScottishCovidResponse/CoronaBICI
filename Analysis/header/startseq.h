@@ -56,6 +56,8 @@ double Chain::startseq(long i)
           for(c = 0; c < ncomps; c++){ if(compval[c][cl] == ti) prob[e][c] = prob[e][c+(tf-ti)*classmult[cl]];}
           for(c = 0; c < ncomps; c++){ if(compval[c][cl] != ti) prob[e][c] = 0;}
           break;
+        default:
+          emsg("Invalid default on " LINE_STRING " in " __FILE__);
       }
     }
   }
@@ -129,6 +131,8 @@ double Chain::startseq(long i)
         EV evf; evf.tr = tr; evf.t = t; evnew.push_back(evf);
         c = cf;
         break;
+      default:
+        emsg("Invalid default on " LINE_STRING " in " __FILE__);
     }
 
     sum = 0; pos.clear(); possum.clear();
