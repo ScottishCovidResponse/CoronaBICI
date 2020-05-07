@@ -307,7 +307,8 @@ void Chain::sim(double tmin)              // Simulates from the model starting a
             if(compval[sim_statind[i]][cl] == tra[tr].i){
               flag = 0; e = nindev_sim[i]-1; 
 							while(e >= 0 && indev_sim[i][e].t > futev[j].tnow){ // Checks for intervening events
-								if(tra[indev_sim[i][e].tr].cl == cl) flag = 1; e--;
+								if(tra[indev_sim[i][e].tr].cl == cl) flag = 1;
+                e--;
 							} 
               if(flag == 0){
                 cf = c + (tra[tr].f-tra[tr].i)*classmult[cl];

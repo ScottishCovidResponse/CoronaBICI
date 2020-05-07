@@ -400,10 +400,12 @@ void Chain::paramgrad(long p)              // Calculates the gradient and curvat
 
   if(param_nmfl[p] == 1){
     param[p] = val + dd; setnmeq(); Linmtemp = 0; 
-		for(i = 0; i < nindtot; i++) Linmtemp += likenm(i); dLup += Linmtemp - Linm;
+		for(i = 0; i < nindtot; i++) Linmtemp += likenm(i);
+    dLup += Linmtemp - Linm;
 
     param[p] = val - dd; setnmeq(); Linmtemp = 0;
-		for(i = 0; i < nindtot; i++) Linmtemp += likenm(i); dLdo += Linmtemp - Linm;
+		for(i = 0; i < nindtot; i++) Linmtemp += likenm(i);
+    dLdo += Linmtemp - Linm;
   }
 
   pgrad = (dLup-dLdo)/(2*dd);

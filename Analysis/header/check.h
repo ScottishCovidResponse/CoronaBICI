@@ -659,8 +659,9 @@ void Chain::checklike(long num)                  // Checks that the likelihood i
         ob = indobs[i][j];
 
         t = obst[ob]; 
-        while(e < nindev[i] && indev[i][e].t < t){ 
-					if(tra[indev[i][e].tr].type >= 0) c = tra[indev[i][e].tr].cf; e++;
+        while(e < nindev[i] && indev[i][e].t < t){
+					if(tra[indev[i][e].tr].type >= 0) c = tra[indev[i][e].tr].cf;
+          e++;
 				}
         if(c == NOTALIVE){ Lo_st += notobsdL; nwrong++;}
         else{

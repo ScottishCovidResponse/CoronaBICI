@@ -176,7 +176,8 @@ long Chain::localresamp(long i, long cl, long estart, double t, double tend, lon
         case 2:
           if(ran() < prswitch){  // 2 to 3 transition
            n = nlocpath[cl][ii][ff][3];
-            if(n == 0) return -1; if(nlocpath[cl][ii][ff][2] == 0) emsg("Local: EC4");
+            if(n == 0) return -1;
+            if(nlocpath[cl][ii][ff][2] == 0) emsg("Local: EC4");
             fac *= double(n)/nlocpath[cl][ii][ff][2];
 
             p = locpath[cl][ii][ff][3][long(ran()*n)];
@@ -195,7 +196,8 @@ long Chain::localresamp(long i, long cl, long estart, double t, double tend, lon
         case 3:
           if(ran() < prswitch){  // 3 to 2 transition
             n = nlocpath[cl][ii][ff][2]; 
-						if(n == 0) return -1; if(nlocpath[cl][ii][ff][3] == 0) emsg("Local: EC5");
+						if(n == 0) return -1;
+            if(nlocpath[cl][ii][ff][3] == 0) emsg("Local: EC5");
             fac *= double(n)/nlocpath[cl][ii][ff][3];
             p = locpath[cl][ii][ff][2][long(ran()*n)];
 
@@ -220,7 +222,8 @@ long Chain::localresamp(long i, long cl, long estart, double t, double tend, lon
           if(ii != ff) emsg("Local: EC7");
 
           n = nlocpath[cl][ii][ff][2]; 
-					if(n == 0) return -1; if(nlocpath[cl][ii][ff][0] != 1) emsg("Local: EC8");
+					if(n == 0) return -1;
+          if(nlocpath[cl][ii][ff][0] != 1) emsg("Local: EC8");
           fac *= n;
           p = locpath[cl][ii][ff][2][long(ran()*n)];
 
@@ -232,7 +235,8 @@ long Chain::localresamp(long i, long cl, long estart, double t, double tend, lon
 
         case 1:
           n = nlocpath[cl][ii][ff][2];
-					if(n == 0) return -1; if(nlocpath[cl][ii][ff][1] != 1) emsg("Local: EC9");
+					if(n == 0) return -1;
+          if(nlocpath[cl][ii][ff][1] != 1) emsg("Local: EC9");
           fac *= n;
           p = locpath[cl][ii][ff][2][long(ran()*n)];
 
@@ -269,7 +273,8 @@ long Chain::localresamp(long i, long cl, long estart, double t, double tend, lon
       switch(numi){
         case 1:
           n = nlocpath[cl][ii][ff][2]; 
-					if(n == 0) return -1; if(nlocpath[cl][ii][ff][1] != 1) emsg("Local: EC12");
+					if(n == 0) return -1;
+          if(nlocpath[cl][ii][ff][1] != 1) emsg("Local: EC12");
           fac *= n;
           p = locpath[cl][ii][ff][2][long(ran()*n)];
 
@@ -279,7 +284,8 @@ long Chain::localresamp(long i, long cl, long estart, double t, double tend, lon
 
         case 2:
           n = nlocpath[cl][ii][ff][1];
-					if(n == 0) return -1; if(n != 1) emsg("Local: EC13");
+					if(n == 0) return -1;
+          if(n != 1) emsg("Local: EC13");
           fac /= nlocpath[cl][ii][ff][2];
           p = locpath[cl][ii][ff][1][0];
 
@@ -295,7 +301,8 @@ long Chain::localresamp(long i, long cl, long estart, double t, double tend, lon
       switch(numi){
         case 1:
           n = nlocpath[cl][ii][ff][2]; 
-					if(n == 0) return -1; if(nlocpath[cl][ii][ff][1] != 1) emsg("Local: EC14");
+					if(n == 0) return -1;
+          if(nlocpath[cl][ii][ff][1] != 1) emsg("Local: EC14");
           fac *= n;
           p = locpath[cl][ii][ff][2][long(ran()*n)];
 
@@ -305,7 +312,8 @@ long Chain::localresamp(long i, long cl, long estart, double t, double tend, lon
 
         case 2:
           n = nlocpath[cl][ii][ff][1];
-					if(n == 0) return -1; if(n != 1) emsg("Local: EC15");
+					if(n == 0) return -1;
+          if(n != 1) emsg("Local: EC15");
           fac /= nlocpath[cl][ii][ff][2];
           p = locpath[cl][ii][ff][1][0];
           nevadd = 1; addtime[0] = tend;

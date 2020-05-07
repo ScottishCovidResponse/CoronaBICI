@@ -353,7 +353,8 @@ void likelihoodinit()           // Initialises quantities needed to make fast li
                 for(k = 0; k < kmax; k++){
                   if(kf >= 0) dd = transdepeqch[reff][kf].popnum[k]; else dd = 0;
                   if(ki >= 0) dd -= transdepeqch[refi][ki].popnum[k];
-                  if(dd > -ttiny && dd < ttiny) dd = 0; if(dd != 0) flag = 2;
+                  if(dd > -ttiny && dd < ttiny) dd = 0;
+                  if(dd != 0) flag = 2;
                   eqch.popnum[k] = dd;
                 }
               }

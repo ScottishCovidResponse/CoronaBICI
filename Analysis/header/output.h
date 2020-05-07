@@ -51,7 +51,8 @@ void traceinit()                                        // Initialises the trace
       bout << "Probability of initially being in ";
       for(cl = 0; cl < nclass-2; cl++){ 
 				if(!(cl == agecl && nclassval[agecl] == 1)){ 
-					if(cl != 0) bout << ","; bout << classval[cl][compval[c][cl]];
+					if(cl != 0) bout << ",";
+          bout << classval[cl][compval[c][cl]];
 				}
 			}
       bout << "|";
@@ -282,7 +283,8 @@ void outputmodel()      // Outputs the model (used in debugging)
   }
 
   model << "\n";
-  for(f = 0; f <= ncapevtrange; f++) model << capevtrange[f] << ","; model << "capevtrange\n";
+  for(f = 0; f <= ncapevtrange; f++) model << capevtrange[f] << ",";
+  model << "capevtrange\n";
   model << "\n";
 
   model << "fixfl: " << fixfl << "\n";
@@ -542,25 +544,37 @@ void Chain::diagnosticschain()        // Outputs the success of MCMC proposals
 
 		fmin = 1; fmax = 0; fav = 0; 
 		for(i = 0; i < nind; i++){
-			f = nac_part[i][cl]/ntr_part[i][cl]; if (f > fmax) fmax = f; if(f < fmin) fmin = f; fav += f/nind;
+			f = nac_part[i][cl]/ntr_part[i][cl];
+      if (f > fmax) fmax = f;
+      if(f < fmin) fmin = f;
+      fav += f/nind;
 		}
 		ss << "Acceptance probability: " << fav << " (" << fmin << "-" << fmax << ")|";
 
 		fmin = 1; fmax = 0; fav = 0; 
 		for(i = 0; i < nind; i++){
-			f = nfa_part[i][cl]/ntr_part[i][cl]; if (f > fmax) fmax = f; if(f < fmin) fmin = f; fav += f/nind;
+			f = nfa_part[i][cl]/ntr_part[i][cl];
+      if (f > fmax) fmax = f;
+      if(f < fmin) fmin = f;
+      fav += f/nind;
 		}
 		ss << "Failure: " << fav << " (" << fmin << "-" << fmax << ")|";
 
 		fmin = 1; fmax = 0; fav = 0; 
 		for(i = 0; i < nind; i++){ 
-			f = nde_part[i][cl]/ntr_part[i][cl]; if (f > fmax) fmax = f; if(f < fmin) fmin = f; fav += f/nind;
+			f = nde_part[i][cl]/ntr_part[i][cl];
+      if (f > fmax) fmax = f;
+      if(f < fmin) fmin = f;
+      fav += f/nind;
 		}
 		ss << "Degenerate: " << fav << " (" << fmin << "-" << fmax << ")|";
 
 		fmin = npartmax; fmax = 0; fav = 0; 
 		for(i = 0; i < nind; i++){ 
-			f = nindpart[i][cl]; if (f > fmax) fmax = f; if(f < fmin) fmin = f; fav += f/nind;
+			f = nindpart[i][cl];
+      if (f > fmax) fmax = f;
+      if(f < fmin) fmin = f;
+      fav += f/nind;
 		}
 		ss << "# Particles used: " << fav << " (" << fmin << "-" << fmax << ")|";
 	}
@@ -583,7 +597,9 @@ void Chain::diagnosticschain()        // Outputs the success of MCMC proposals
 				fmin = 1; fmax = 0; fav = 0; 
 				for(i = 0; i < nind; i++){
 					f = nac_move[i][cl]/ntr_move[i][cl];
-					if (f > fmax) fmax = f; if(f < fmin) fmin = f; fav += f/nind;
+					if (f > fmax) fmax = f;
+          if(f < fmin) fmin = f;
+          fav += f/nind;
 				}
 				ss << "MOVE EVENT   Acceptance probability: " << fav << " (" << fmin << "-" << fmax << ")      |";
 			}
@@ -593,7 +609,9 @@ void Chain::diagnosticschain()        // Outputs the success of MCMC proposals
 		for(c = 0; c < ncomp; c++){ 
 			if(ntr_movecomp[c][cl] > 1){
 				f = nac_movecomp[c][cl]/ntr_movecomp[c][cl]; 
-				if(f > fmax) fmax = f; if(f < fmin) fmin = f; fav += f; nfav++;
+				if(f > fmax) fmax = f;
+        if(f < fmin) fmin = f;
+        fav += f; nfav++;
 			}
 		}
 		
@@ -605,7 +623,9 @@ void Chain::diagnosticschain()        // Outputs the success of MCMC proposals
 				fmin = 1; fmax = 0; fav = 0; 
 				for(i = 0; i < nind; i++){ 
 					f = nac_sing[i][cl]/ntr_sing[i][cl]; 
-					if(f > fmax) fmax = f; if(f < fmin) fmin = f; fav += f/nind;
+					if(f > fmax) fmax = f;
+          if(f < fmin) fmin = f;
+          fav += f/nind;
 				}
 				ss << "ADD/REMOVE EVENT   Acceptance probability: " << fav << " (" 
 						<< fmin << "-" << fmax << ")      ";
@@ -613,7 +633,9 @@ void Chain::diagnosticschain()        // Outputs the success of MCMC proposals
 				fmin = 1; fmax = 0; fav = 0; 
 				for(i = 0; i < nind; i++){ 
 					f = nfa_sing[i][cl]/ntr_sing[i][cl]; 
-					if(f > fmax) fmax = f; if(f < fmin) fmin = f; fav += f/nind;
+					if(f > fmax) fmax = f;
+          if(f < fmin) fmin = f;
+          fav += f/nind;
 				}
 				ss << "Failure: " << fav << " (" << fmin << "-" << fmax << ")      |";
 			}
@@ -623,7 +645,9 @@ void Chain::diagnosticschain()        // Outputs the success of MCMC proposals
 				fmin = 1; fmax = 0; fav = 0; 
 				for(i = 0; i < nind; i++){ 
 					f = nac_twothree[i][cl]/ntr_twothree[i][cl]; 
-					if(f > fmax) fmax = f; if(f < fmin) fmin = f; fav += f/nind;
+					if(f > fmax) fmax = f;
+          if(f < fmin) fmin = f;
+          fav += f/nind;
 				}
 				ss << "TWO/THREE EVENT    Acceptance probability: " 
 						<< fav << " (" << fmin << "-" << fmax << ")      ";
@@ -631,7 +655,9 @@ void Chain::diagnosticschain()        // Outputs the success of MCMC proposals
 				fmin = 1; fmax = 0; fav = 0; 
 				for(i = 0; i < nind; i++){ 
 					f = nfa_twothree[i][cl]/ntr_twothree[i][cl]; 
-					if (f > fmax) fmax = f; if(f < fmin) fmin = f; fav += f/nind;
+					if (f > fmax) fmax = f;
+          if(f < fmin) fmin = f;
+          fav += f/nind;
 				}
 				ss << "Failure: " << fav << " (" << fmin << "-" << fmax << ")      |";
 			}
@@ -641,14 +667,18 @@ void Chain::diagnosticschain()        // Outputs the success of MCMC proposals
 				fmin = 1; fmax = 0; fav = 0; 
 				for(i = 0; i < nind; i++){ 
 					f = nac_pair[i][cl]/ntr_pair[i][cl]; 
-					if(f > fmax) fmax = f; if(f < fmin) fmin = f; fav += f/nind;
+					if(f > fmax) fmax = f;
+          if(f < fmin) fmin = f;
+          fav += f/nind;
 				}
 				ss << "PAIR EVENT   Acceptance probability: " << fav << " (" << fmin << "-" << fmax << ")      ";
 
 				fmin = 1; fmax = 0; fav = 0; 
 				for(i = 0; i < nind; i++){ 
 					f = nfa_pair[i][cl]/ntr_pair[i][cl]; 
-					if(f > fmax) fmax = f; if(f < fmin) fmin = f; fav += f/nind;
+					if(f > fmax) fmax = f;
+          if(f < fmin) fmin = f;
+          fav += f/nind;
 				}
 				ss << "Failure: " << fav << " (" << fmin << "-" << fmax << ")      |";
 			}
@@ -658,14 +688,18 @@ void Chain::diagnosticschain()        // Outputs the success of MCMC proposals
 				fmin = 1; fmax = 0; fav = 0; 
 				for(i = 0; i < nind; i++){ 
 					f = nac_gap[i][cl]/ntr_gap[i][cl]; 
-					if(f > fmax) fmax = f; if(f < fmin) fmin = f; fav += f/nind;
+					if(f > fmax) fmax = f;
+          if(f < fmin) fmin = f;
+          fav += f/nind;
 				}
 				ss << "EVENT GAP   Acceptance probability: " << fav << ", " << fmin << "-" << fmax << "      ";
 
 				fmin = 1; fmax = 0; fav = 0; 
 				for(i = 0; i < nind; i++){ 
 					f = nfa_gap[i][cl]/ntr_gap[i][cl]; 
-					if(f > fmax) fmax = f; if(f < fmin) fmin = f; fav += f/nind;
+					if(f > fmax) fmax = f;
+          if(f < fmin) fmin = f;
+          fav += f/nind;
 				}
 				ss << "Failure: " << fav << " (" << fmin << "-" << fmax << ")      |";
 			}
@@ -688,7 +722,10 @@ void Chain::diagnosticschain()        // Outputs the success of MCMC proposals
     if(fl1 == 1){
       fmin = 1; fmax = 0; fav = 0; 
 			for(i = 0; i < nind; i++){ 
-				f = nac_tbirth[i]/ntr_tbirth[i]; if(f > fmax) fmax = f; if(f < fmin) fmin = f; fav += f/nind;
+				f = nac_tbirth[i]/ntr_tbirth[i];
+        if(f > fmax) fmax = f;
+        if(f < fmin) fmin = f;
+        fav += f/nind;
 			}
       ss << "BIRTH TIME   Acceptance probability: " << fav << " (" << fmin << "-" << fmax << ")      |";	
     }
@@ -697,7 +734,9 @@ void Chain::diagnosticschain()        // Outputs the success of MCMC proposals
       fmin = 1; fmax = 0; fav = 0; 
 			for(i = 0; i < nind; i++){ 
 				f = nac_tbirthent[i]/ntr_tbirthent[i]; 
-				if(f > fmax) fmax = f; if(f < fmin) fmin = f; fav += f/nind;
+				if(f > fmax) fmax = f;
+        if(f < fmin) fmin = f;
+        fav += f/nind;
 			}
       ss << "BIRTH/ENTER TIME   Acceptance probability: " 
 					<< fav << " (" << fmin << "-" << fmax << ")      |";	
@@ -706,7 +745,10 @@ void Chain::diagnosticschain()        // Outputs the success of MCMC proposals
     if(fl3 == 1){ 
       fmin = 1; fmax = 0; fav = 0; 
 			for(i = 0; i < nind; i++){ 
-				f = nac_tent[i]/ntr_tent[i]; if(f > fmax) fmax = f; if(f < fmin) fmin = f; fav += f/nind;
+				f = nac_tent[i]/ntr_tent[i];
+        if(f > fmax) fmax = f;
+        if(f < fmin) fmin = f;
+        fav += f/nind;
 			}
       ss << "ENTER TIME   Acceptance probability: " << fav << " (" << fmin << "-" << fmax << ")      |";
     }
@@ -714,7 +756,10 @@ void Chain::diagnosticschain()        // Outputs the success of MCMC proposals
     if(fl4 == 1){ 
       fmin = 1; fmax = 0; fav = 0; 
 			for(i = 0; i < nind; i++){ 
-				f = nac_tlea[i]/ntr_tlea[i]; if(f > fmax) fmax = f; if(f < fmin) fmin = f; fav += f/nind;
+				f = nac_tlea[i]/ntr_tlea[i];
+        if(f > fmax) fmax = f;
+        if(f < fmin) fmin = f;
+        fav += f/nind;
 			}
       ss << "LEAVE TIME   Acceptance probability: " << fav << " (" << fmin << "-" << fmax << ")      |";	
     }
@@ -723,7 +768,9 @@ void Chain::diagnosticschain()        // Outputs the success of MCMC proposals
       fmin = 1; fmax = 0; fav = 0; 
 			for(i = 0; i < nind; i++){ 
 				f = nac_entswitch[i]/ntr_entswitch[i]; 
-				if(f > fmax) fmax = f; if(f < fmin) fmin = f; fav += f/nind;
+				if(f > fmax) fmax = f;
+        if(f < fmin) fmin = f;
+        fav += f/nind;
 			}
       ss << "ENTER/EXIST SWITCH   Acceptance probability: " 
 					<< fav << " (" << fmin << "-" << fmax << ")      |";
@@ -733,7 +780,9 @@ void Chain::diagnosticschain()        // Outputs the success of MCMC proposals
       fmin = 1; fmax = 0; fav = 0; 
 			for(i = 0; i < nind; i++){ 
 				f = nac_birthentswitch[i]/ntr_birthentswitch[i]; 
-				if(f > fmax) fmax = f; if(f < fmin) fmin = f; fav += f/nind;
+				if(f > fmax) fmax = f;
+        if(f < fmin) fmin = f;
+        fav += f/nind;
 			}
       ss << "BIRTH/ENTER SWITCH   Acceptance probability: " 
 					<< fav << " (" << fmin << "-" << fmax << ")      |";
@@ -743,7 +792,9 @@ void Chain::diagnosticschain()        // Outputs the success of MCMC proposals
       fmin = 1; fmax = 0; fav = 0; 
 			for(i = 0; i < nind; i++){ 
 				f = nac_leaswitch[i]/ntr_leaswitch[i]; 
-				if(f > fmax) fmax = f; if(f < fmin) fmin = f; fav += f/nind;
+				if(f > fmax) fmax = f;
+        if(f < fmin) fmin = f;
+        fav += f/nind;
 			}
       ss << "LEAVE/EXIST SWITCH   Acceptance probability: " 
 					<< fav << " (" << fmin << "-" << fmax << ")      |";
@@ -875,7 +926,8 @@ void Chain::tracefile()               // Outputs the trace file
 	}
 	trace << tot << "\t" << L() << "\t";
 	
-	for(r = 0; r < nregion; r++) trace << multacf[r] << "\t"; trace << "0\n";
+	for(r = 0; r < nregion; r++) trace << multacf[r] << "\t";
+  trace << "0\n";
 }
 
 void Chain::loadsimulated()

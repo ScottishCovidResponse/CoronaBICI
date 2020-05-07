@@ -153,8 +153,10 @@ int main(int argc, char** argv)
   localpropinit();
   lifepropinit(); bout << "3|50|\n"; bout.flush();
   moveinit();
-	
-  if(simon == 0) startseqinit(); bout << "3|60|\n"; bout.flush();
+
+  if(simon == 0) startseqinit();
+
+  bout << "3|60|\n"; bout.flush();
 
   ch[0] = new Chain;
   nchain = 1;

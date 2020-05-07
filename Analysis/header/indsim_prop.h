@@ -485,7 +485,8 @@ long Chain::getlifespan(long i)                    // Gets the time over which a
 {
   long e;
   tent = indev[i][0].t; e = nindev[i]-1; 
-  while(e > 0 && tra[indev[i][e].tr].cf != NOTALIVE) e--; tlea = indev[i][e].t;
+  while(e > 0 && tra[indev[i][e].tr].cf != NOTALIVE) e--;
+  tlea = indev[i][e].t;
   if(tlea > tmax || e == 0) emsg("Indsim: EC22");
   return e;
 }

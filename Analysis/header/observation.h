@@ -128,7 +128,8 @@ double Chain::calcobsprob(long eq)       // Calculates the observation probaabil
 
   if(eq < 0) emsg("Observation: EC1");
   pr = calculatenotdep(eq,param);
-  if(pr < obssmall) pr = obssmall; if(pr > 1-obssmall) pr = 1-obssmall;
+  if(pr < obssmall) pr = obssmall;
+  if(pr > 1-obssmall) pr = 1-obssmall;
 
   return pr;
 }

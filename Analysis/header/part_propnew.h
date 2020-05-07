@@ -123,7 +123,8 @@ void Chain::part_prop(long i)                      // Makes a particle proposal 
 
         for(p = pbeg+npart+1; p < pend+npart; p++){
           z = ran()*wsum; pp = pbeg; 
-					while(pp < pend && z > wsumst[pp]) pp++; if(pp == pend) emsg("Part: EC3");
+					while(pp < pend && z > wsumst[pp]) pp++;
+          if(pp == pend) emsg("Part: EC3");
           part[p].pback = pp; part[p].w = 1;
         }
       }
