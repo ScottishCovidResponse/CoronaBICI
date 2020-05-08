@@ -59,11 +59,11 @@ This time data is added to finally create the file "Scotland_bici_input.xml", wh
 
 In the "GenerateInputFile" directory there is a node.js command line tool text2xml. You can run this tools using the command:
 ```
-node text2xml <machine> <text_file>
+node text2xml <model_file> <output_file>
 ```
-Where `<machine>` is either windows, linux or mac and `<text_file>` is the path to the model text file to convert.
+Where `<model_file>` is the path to the model text file to convert and `<output_file>` is the path of the XML file to create.
 
-Once the program has run you should see `init file created!` and a new "init.xml" file will have been created in the current working directory.
+Once the program has run you should see `init file created!` and a new XML file will have been created with the name and path specified by the `<output_file>` provided.
 
 ### Running the analysis
 
