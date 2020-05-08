@@ -87,6 +87,8 @@ var model_file = process.argv[3];
 // ----------------------------------------------------------------------------
 // Setting up minimal model parameters to allow for model to be imported from file.
 
+initvar();
+
 addclass('Age');
 addclass('Time');
 
