@@ -68,21 +68,15 @@ ty = ""
 // ----------------------------------------------------------------------------
 // Processing command line arguments.
 
-const usage = "usage: node " + process.argv[1] + " windows|linux|mac model_file";
+const usage = "usage: node " + process.argv[1] + " model_file output_file";
 
 if (process.argv.length != 4) {
     console.log(usage);
     process.exit(1);
 }
 
-ver = process.argv[2];
-if (ver != "windows" && ver != "linux" && ver != "mac") {
-    console.log("invalid machine type: " + ver);
-    console.log(usage);
-    process.exit(1);
-}
-
-var model_file = process.argv[3];
+var model_file = process.argv[2];
+var output_file = process.argv[3];
 
 // ----------------------------------------------------------------------------
 // Setting up minimal model parameters to allow for model to be imported from file.
@@ -101,4 +95,4 @@ importfile(text);
 // ----------------------------------------------------------------------------
 // Converting model to XML.
 
-startinference(0, 1)
+startinference(0, 1, output_file)
