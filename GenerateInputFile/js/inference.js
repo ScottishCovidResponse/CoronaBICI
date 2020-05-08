@@ -301,7 +301,7 @@ function drawadvop()                                     // Page for advanced se
 	addbutton("Back",width-105,height-45,90,30,ADVOPAC2,BACKBUT,0,-1);	
 }
 
-function startinference(sim,numch)                        // Starts inference
+function startinference(sim, numch, output_file)                        // Starts inference
 {
 	var index=[], indinfo, sta=[], cl, cl2, tr, ch, st;
 	
@@ -882,11 +882,7 @@ function startinference(sim,numch)                        // Starts inference
 	 
 	var fs = require('fs');
 	
-	switch(ver){
-	case "windows": fi = "init.xml"; break;
-	case "linux": fi = "init.xml"; break;
-	case "mac": fi = "/tmp/init.xml"; break;
-	}
+	fi = output_file;
 
 	fs.writeFile(fi,st, function(err) {
 		if(err) { alertp("There was a problem: "+err); return;}
