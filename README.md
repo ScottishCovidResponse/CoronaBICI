@@ -55,6 +55,15 @@ This programatically generates the file "Scotland_model.txt", which is a regiona
 
 This time data is added to finally create the file "Scotland_bici_input.xml", which sumarises the model and data in a way that BICI can understand. The data itself consists of daily regional cases from the website https://smazeri.shinyapps.io/Covid19_Scotland/.   
 
+### Programmatically create the XML file
+
+In the "GenerateInputFile" directory there is a node.js command line tool text2xml. You can run this tools using the command:
+```
+node text2xml <machine> <text_file>
+```
+Where `<machine>` is either windows, linux or mac and `<text_file>` is the path to the model text file to convert.
+
+Once the program has run you should see `init file created!` and a new "init.xml" file will have been created in the current working directory.
 
 ### Running the analysis
 
