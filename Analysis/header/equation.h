@@ -592,14 +592,20 @@ double calculate(long eq, double *popnum, double *paramval)          // Calculat
   double num, num1, num2;
 
   for(i = 0; i < neqncalc[eq]; i++){
-    switch(eqncalc1[eq][i]){
-      case PARAM: num1 = paramval[eqncalcnum1[eq][i]]; break;
-      case POPNUM: num1 = popnum[eqncalcnum1[eq][i]]; break;
-      case REG: num1 = regcalc[eqncalcnum1[eq][i]]; break;
-      case NUMERIC: num1 = numeric[eqncalcnum1[eq][i]]; break;
-      default: ; // empty
+    // Get num1, but only if we need it.
+    switch(eqncalcop[eq][i]){
+      case ADD: case TAKE: case MULTIPLY: case DIVIDE: case POWER:
+        switch(eqncalc1[eq][i]){
+          case PARAM: num1 = paramval[eqncalcnum1[eq][i]]; break;
+          case POPNUM: num1 = popnum[eqncalcnum1[eq][i]]; break;
+          case REG: num1 = regcalc[eqncalcnum1[eq][i]]; break;
+          case NUMERIC: num1 = numeric[eqncalcnum1[eq][i]]; break;
+          default: emsg("Invalid default on " LINE_STRING " in " __FILE__);
+        }
+      default: ; // Don't need num1, so don't check it.
     }
 
+    // Get num2
     switch(eqncalc2[eq][i]){
       case PARAM: num2 = paramval[eqncalcnum2[eq][i]]; break;
       case POPNUM: num2 = popnum[eqncalcnum2[eq][i]]; break;
@@ -642,15 +648,20 @@ double calculatenotdep(long eq, double *param)              // Calculates an equ
   double num, num1, num2;
 
   for(i = 0; i < neqncalc[eq]; i++){
-    switch(eqncalc1[eq][i]){
-      case PARAM: num1 = param[eqncalcnum1[eq][i]]; break;
-      case POPNUM: emsg("Equation: EC8"); break;
-      case REG: num1 = regcalc[eqncalcnum1[eq][i]]; break;
-      case NUMERIC: num1 = numeric[eqncalcnum1[eq][i]]; break;
-      default:
-        emsg("Invalid default on " LINE_STRING " in " __FILE__);
+    // Get num1, but only if we need it.
+    switch(eqncalcop[eq][i]){
+      case ADD: case TAKE: case MULTIPLY: case DIVIDE: case POWER:
+        switch(eqncalc1[eq][i]){
+          case PARAM: num1 = param[eqncalcnum1[eq][i]]; break;
+          case POPNUM: emsg("Equation: EC8"); break;
+          case REG: num1 = regcalc[eqncalcnum1[eq][i]]; break;
+          case NUMERIC: num1 = numeric[eqncalcnum1[eq][i]]; break;
+          default: emsg("Invalid default on " LINE_STRING " in " __FILE__);
+        }
+      default: ; // Don't need num1, so don't check it.
     }
 
+    // Get num2
     switch(eqncalc2[eq][i]){
       case PARAM: num2 = param[eqncalcnum2[eq][i]]; break;
       case POPNUM: emsg("Equation: EC9"); break;
