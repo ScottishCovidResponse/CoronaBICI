@@ -31,9 +31,25 @@ void Chain::derivepl()                // Plots graphs for derived quantities (re
 			}
       sort(list.begin(),list.end());
       n = list.size(); av = 0; for(j = 0; j < n; j++) av += list[j]; av /= n;
+      if (list.size() <= 1) {
+        bout << tminactual + t << "|-|" << av << "|-|";
+        continue;
+      }
 			
-      v = long((n-1)*0.025); f = (n-1)*0.025 - v; CImin = list[v]*(1-f) +  list[v+1]*f;	
-      v = long((n-1)*0.975); f = (n-1)*0.975 - v; CImax = list[v]*(1-f) +  list[v+1]*f;
+      v = long((n-1)*0.025); f = (n-1)*0.025 - v;
+      if ((v + 1) >= list.size()) {
+        std::cout << "Resize too big v" << std::endl;
+        v = list.size() - 2;
+      }
+      CImin = list[v]*(1-f) +  list[v+1]*f;
+
+      v = long((n-1)*0.975);
+      if ((v + 1) >= list.size()) {
+        std::cout << "Resize too big v" << std::endl;
+        v = list.size() - 2;
+      }
+      f = (n-1)*0.975 - v;
+      CImax = list[v]*(1-f) +  list[v+1]*f;
 
       bout << tminactual + t << "|" << CImin << "|" << av << "|" << CImax << "|";
     }
