@@ -340,6 +340,10 @@ void Chain::checklikedisc(long num)             // Checks the likelihood based o
 			t = indev[i][e].t;
 			tr = indev[i][e].tr;
 			eq = tra[tr].eq;
+			if (eq < 0) {
+				// Skip invalid? equations. I think these are Grow or Set?
+				continue;
+			}
 			d = transdepref[eq];
 			switch(transdep[eq]){
 			case 1:
