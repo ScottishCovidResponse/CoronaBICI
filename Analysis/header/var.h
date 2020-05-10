@@ -707,7 +707,7 @@ class Chain                                    // Store all quantities and funci
   void addreminit();                               
   void addrem_prop();                              
   void simsumcalc();                              
-  double Lout();                                     
+  void Lout();
   void plotparamlike(long p, double min, double max);
   long numwrong(long i, vector<EV> &vec);            
   void sing_prop(long i);

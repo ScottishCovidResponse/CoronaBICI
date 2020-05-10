@@ -864,7 +864,7 @@ void Chain::diagnosticschain()        // Outputs the success of MCMC proposals
   bout.flush();
 }
 
-double Chain::Lout()                // Outputs elements of the likelihood
+void Chain::Lout()                // Outputs elements of the likelihood
 {
    cout << "Lpri: " << Lpri << "   Liinit: " <<  Liinit << "   Lir: " << Lir 
 				<< "   Liexp: " << Liexp << "    Linm: " << Linm
