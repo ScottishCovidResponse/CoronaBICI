@@ -63,6 +63,7 @@ _requeue() {
     dmtcp_command --bcheckpoint -p "\$port"
     echo "\$(date): job \$SLURM_JOBID checkpoint complete, re-queueing"
     scontrol requeue \$SLURM_JOBID
+    exit 0
 }
 trap '_requeue' SIGUSR1
 
@@ -74,7 +75,7 @@ mkdir -p tmpdir-\$SLURM_JOB_ID
 export TMPDIR="tmpdir-\$SLURM_JOB_ID"
 
 echo "\$(date): Starting the coordinator"
-eval "dmtcp_coordinator --daemon --coord-logfile dmtcp_log.txt --exit-after-ckpt --exit-on-last -i 0 --port-file port.txt -p 0"
+eval "dmtcp_coordinator --daemon --coord-logfile dmtcp_log.txt --exit-on-last -i 0 --port-file port.txt -p 0"
 sleep 2
 
 export DMTCP_COORD_HOST=\`hostname\`
