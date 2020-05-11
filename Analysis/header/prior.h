@@ -2,7 +2,7 @@
  
 double Chain::priorcalc()              // The total prior probability
 {
-  long pr, i, c, s;
+  long pr, i, s;
   double Lpri = 0;
 
   if(tbirthfl == 1){ for(i = 0; i < nindtot; i++) Lpri += agprior[compval[tra[indev[i][0].tr].cf][agecl]];}
@@ -31,8 +31,10 @@ double Chain::priorsmooth(long s, long j)   // The smoothing prior
       }
       d = log(param[smoothparam[s][j+1]]) - log(param[smoothparam[s][j]]);
       return -smoothval[s][j]*d*d;
+    default:
+      emsg("Invalid default on " LINE_STRING " in " __FILE__);
   }
-  emsg("Prior: EC1");
+  emsg("Prior: EC1"); return 0;
 }
 
 double boundprob(double val, string st, string s)
@@ -115,7 +117,7 @@ double Chain::priorsamp(long pr)           // Samples from the prior
       }
       return val;
 
-    default: emsg("Prior: EC7"); break;
+    default: emsg("Prior: EC7"); return 0;
   }
 }
 
@@ -173,7 +175,7 @@ double Chain::priorprob(long pr)                 // Calculates the prior probabi
       return weibullprob(param[p],lam,k);
       break;
 
-    default: emsg("Prior: EC9"); break;
+    default: emsg("Prior: EC9"); return 0;
   }
 }
 
@@ -200,6 +202,7 @@ void priorinit()                          // Initialisation of the prior
       case EXPO:
         eq = prioreq1[pr]; for(j = 0; j < neq_param[eq]; j++) addparampriordep(eq_param[eq][j],pr);
         break;
+      default: ; // empty
     }
   }
 

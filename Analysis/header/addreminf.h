@@ -4,9 +4,9 @@ void Chain::addreminf()
 {
 	double upfac = 1.05, downfac = 0.975;
 	long checkon = 0;
-	long l, i, c, cc, tb, m, d, e, ee, si, p, pr, multac, a, r, s;
+	long l, i, c, cc, tb, m, si, multac, a, r, s;
 	double probif, probfi, Ltoti, Ltotf, al, dd, z;
-	double t, tt, sum, param_st;
+	double t, tt;
 	vector <long> ist;
 	vector <short> cst;
 	vector < vector <EV> > evrevst;	
@@ -252,7 +252,7 @@ void Chain::addreminf()
 				EV ev; ev.tr = trabeg+c; ev.t = 0; evnew.push_back(ev);
 				for(s = 0; s < nsettime; s++){
 					cc = c+classmult[settimecl];
-					EV evm; ev.tr =  compiftra[c][cc]; ev.t = settime[s]; evnew.push_back(ev);
+					ev.tr =  compiftra[c][cc]; ev.t = settime[s]; evnew.push_back(ev);
 					c = cc; 
 				}
 				EV eve; eve.tr = traend+c; eve.t = tmax; evnew.push_back(eve);
@@ -348,8 +348,8 @@ void Chain::addreminf()
 
 void Chain::getprob(long r)      // Calculates probability distribution for samping infection times
 {
-	long e, ee, tb, d, ci, cf, a, eq, dst[nsettime+1], s, ddti;
-	double sum, suma, t, tt, val;
+	long e, ee, tb, d, ci, cf, a, dst[nsettime+1], s, ddti;
+	double sum, suma, t, tt;
 	
 	timeprop[SAMPPROB] -= clock();
 	suma = 0;

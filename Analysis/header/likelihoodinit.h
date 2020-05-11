@@ -2,7 +2,7 @@
 
 void likelihoodinit()           // Initialises quantities needed to make fast likelihood calculations
 {
-  long eq, p, i, tr, k, j, c, d, jmax, ci, cf, n, flag, kmax, nn, cl, f, ki, kf, cff, s, num, ddti;
+  long eq, p, i, tr, k, j, c, d, ci, cf, n, flag, kmax, cl, f, ki, kf, cff, s, num, ddti;
   long popnum_flag[npopnum], param_flag[nparam];
 	double dd, t, tma;
   long ref, refi, reff;
@@ -55,19 +55,23 @@ void likelihoodinit()           // Initialises quantities needed to make fast li
           switch(eqncalc1[eq][i]){
             case PARAM: param_flag[eqncalcnum1[eq][i]] = 1; break;
             case POPNUM: popnum_flag[eqncalcnum1[eq][i]] = 1; break;
+            default: ; // empty
           }
           break;
+        default: ; // empty
       }
 
       switch(eqncalc2[eq][i]){
         case PARAM: param_flag[eqncalcnum2[eq][i]] = 1; break;
         case POPNUM: popnum_flag[eqncalcnum2[eq][i]] = 1; break;
+        default: ; // empty
       }
     }
 
     switch(eqncalcans[eq]){
       case PARAM: param_flag[eqncalcansnum[eq]] = 1; break;
       case POPNUM: popnum_flag[eqncalcansnum[eq]] = 1; break;
+      default: ; // empty
     }
 
     for(p = 0; p < npopnum; p++){
@@ -349,7 +353,8 @@ void likelihoodinit()           // Initialises quantities needed to make fast li
                 for(k = 0; k < kmax; k++){
                   if(kf >= 0) dd = transdepeqch[reff][kf].popnum[k]; else dd = 0;
                   if(ki >= 0) dd -= transdepeqch[refi][ki].popnum[k];
-                  if(dd > -ttiny && dd < ttiny) dd = 0; if(dd != 0) flag = 2;
+                  if(dd > -ttiny && dd < ttiny) dd = 0;
+                  if(dd != 0) flag = 2;
                   eqch.popnum[k] = dd;
                 }
               }
@@ -442,6 +447,7 @@ void likelihoodinit()           // Initialises quantities needed to make fast li
           if(j == neq_popnum[eq]) emsg("Likelihoodinit: EC5");
           eqncalcfastnum1[d][i] = j;
           break;
+        default: ; // empty
       }
 
       switch(eqncalc2[eq][i]){
@@ -451,6 +457,7 @@ void likelihoodinit()           // Initialises quantities needed to make fast li
           if(j == neq_popnum[eq]) emsg("Likelihoodinit: EC6");
           eqncalcfastnum2[d][i] = j;
           break;
+        default: ; // empty
       }
     }
 
@@ -461,6 +468,7 @@ void likelihoodinit()           // Initialises quantities needed to make fast li
         if(j == neq_popnum[eq]) emsg("Likelihoodinit: EC7");
         eqncalcansfastnum[d] = j;
         break;
+      default: ; // empty
     }
   }
 
@@ -474,7 +482,7 @@ void likelihoodinit()           // Initialises quantities needed to make fast li
 
 void Chain::eqtimelineinit()     // Initialises timelines used for dependent/not dependent equations
 {
-  long d, loop, eq, nn, nnew, tr, jj, e, ti, kd;
+  long d, eq, nn, nnew, tr, jj, e, ti, kd;
   long div, divnew, stim;
   double val, sum, dt, t, tnext;
 

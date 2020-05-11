@@ -9,7 +9,7 @@ void Chain::test(short num)
 
 void Chain::check(long num)                       // Used to check the algorithm is working
 {
-  long e, nev, j, f, cl, c, p, ce, r,	i, fev, tr, d;
+  long e, nev, j, c, p, ce, i, fev, tr, d;
   double t;
 
 	if(simnum == 0) cout << "Check\n";
@@ -168,7 +168,7 @@ void Chain::checkinflist(short num)      // Checks the lists of infected / not i
 
 void checkevseq(vector<EV> &vec)       // Checks that an event sequnece is consistent and correct
 {
-  long e, ee, cl, inside, c, li, ctop, ti, f, k, n;
+  long e, c, ti, f;
   long tr;
   double t;
 
@@ -223,9 +223,8 @@ long checkevdt()                           // Checks event times are not too clo
 
 void checkevseqsimp(vector<EV> &vec)       // Checks that an event sequnece is consistent and correct
 {
-  long e, ee, cl, inside, c, li, ctop, ti, f, k, n;
+  long e, c;
   long tr;
-  double t;
 
   if(vec.size() == 2 && vec[0].tr ==  tranull && vec[1].tr == tranull) return;
 
@@ -246,7 +245,7 @@ void checkevseqsimp(vector<EV> &vec)       // Checks that an event sequnece is c
 
 void Chain::checklikedisc(long num)             // Checks the likelihood based on a discretises timeline
 {
-	long i, kd, d, k, eq, c, p, j, jj, e, tr, kdi, kdf, s1, s2, r, a, ii, s, ddt, ddti, ddtf;
+	long i, kd, d, eq, c, p, j, jj, e, tr, kdi, kdf, s1, s2, r, a, ii, ddt, ddti, ddtf;
 	double dd, t, tt, Lr, Lexp, dpop;
 	vector<long> depeq_disc_evn_ch;  
 	vector<double> depeq_disc_evdt_ch;
@@ -341,6 +340,10 @@ void Chain::checklikedisc(long num)             // Checks the likelihood based o
 			t = indev[i][e].t;
 			tr = indev[i][e].tr;
 			eq = tra[tr].eq;
+			if (eq < 0) {
+				// Skip invalid? equations. I think these are Grow or Set?
+				continue;
+			}
 			d = transdepref[eq];
 			switch(transdep[eq]){
 			case 1:
@@ -351,6 +354,7 @@ void Chain::checklikedisc(long num)             // Checks the likelihood based o
 			case 0:
 				Lr += log(transnotdepeq_val[d]);
 				break;
+			default: ; // empty
 			}
 		}
 		
@@ -659,8 +663,9 @@ void Chain::checklike(long num)                  // Checks that the likelihood i
         ob = indobs[i][j];
 
         t = obst[ob]; 
-        while(e < nindev[i] && indev[i][e].t < t){ 
-					if(tra[indev[i][e].tr].type >= 0) c = tra[indev[i][e].tr].cf; e++;
+        while(e < nindev[i] && indev[i][e].t < t){
+					if(tra[indev[i][e].tr].type >= 0) c = tra[indev[i][e].tr].cf;
+          e++;
 				}
         if(c == NOTALIVE){ Lo_st += notobsdL; nwrong++;}
         else{

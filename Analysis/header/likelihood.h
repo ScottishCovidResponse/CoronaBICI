@@ -26,7 +26,7 @@ void Chain::indrev(long i)     // Reverses the change to individual i
 // Makes a change to the event sequence on individual i
 void Chain::indchange(long i, long estart, double t, double tend) 
 {
-  long e, tr, trold, trnew, ci, cf, nevold, nevnew, eold, enew, cold, cnew, k, ob, o, co, nob, whole;
+  long e, trold, trnew, ci, cf, nevold, nevnew, eold, enew, cold, cnew, k, ob, o, co, nob, whole;
   double tt, told, tnew, tob;
   vector <long> remlist, addlist;
 
@@ -266,7 +266,7 @@ void Chain::indaddevent(long i, long k, EV ev)     // Adds an event for an indiv
 // Changes the state of an individual for a particular time span
 void Chain::secchange(long i, long ci, long cf, double ti, double tf)         
 {
-  long k, kmax, j, jmax, p, co, cap, cpe, ob, div, dm, d, ref;
+  long k, kmax, j, jmax, p, cap, cpe, ob, div, dm, d, ref;
   double tt, dt;
   EQCH eqch;
   NDEQCH ndeqch;
@@ -308,6 +308,8 @@ void Chain::secchange(long i, long ci, long cf, double ti, double tf)
 						}
             if(dermap[dm] == 0){ derlist.push_back(dm); dermap[dm] = 1;}
             break;
+          default:
+            emsg("Invalid default on " LINE_STRING " in " __FILE__);
         }
 
         j++; tt = compcap[ci][j].t;
@@ -344,6 +346,8 @@ void Chain::secchange(long i, long ci, long cf, double ti, double tf)
 						}
             if(dermap[dm] == 0){ derlist.push_back(dm); dermap[dm] = 1;}
             break;
+          default:
+            emsg("Invalid default on " LINE_STRING " in " __FILE__);
         }
         j++; tt = compcap[cf][j].t;
       }
@@ -389,6 +393,7 @@ void Chain::secchange(long i, long ci, long cf, double ti, double tf)
 				refl.t = tf; refl.sign = -1;
 				depmaprefl[d].push_back(refl);
 				break;
+      default: ; // empty
 			}
 		}
 

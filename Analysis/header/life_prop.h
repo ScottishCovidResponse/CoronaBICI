@@ -115,7 +115,8 @@ void Chain::life_prop(long i)    // Makes changes to entry and leaving times as 
 			 if(e < nev) tlimmax = indev[i][e].t; else tlimmax = large;
 
        if(i < nind) dt = firstobst[i]; else dt = large;
-       if(dt > tmax/20) dt = tmax/20; if(tlimmax < dt) dt = tlimmax;
+       if(dt > tmax/20) dt = tmax/20;
+       if(tlimmax < dt) dt = tlimmax;
        if(dt > indtbirth[i] + age[nage]) dt = indtbirth[i] + age[nage];
 
         if(tent == 0){
@@ -141,7 +142,8 @@ void Chain::life_prop(long i)    // Makes changes to entry and leaving times as 
 			if(e < nev) tlimmax = indev[i][e].t; else tlimmax = large;
 			
       if(i < nind) dt = firstobst[i]; else dt = large;
-      if(dt > tmax/20) dt = tmax/20; if(tlimmax < dt) dt = tlimmax;
+      if(dt > tmax/20) dt = tmax/20;
+      if(tlimmax < dt) dt = tlimmax;
       if(tent == 0){
         tnew = ran()*dt;
         if(i < nind) ntr_birthentswitch[i]++; else ntr_birthentswitchuo++;
@@ -169,7 +171,8 @@ void Chain::life_prop(long i)    // Makes changes to entry and leaving times as 
 			if(e >= 0) tlimmin = indev[i][e].t; else tlimmin = -large;
 
       if(i < nind) dt = tmax-lastobst[i]; else dt = large;
-      if(dt > tmax/20) dt = tmax/20; if(tlimmax < tmax) return; 
+      if(dt > tmax/20) dt = tmax/20;
+      if(tlimmax < tmax) return;
       if(tmax-tlimmin < dt) dt = tmax-tlimmin;
 
       if(tlea == tmax){
@@ -187,6 +190,8 @@ void Chain::life_prop(long i)    // Makes changes to entry and leaving times as 
         }
       }
       break;
+    default:
+      emsg("Invalid default on " LINE_STRING " in " __FILE__);
   }
 }
 

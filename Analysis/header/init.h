@@ -2,8 +2,8 @@
 
 void init()
 {
-  long ob, fi, c, tr, cl, eq, j, d;
-  long i, ntrast;
+  long ob, fi, c, tr, cl, eq, j;
+  long i;
   double sum, t;
   vector <long> eqfl;
 
@@ -93,6 +93,7 @@ void init()
     switch(tra[tr].type){
       case GAMMA_TR: case WEI_TR: eqfl[tra[tr].eq] = 1; eqfl[tra[tr].eqshape] = 1; break;
       case FIXED_TR: eqfl[tra[tr].eq] = 1; break;
+      default: ; // empty
     }
   }
 
@@ -161,6 +162,7 @@ void Chain::initparamsamp()                   // Finds an initial parameter set
               eq = prioreq1[pr];
               for(j = 0; j < neq_param[eq]; j++) if(paramset[eq_param[eq][j]] == 0) flag = 1;
               break;
+            default: ; // empty
           }
 
           switch(priortype[pr]){
@@ -168,6 +170,7 @@ void Chain::initparamsamp()                   // Finds an initial parameter set
               eq = prioreq2[pr];
               for(j = 0; j < neq_param[eq]; j++) if(paramset[eq_param[eq][j]] == 0) flag = 1;
               break;
+            default: ; // empty
           }
 
           if(flag == 0){
@@ -187,7 +190,7 @@ void Chain::initparamsamp()                   // Finds an initial parameter set
 
 void Chain::initchain()              // Initialises all the variables associated with the MCMC chain
 {
-  long c, cl, d, k, i, p, j;
+  long c, cl, k, i, p, j;
   double av;
 
   nindinit = 0;
@@ -336,9 +339,9 @@ void Chain::initchain()              // Initialises all the variables associated
 
 long Chain::start()                                      // Works out the starting event sequence
 {
-  long c, cc, tr, j, k, ob, per, pernew, loop, i, ctop, ag, agpos[nage+1];
+  long c, tr, j, k, per, pernew, i, ctop, ag, agpos[nage+1];
 	long	ob1, ob2, ca, ca1, ca2, numobs, numnotobs, nlifet, loopstart;
-  double t, tt, prob, probsum, Ltoti, Ltotf, val, lifet, probmax;
+  double t, prob, probsum, lifet, probmax;
   vector <short> agpostlist;
   vector < vector <EV> > posev;
   vector <double> posevprob;
@@ -556,7 +559,7 @@ long Chain::start()                                      // Works out the starti
 
 void Chain::paramstart()  // Makes parameter values consistent with the intial event sequence
 {
-	long p, loop; 
+	long loop; 
 	vector <double> Lst;
 
 	//pvel.resize(nparam); for(p = 0; p < nparam; p++) pvel[p] = 0.001;

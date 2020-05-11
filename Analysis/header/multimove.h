@@ -4,8 +4,8 @@ void Chain::multimove()   // Each transition type is considered in turn and mult
 {
 	double facup = 1.005, facdo = 0.995, facup2 = 1.05, facdo2 = 0.95;
 	
-	long ci, cf, k, i, e, trr, trm, c, eq, loop, loopmax, ddti, ddtf, ddi, ddf;
-	double t, tst, List, gr, al, probif, probfi, Ltoti, Ltotf, pr, jump;
+	long i, e, trr, trm, c, eq, loop, loopmax, ddti, ddtf, ddi, ddf;
+	double t, tst, gr, al, probif, probfi, Ltoti, Ltotf, pr, jump;
 	vector <double> timest, timeoldst, grst;
 	vector <long> ist, est, mv, ddist, ddfst;
 	vector <vector <long> > movetri, movetre;
@@ -253,7 +253,8 @@ void Chain::multimoveinit()              // Initialises multimove proposals
 	if(1 == 0){
 		for(tr = 0; tr < ntramm; tr++){
 			cout << compname[tramm[tr].ci] << "->" << compname[tramm[tr].cf] << "  tramm\n";
-			for(s = 0; s <= nsettime; s++) cout << tramm[tr].tra[s] << ","; cout << "tra\n";
+			for(s = 0; s <= nsettime; s++) cout << tramm[tr].tra[s] << ",";
+      cout << "tra\n";
 		}
 	}
 	
@@ -278,7 +279,8 @@ void addsettime()                       // Adds settimes to a constructed event 
 	e = 1; nev = evnew.size();
 	for(s = 0; s < nsettime; s++){
 		t = settime[s];
-		while(e < nev && evnew[e].t < t) e++; if(e == nev) emsg("Multimove: EC1");
+		while(e < nev && evnew[e].t < t) e++;
+    if(e == nev) emsg("Multimove: EC1");
 		
 		ci = tra[evnew[e].tr].ci;
 		cf = ci + val;
@@ -304,7 +306,8 @@ void remsettime()                      // Removes settimes to a constructed even
 	e = 1; nev = evnew.size();
 	for(s = 0; s < nsettime; s++){
 		t = settime[s];
-		while(e < nev && evnew[e].t < t) e++; if(evnew[e].t != t) emsg("Multimove: EC2");
+		while(e < nev && evnew[e].t < t) e++;
+    if(evnew[e].t != t) emsg("Multimove: EC2");
 		
 		evnew.erase(evnew.begin()+e);	
 		for(ee = e; ee < nev; ee++){

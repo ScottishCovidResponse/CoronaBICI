@@ -32,6 +32,8 @@ void Chain::sing_prop(long i)        // Swaps between single and two events
     switch(res){
       case 1: nac_sing[i][cl]++; break;
       case -1: nfa_sing[i][cl]++; break;
+      default:
+        emsg("Invalid default on " LINE_STRING " in " __FILE__);
     }
   }
   else{             // Fixes left event
@@ -39,6 +41,8 @@ void Chain::sing_prop(long i)        // Swaps between single and two events
     switch(res){
       case 1: nac_sing[i][cl]++; break;
       case -1: nfa_sing[i][cl]++;  break;
+      default:
+        emsg("Invalid default on " LINE_STRING " in " __FILE__);
     }
   }
 }
@@ -64,6 +68,8 @@ void Chain::twothree_prop(long i)             // Interchanges between two and th
   switch(localresamp(i,cl,e,indev[i][e].t,indev[i][ee].t,1,1)){
     case 1: nac_twothree[i][cl]++; break;
     case -1: nfa_twothree[i][cl]++; break;
+    default:
+      emsg("Invalid default on " LINE_STRING " in " __FILE__);
   }
 }
 
@@ -92,6 +98,8 @@ void Chain::pair_prop(long i)       // Interchanges a pair of events
   switch(localresamp(i,cl,e+1,indev[i][e].t+tiny,indev[i][ee].t-tiny,0,1)){
     case 1: nac_pair[i][cl]++; if(samp < burnin) pairac[cl][fl]++; break;
     case -1: nfa_pair[i][cl]++; break;
+    default:
+      emsg("Invalid default on " LINE_STRING " in " __FILE__);
   }
 }
 
@@ -116,6 +124,8 @@ void Chain::gap_prop(long i)       // Resample event sequences between the gaps 
     switch(localresamp(i,cl,e,tmi,tma,ty,0)){
       case 1: nac_gap[i][cl]++; break;
       case -1: nfa_gap[i][cl]++; break;
+      default:
+        emsg("Invalid default on " LINE_STRING " in " __FILE__);
     }
   }
 }
@@ -123,9 +133,9 @@ void Chain::gap_prop(long i)       // Resample event sequences between the gaps 
 // Local resamples event sequence (estart is first event in time window)
 long Chain::localresamp(long i, long cl, long estart, double t, double tend, long type, long evfac)  
 {
-  long e, nval, c, eend, ii, ff, np, ci, cf, nev, nevadd, ji, jf, k, numi, n, fl, nevnew;
+  long e, nval, c, eend, ii, ff, ci, cf, nev, nevadd, ji, jf, k, numi, n, fl, nevnew;
   long tr, tr2, p;
-  double z, tt, Ltoti, Ltotf, al, fac = 1, t1, t2, addtime[3];
+  double tt, Ltoti, Ltotf, al, fac = 1, t1, t2, addtime[3];
   vector <long> inter;
 
   if(tend <= t){ if(t - tend > 2*tiny) emsg("Local: EC3"); return 0;}
@@ -166,7 +176,8 @@ long Chain::localresamp(long i, long cl, long estart, double t, double tend, lon
         case 2:
           if(ran() < prswitch){  // 2 to 3 transition
            n = nlocpath[cl][ii][ff][3];
-            if(n == 0) return -1; if(nlocpath[cl][ii][ff][2] == 0) emsg("Local: EC4");
+            if(n == 0) return -1;
+            if(nlocpath[cl][ii][ff][2] == 0) emsg("Local: EC4");
             fac *= double(n)/nlocpath[cl][ii][ff][2];
 
             p = locpath[cl][ii][ff][3][long(ran()*n)];
@@ -185,7 +196,8 @@ long Chain::localresamp(long i, long cl, long estart, double t, double tend, lon
         case 3:
           if(ran() < prswitch){  // 3 to 2 transition
             n = nlocpath[cl][ii][ff][2]; 
-						if(n == 0) return -1; if(nlocpath[cl][ii][ff][3] == 0) emsg("Local: EC5");
+						if(n == 0) return -1;
+            if(nlocpath[cl][ii][ff][3] == 0) emsg("Local: EC5");
             fac *= double(n)/nlocpath[cl][ii][ff][3];
             p = locpath[cl][ii][ff][2][long(ran()*n)];
 
@@ -210,7 +222,8 @@ long Chain::localresamp(long i, long cl, long estart, double t, double tend, lon
           if(ii != ff) emsg("Local: EC7");
 
           n = nlocpath[cl][ii][ff][2]; 
-					if(n == 0) return -1; if(nlocpath[cl][ii][ff][0] != 1) emsg("Local: EC8");
+					if(n == 0) return -1;
+          if(nlocpath[cl][ii][ff][0] != 1) emsg("Local: EC8");
           fac *= n;
           p = locpath[cl][ii][ff][2][long(ran()*n)];
 
@@ -222,7 +235,8 @@ long Chain::localresamp(long i, long cl, long estart, double t, double tend, lon
 
         case 1:
           n = nlocpath[cl][ii][ff][2];
-					if(n == 0) return -1; if(nlocpath[cl][ii][ff][1] != 1) emsg("Local: EC9");
+					if(n == 0) return -1;
+          if(nlocpath[cl][ii][ff][1] != 1) emsg("Local: EC9");
           fac *= n;
           p = locpath[cl][ii][ff][2][long(ran()*n)];
 
@@ -259,7 +273,8 @@ long Chain::localresamp(long i, long cl, long estart, double t, double tend, lon
       switch(numi){
         case 1:
           n = nlocpath[cl][ii][ff][2]; 
-					if(n == 0) return -1; if(nlocpath[cl][ii][ff][1] != 1) emsg("Local: EC12");
+					if(n == 0) return -1;
+          if(nlocpath[cl][ii][ff][1] != 1) emsg("Local: EC12");
           fac *= n;
           p = locpath[cl][ii][ff][2][long(ran()*n)];
 
@@ -269,7 +284,8 @@ long Chain::localresamp(long i, long cl, long estart, double t, double tend, lon
 
         case 2:
           n = nlocpath[cl][ii][ff][1];
-					if(n == 0) return -1; if(n != 1) emsg("Local: EC13");
+					if(n == 0) return -1;
+          if(n != 1) emsg("Local: EC13");
           fac /= nlocpath[cl][ii][ff][2];
           p = locpath[cl][ii][ff][1][0];
 
@@ -285,7 +301,8 @@ long Chain::localresamp(long i, long cl, long estart, double t, double tend, lon
       switch(numi){
         case 1:
           n = nlocpath[cl][ii][ff][2]; 
-					if(n == 0) return -1; if(nlocpath[cl][ii][ff][1] != 1) emsg("Local: EC14");
+					if(n == 0) return -1;
+          if(nlocpath[cl][ii][ff][1] != 1) emsg("Local: EC14");
           fac *= n;
           p = locpath[cl][ii][ff][2][long(ran()*n)];
 
@@ -295,7 +312,8 @@ long Chain::localresamp(long i, long cl, long estart, double t, double tend, lon
 
         case 2:
           n = nlocpath[cl][ii][ff][1];
-					if(n == 0) return -1; if(n != 1) emsg("Local: EC15");
+					if(n == 0) return -1;
+          if(n != 1) emsg("Local: EC15");
           fac /= nlocpath[cl][ii][ff][2];
           p = locpath[cl][ii][ff][1][0];
           nevadd = 1; addtime[0] = tend;
@@ -305,6 +323,8 @@ long Chain::localresamp(long i, long cl, long estart, double t, double tend, lon
         default: return -1;
       }
       break;
+    default:
+      emsg("Invalid default on " LINE_STRING " in " __FILE__);
   }
 
   if(p == -1 || nevadd < 0 || estart > nev) emsg("Local: EC16");
@@ -381,9 +401,8 @@ long Chain::localresamp(long i, long cl, long estart, double t, double tend, lon
 
 void localpropinit()           // Initialisation of local proposals
 {
-  long cl, nval, j, ii, jj, iii, jjj, iiii, ci, ff, k, kk;
+  long cl, nval, j, ii, jj, iii, jjj, iiii, ff, k, kk;
   long tr, p;
-  double sum;
   vector<long> vec;
   vector< vector<long> > transleave;
 

@@ -707,7 +707,7 @@ class Chain                                    // Store all quantities and funci
   void addreminit();                               
   void addrem_prop();                              
   void simsumcalc();                              
-  double Lout();                                     
+  void Lout();
   void plotparamlike(long p, double min, double max);
   long numwrong(long i, vector<EV> &vec);            
   void sing_prop(long i);
@@ -852,6 +852,10 @@ void storeemsg(string msg)
   err << msg << "    Sample number:" << samp << "\n";
 	err.flush();
 }
+
+#define STRING(x) STRING2(x)
+#define STRING2(x) #x
+#define LINE_STRING STRING(__LINE__)
 
 void emsg(string msg)
 {

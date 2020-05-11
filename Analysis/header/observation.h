@@ -98,7 +98,7 @@ void observationinit()                                   // Initialises the obse
 
 void Chain::chainobsinit()         // Initialises quantities relating to the observation probability
 {
-  long j, ob, fi;
+  long j;
   double pd;
 
   for(j = 0; j < ncope; j++){
@@ -128,7 +128,8 @@ double Chain::calcobsprob(long eq)       // Calculates the observation probaabil
 
   if(eq < 0) emsg("Observation: EC1");
   pr = calculatenotdep(eq,param);
-  if(pr < obssmall) pr = obssmall; if(pr > 1-obssmall) pr = 1-obssmall;
+  if(pr < obssmall) pr = obssmall;
+  if(pr > 1-obssmall) pr = 1-obssmall;
 
   return pr;
 }
@@ -147,7 +148,7 @@ double dercalc(short j, double *popnum, double *param)  // Observation probabili
 
 long Chain::numwrong(long i, vector<EV> &vec)       // Calcilates the number of inconsistent observations
 {
-  long numwrong, c, e, nev, ob, j;
+  long c, e, nev, ob, j;
   double t;
 
   nwrong = 0;

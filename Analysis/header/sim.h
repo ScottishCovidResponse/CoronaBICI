@@ -42,8 +42,8 @@ void rem_transdeplist(long d, long k);
 void Chain::sim(double tmin)              // Simulates from the model starting at time tmin
 {
   long ob, c, cc, ag, p, j, d, cl, ti, index, ts, fl, flag, e, ee, dep, k, ci, cf, flindex=0;
-  long i, tr, trr, eq, kmax, di, per, pernew;
-  double  t, R, z, tmi, tma, tadd, tt, kshape, mean, lam, probsum[ncompswa], sum, indext;
+  long i, tr, trr, eq, kmax, per, pernew;
+  double  t, R, z, tmi, tma, tadd, tt, kshape, mean, lam, indext;
   vector <double> Rst;
   vector <long> postr;
 
@@ -129,6 +129,8 @@ void Chain::sim(double tmin)              // Simulates from the model starting a
                   break;
 
                 case FIXED_TR: emsg("Sim: EC4"); break;
+                default:
+                  emsg("Invalid default on " LINE_STRING " in " __FILE__);
               }
               if(tadd < tmin) emsg("Sim: EC5");
               if(tadd < tmax2) addfuturetra(i,tr,tt,tadd);
@@ -163,6 +165,8 @@ void Chain::sim(double tmin)              // Simulates from the model starting a
         }
       }
       break;
+    default:
+      emsg("Invalid default on " LINE_STRING " in " __FILE__);
   }
 
   for(p = 0; p < npopnum; p++) sim_popnum[p] = 0;
@@ -303,7 +307,8 @@ void Chain::sim(double tmin)              // Simulates from the model starting a
             if(compval[sim_statind[i]][cl] == tra[tr].i){
               flag = 0; e = nindev_sim[i]-1; 
 							while(e >= 0 && indev_sim[i][e].t > futev[j].tnow){ // Checks for intervening events
-								if(tra[indev_sim[i][e].tr].cl == cl) flag = 1; e--;
+								if(tra[indev_sim[i][e].tr].cl == cl) flag = 1;
+                e--;
 							} 
               if(flag == 0){
                 cf = c + (tra[tr].f-tra[tr].i)*classmult[cl];
@@ -425,7 +430,7 @@ void Chain::sim(double tmin)              // Simulates from the model starting a
 
 void Chain::addfuture(long i, long c, long cl, double tstart)  // When simulating adds future events 
 {
-  long k, j, loop, loopmax = 100;
+  long k, j, loop;
   long tr;
   double mean, shape, lam, kk, dt, tadd;
 
@@ -464,6 +469,8 @@ void Chain::addfuture(long i, long c, long cl, double tstart)  // When simulatin
         if(j < settime.size()) dt = settime[j] - tstart-tiny;
         else dt = large;
         break;
+      default:
+        emsg("Invalid default on " LINE_STRING " in " __FILE__);
     }
 
     if(dt < 0){

@@ -2,8 +2,8 @@
 
 void Chain::part_prop(long i)                      // Makes a particle proposal on an individual
 {
-  long c, cc, p, li, li2, e, evpbeg, evpend, ty, ch, k, nev, ee, pp, pbeg, pend, numzero, co, fl;
-  double probif, probfi, Ltoti, Ltotf, al, tma, tt, w, z, t, wi, wf;
+  long c, cc, p, li, e, evpbeg, evpend, ty, ch, k, nev, ee, pp, pbeg, pend, numzero, co, fl;
+  double probif, probfi, Ltoti, Ltotf, al, w, z, t, wi, wf;
 	double fac, facup = 1.02, facdown = 0.95, initfac;
   vector <long> bootstrap;
   long tr;
@@ -97,6 +97,8 @@ void Chain::part_prop(long i)                      // Makes a particle proposal 
               if(tr < 0) w = 0; else{ if(tra[tr].type == EXP_TR) w *= transra(tra[tr].eq,t,co);}
             }
             break;
+          default:
+            emsg("Invalid default on " LINE_STRING " in " __FILE__);
         }
       }
       if(w == 0) numzero++;
@@ -121,7 +123,8 @@ void Chain::part_prop(long i)                      // Makes a particle proposal 
 
         for(p = pbeg+npart+1; p < pend+npart; p++){
           z = ran()*wsum; pp = pbeg; 
-					while(pp < pend && z > wsumst[pp]) pp++; if(pp == pend) emsg("Part: EC3");
+					while(pp < pend && z > wsumst[pp]) pp++;
+          if(pp == pend) emsg("Part: EC3");
           part[p].pback = pp; part[p].w = 1;
         }
       }
@@ -283,6 +286,8 @@ void Chain::insertexisting(vector<EV> &ev)     // Populates particles with the e
                   break;
 
                 case FIXED_TR: emsg("Part: EC8"); break;
+                default:
+                  emsg("Invalid default on " LINE_STRING " in " __FILE__);
               }
               if(ttt < t) emsg("Part: EC9");
               li2 = li-1; 
@@ -325,8 +330,8 @@ void Chain::addexistingfute(PART &pa, long tr, double tbeg, double tend) // Adds
 
 void Chain::part_simsec(long i, long evpbeg, long evpend, PART &pa)      // Simulates new sequence
 {
-  long e, k, co, j, ch, c, cf, p, m, n, fl, a, fev, cl;
-  double t, tt, tst, tnext, tnextold, z, R, r, val, kshape, futnext, tmid;
+  long e, k, co, j, c, p, n, fev, cl;
+  double t, tt, tst, tnext, tnextold, z, R, r, futnext, tmid;
   long tr;
 
   t = evp[evpbeg].t;
@@ -370,6 +375,8 @@ void Chain::part_simsec(long i, long evpbeg, long evpend, PART &pa)      // Simu
         if(fixev[fev].like == 0) tr += moventra;
         c = addevnew(tr,t);
         break;
+      default:
+        emsg("Invalid default on " LINE_STRING " in " __FILE__);
     }
 
     tnext = evp[e+1].t;
@@ -434,7 +441,7 @@ void Chain::part_simsec(long i, long evpbeg, long evpend, PART &pa)      // Simu
 
 void Chain::chainpartinit()             // Initialises quantities used when sampling from particles
 {
-  long ob, fi, c, a, enterpos[ncomps], j, cl;
+  long c, a, enterpos[ncomps], cl;
   long i;
 
 	if(corona == 0){
@@ -596,7 +603,7 @@ void Chain::simsumcalc()                         // Used to initialise sampling 
 
 void partinit()                               // Initialises quantities used when sampling from particles
 {
-  long eq, c, cc, cl, i, f, ci, cf, p, j, d, depmax, ndmax;
+  long eq, c, cl, ci, cf, p, j, d, depmax, ndmax;
   long tr, tr2;
   vector <long> nnonexpc;  // [c][#] gives non-exponential transitions activated when individual enters c
   vector< vector <long> > nonexpc;
@@ -613,6 +620,8 @@ void partinit()                               // Initialises quantities used whe
       switch(transdep[eq]){
         case 0: compleavesimclnotdep[clall][tra[tr].ci].push_back(tr); break;
         case 1: compleavesimcldep[clall][tra[tr].ci].push_back(tr); break;
+        default:
+          emsg("Invalid default on " LINE_STRING " in " __FILE__);
       }
 
       cl = tra[tr].cl;
@@ -620,6 +629,8 @@ void partinit()                               // Initialises quantities used whe
         switch(transdep[eq]){
           case 0: compleavesimclnotdep[cl][tra[tr].ci].push_back(tr); break;
           case 1: compleavesimcldep[cl][tra[tr].ci].push_back(tr); break;
+          default:
+            emsg("Invalid default on " LINE_STRING " in " __FILE__);
         }
       }
     }
@@ -632,6 +643,8 @@ void partinit()                               // Initialises quantities used whe
       switch(transdep[eq]){
         case 0: compleavenotdep[tra[tr].ci].push_back(tr); break;
         case 1: compleavedep[tra[tr].ci].push_back(tr); break;
+        default:
+          emsg("Invalid default on " LINE_STRING " in " __FILE__);
       }
     }
   }
@@ -673,6 +686,7 @@ void partinit()                               // Initialises quantities used whe
         case FIXED_TR: case GAMMA_TR: case WEI_TR:
           nonexpc[tra[tr].ci].push_back(tr);
           break;
+        default: ; // empty
       }
     }
   }

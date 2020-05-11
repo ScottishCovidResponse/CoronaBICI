@@ -20,7 +20,7 @@ vector<string> staterate;
 
 void readinput(string file)    // Reads the input XML file
 {
-  long fi, cl, i, f, fl, tr, j, eq, c, cc, ci, cf, fmi, fma, jj, k, p, pp, leng;
+  long fi, cl, i, f, fl, tr, j, eq, c, cc, ci, cf, fmi, fma, jj, k, p, pp;
 	long min, max, ob, cap, trai, traf, d, dm, ty, ce, a;
   long s, nsmoothst, numtrans = 0;
   string s1, s2, s3, s4, name, id, st, na, type, capna, capevna, par, indname;
@@ -33,7 +33,6 @@ void readinput(string file)    // Reads the input XML file
   XMLNode* child;
   XMLNode* child2;
   XMLNode* child3;
-  XMLNode* child4;
   XMLDocument doc;
 
   ifstream inFile(file.c_str());
@@ -547,6 +546,8 @@ void readinput(string file)    // Reads the input XML file
 									}
 								}
 								break;
+              default:
+                emsg("Invalid default on " LINE_STRING " in " __FILE__);
 						}
 
 						for(jj = 0; jj < state.size(); jj++) capevfilt[ncapev][state[jj]] = 1;
@@ -612,6 +613,8 @@ void readinput(string file)    // Reads the input XML file
 								if(s2.compare("transition") == 0) fev.like = 1; else{ fev.like = 0; movefl = 1;}
 								fixev.push_back(fev); nfixev++;
 								break;
+              default:
+                emsg("Invalid default on " LINE_STRING " in " __FILE__);
 						}
 					}
         }
@@ -953,6 +956,8 @@ void createtra(long type, XMLNode* child3, long cl, long i, long f)
           getalltrans(child3,child4,cl,i,get(child4,"k"));
           for(j = 0; j < state.size(); j++) eqmap2[state[j]] = addequation(staterate[j]);
           break;
+        default:
+          emsg("Invalid default on " LINE_STRING " in " __FILE__);
       }
     }
     else emsg("Readinput: EC38");
@@ -972,6 +977,8 @@ void createtra(long type, XMLNode* child3, long cl, long i, long f)
         case WEI: 
 					tt.type = WEI_TR; tt.ci = c; tt.cf = c+(f-i)*classmult[cl]; tt.eqshape = eqmap2[c];
 					break;
+        default:
+          emsg("Invalid default on " LINE_STRING " in " __FILE__);
       }
       tt.cl = cl; tt.i = i; tt.f = f; tt.eq = eq; tt.capev = -1; tt.like = 1;
       tra.push_back(tt);
@@ -1035,6 +1042,7 @@ string get(XMLNode* node, string attr)            // This gets an XML attribute
   else{
     stringstream ss; ss << "Cannot find attribute get " << attr;
     emsg(ss.str());
+    return ss.str();
   }
 }
 
@@ -1051,6 +1059,7 @@ double getnum(XMLNode* node, string attr)         // Gets a number from an XML a
   else{
     stringstream ss; ss << "Cannot find attribute " << attr;
     emsg(ss.str());
+    return 0;
   }
 }
 
@@ -1075,6 +1084,7 @@ long getint(XMLNode* node, string attr)           // Gets an integer XML attribu
   else{
     stringstream ss; ss << "Cannot find attribute " << attr;
     emsg(ss.str());
+    return 0;
   }
 }
 
@@ -1129,7 +1139,7 @@ string repla(string st, string sub1, string sub2)   // Replaces one substring wi
 // Works out all the compartments consistent with a given transition
 void getalltrans(XMLNode* node, XMLNode* node2, long cl, long in, string rate) 
 {
-  long cl2, filt[nclass], count[nclass], c, j, flag, i, ii;
+  long cl2, filt[nclass], count[nclass], c, j, flag, ii;
   string st, s, name;
 
   state.clear(); staterate.clear();

@@ -2,7 +2,7 @@
 
 void Chain::param_prop()          // Makes random walk proposals on model parameters
 {
-  long p, pr, c, s, j;
+  long p, c, s, j;
   double param_st, param_new, al, Ltoti, Ltotf, sum, num[ncompswa], dparam;
 
   for(p = 0; p < nparam; p++){
@@ -135,7 +135,7 @@ void Chain::param_sampprop()        // Makes proposals on model parameters by sa
 void Chain::param_gradprop()             // Makes proposals to increase posterior probability
 {
   long p, pr, j;
-  double  param_st, param_new, al, Ltoti, Ltotf, probfi, probif, dLpri;
+  double  param_st, param_new, Ltoti, Ltotf, dLpri;
 
   for(p = 0; p < nparam; p++){
     pr = paramprior[p];
@@ -167,7 +167,7 @@ void Chain::param_gradprop()             // Makes proposals to increase posterio
 
 void Chain::changeparam(long dir, long p, double param_new)    // Makes changes to parameters
 {
-  long j, d, eq, pr, m, s, kd, lin;
+  long j, d, eq, pr, m, s, kd;
   double t, tt, valold, valnew, valold2, valnew2, pd, op;
   long e, ee, i;
   
@@ -302,7 +302,7 @@ void Chain::changeparam(long dir, long p, double param_new)    // Makes changes 
 void Chain::paramgrad(long p)              // Calculates the gradient and curvature on a parameter
 {
   long j, d, eq, pr,  e, ee, i, kd;
-  double t, tt, valold, valnewup, valnewdo, valold2, valnewup2, valnewdo2, pd, op;
+  double t, tt, valold, valnewup, valnewdo, valold2, valnewup2, valnewdo2, pd;
 	double dLup, dLdo, va, val, pcurve, dd, Linmtemp;
 
   dLup = 0; dLdo = 0;
@@ -400,10 +400,12 @@ void Chain::paramgrad(long p)              // Calculates the gradient and curvat
 
   if(param_nmfl[p] == 1){
     param[p] = val + dd; setnmeq(); Linmtemp = 0; 
-		for(i = 0; i < nindtot; i++) Linmtemp += likenm(i); dLup += Linmtemp - Linm;
+		for(i = 0; i < nindtot; i++) Linmtemp += likenm(i);
+    dLup += Linmtemp - Linm;
 
     param[p] = val - dd; setnmeq(); Linmtemp = 0;
-		for(i = 0; i < nindtot; i++) Linmtemp += likenm(i); dLdo += Linmtemp - Linm;
+		for(i = 0; i < nindtot; i++) Linmtemp += likenm(i);
+    dLdo += Linmtemp - Linm;
   }
 
   pgrad = (dLup-dLdo)/(2*dd);
