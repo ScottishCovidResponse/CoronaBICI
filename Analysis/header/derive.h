@@ -38,14 +38,12 @@ void Chain::derivepl()                // Plots graphs for derived quantities (re
 			
       v = long((n-1)*0.025); f = (n-1)*0.025 - v;
       if ((v + 1) >= list.size()) {
-        std::cout << "Resize too big v" << std::endl;
         v = list.size() - 2;
       }
       CImin = list[v]*(1-f) +  list[v+1]*f;
 
       v = long((n-1)*0.975);
       if ((v + 1) >= list.size()) {
-        std::cout << "Resize too big v" << std::endl;
         v = list.size() - 2;
       }
       f = (n-1)*0.975 - v;
