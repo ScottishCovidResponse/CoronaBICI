@@ -32,7 +32,7 @@ void Chain::derivepl()                // Plots graphs for derived quantities (re
       sort(list.begin(),list.end());
       n = list.size(); av = 0; for(j = 0; j < n; j++) av += list[j]; av /= n;
       if (list.size() <= 1) {
-        bout << tminactual + t << "|-|" << av << "|-|";
+        bout << tminactual + t << "|" << av << "|" << av << "|" << av << "|";
         continue;
       }
 			
