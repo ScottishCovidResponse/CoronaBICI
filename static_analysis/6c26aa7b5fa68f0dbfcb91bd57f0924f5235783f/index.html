@@ -1,0 +1,209 @@
+<html>
+<head>
+<title>Analysis - scan-build results</title>
+<link type="text/css" rel="stylesheet" href="scanview.css"/>
+<script src="sorttable.js"></script>
+<script language='javascript' type="text/javascript">
+function SetDisplay(RowClass, DisplayVal)
+{
+  var Rows = document.getElementsByTagName("tr");
+  for ( var i = 0 ; i < Rows.length; ++i ) {
+    if (Rows[i].className == RowClass) {
+      Rows[i].style.display = DisplayVal;
+    }
+  }
+}
+
+function CopyCheckedStateToCheckButtons(SummaryCheckButton) {
+  var Inputs = document.getElementsByTagName("input");
+  for ( var i = 0 ; i < Inputs.length; ++i ) {
+    if (Inputs[i].type == "checkbox") {
+      if(Inputs[i] != SummaryCheckButton) {
+        Inputs[i].checked = SummaryCheckButton.checked;
+        Inputs[i].onclick();
+      }
+    }
+  }
+}
+
+function returnObjById( id ) {
+    if (document.getElementById)
+        var returnVar = document.getElementById(id);
+    else if (document.all)
+        var returnVar = document.all[id];
+    else if (document.layers)
+        var returnVar = document.layers[id];
+    return returnVar;
+}
+
+var NumUnchecked = 0;
+
+function ToggleDisplay(CheckButton, ClassName) {
+  if (CheckButton.checked) {
+    SetDisplay(ClassName, "");
+    if (--NumUnchecked == 0) {
+      returnObjById("AllBugsCheck").checked = true;
+    }
+  }
+  else {
+    SetDisplay(ClassName, "none");
+    NumUnchecked++;
+    returnObjById("AllBugsCheck").checked = false;
+  }
+}
+</script>
+<!-- SUMMARYENDHEAD -->
+</head>
+<body>
+<h1>Analysis - scan-build results</h1>
+
+<table>
+<tr><th>User:</th><td>h52229ih@Ian-Hinders-MBP.fritz.box</td></tr>
+<tr><th>Working Directory:</th><td>/Users/h52229ih/Documents/Projects/BICI/src/BICI/Analysis</td></tr>
+<tr><th>Command Line:</th><td>make</td></tr>
+<tr><th>Clang Version:</th><td>clang version 7.1.0 (tags/RELEASE_710/final)
+</td></tr>
+<tr><th>Date:</th><td>Mon May 11 22:24:15 2020</td></tr>
+</table>
+<h2>Bug Summary</h2><table>
+<thead><tr><td>Bug Type</td><td>Quantity</td><td class="sorttable_nosort">Display?</td></tr></thead>
+<tr style="font-weight:bold"><td class="SUMM_DESC">All Bugs</td><td class="Q">38</td><td><center><input type="checkbox" id="AllBugsCheck" onClick="CopyCheckedStateToCheckButtons(this);" checked/></center></td></tr>
+<tr><th>Dead store</th><th colspan=2></th></tr>
+<tr><td class="SUMM_DESC">Dead assignment</td><td class="Q">21</td><td><center><input type="checkbox" onClick="ToggleDisplay(this,'bt_dead_store_dead_assignment');" checked/></center></td></tr>
+<tr><td class="SUMM_DESC">Dead increment</td><td class="Q">2</td><td><center><input type="checkbox" onClick="ToggleDisplay(this,'bt_dead_store_dead_increment');" checked/></center></td></tr>
+<tr><th>Logic error</th><th colspan=2></th></tr>
+<tr><td class="SUMM_DESC">Result of operation is garbage or undefined</td><td class="Q">12</td><td><center><input type="checkbox" onClick="ToggleDisplay(this,'bt_logic_error_result_of_operation_is_garbage_or_undefined');" checked/></center></td></tr>
+<tr><td class="SUMM_DESC">Uninitialized argument value</td><td class="Q">3</td><td><center><input type="checkbox" onClick="ToggleDisplay(this,'bt_logic_error_uninitialized_argument_value');" checked/></center></td></tr>
+</table>
+<h2>Reports</h2>
+
+<table class="sortable" style="table-layout:automatic">
+<thead><tr>
+  <td>Bug Group</td>
+  <td class="sorttable_sorted">Bug Type<span id="sorttable_sortfwdind">&nbsp;&#x25BE;</span></td>
+  <td>File</td>
+  <td>Function/Method</td>
+  <td class="Q">Line</td>
+  <td class="Q">Path Length</td>
+  <td class="sorttable_nosort"></td>
+  <!-- REPORTBUGCOL -->
+</tr></thead>
+<tbody>
+<tr class="bt_dead_store_dead_assignment"><td class="DESC">Dead store</td><td class="DESC">Dead assignment</td><td>part_propnew.h</td><td class="DESC">part_simsec</td><td class="Q">409</td><td class="Q">1</td><td><a href="report-112f59.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-112f59.html" -->
+</tr>
+<tr class="bt_dead_store_dead_assignment"><td class="DESC">Dead store</td><td class="DESC">Dead assignment</td><td>check.h</td><td class="DESC">checklikedisc</td><td class="Q">407</td><td class="Q">1</td><td><a href="report-4427c5.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-4427c5.html" -->
+</tr>
+<tr class="bt_dead_store_dead_assignment"><td class="DESC">Dead store</td><td class="DESC">Dead assignment</td><td>multimove.h</td><td class="DESC">multimove</td><td class="Q">109</td><td class="Q">1</td><td><a href="report-ae2296.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-ae2296.html" -->
+</tr>
+<tr class="bt_dead_store_dead_assignment"><td class="DESC">Dead store</td><td class="DESC">Dead assignment</td><td>param_prop.h</td><td class="DESC">paramgrad</td><td class="Q">326</td><td class="Q">1</td><td><a href="report-3b4c66.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-3b4c66.html" -->
+</tr>
+<tr class="bt_dead_store_dead_assignment"><td class="DESC">Dead store</td><td class="DESC">Dead assignment</td><td>part_propnew.h</td><td class="DESC">part_simsec</td><td class="Q">422</td><td class="Q">1</td><td><a href="report-38bee4.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-38bee4.html" -->
+</tr>
+<tr class="bt_dead_store_dead_assignment"><td class="DESC">Dead store</td><td class="DESC">Dead assignment</td><td>check.h</td><td class="DESC">checklike</td><td class="Q">645</td><td class="Q">1</td><td><a href="report-f06210.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-f06210.html" -->
+</tr>
+<tr class="bt_dead_store_dead_assignment"><td class="DESC">Dead store</td><td class="DESC">Dead assignment</td><td>dist.h</td><td class="DESC">likenm</td><td class="Q">64</td><td class="Q">1</td><td><a href="report-3a85c8.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-3a85c8.html" -->
+</tr>
+<tr class="bt_dead_store_dead_assignment"><td class="DESC">Dead store</td><td class="DESC">Dead assignment</td><td>sim.h</td><td class="DESC">sim</td><td class="Q">384</td><td class="Q">1</td><td><a href="report-09a33b.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-09a33b.html" -->
+</tr>
+<tr class="bt_dead_store_dead_assignment"><td class="DESC">Dead store</td><td class="DESC">Dead assignment</td><td>part_propnew.h</td><td class="DESC">part_prop</td><td class="Q">30</td><td class="Q">1</td><td><a href="report-8a638f.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-8a638f.html" -->
+</tr>
+<tr class="bt_dead_store_dead_assignment"><td class="DESC">Dead store</td><td class="DESC">Dead assignment</td><td>observation.h</td><td class="DESC">altertemperature</td><td class="Q">176</td><td class="Q">1</td><td><a href="report-26a485.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-26a485.html" -->
+</tr>
+<tr class="bt_dead_store_dead_assignment"><td class="DESC">Dead store</td><td class="DESC">Dead assignment</td><td>check.h</td><td class="DESC">checklikedisc</td><td class="Q">415</td><td class="Q">1</td><td><a href="report-2e178b.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-2e178b.html" -->
+</tr>
+<tr class="bt_dead_store_dead_assignment"><td class="DESC">Dead store</td><td class="DESC">Dead assignment</td><td>likelihoodinit.h</td><td class="DESC">likelihoodinit</td><td class="Q">243</td><td class="Q">1</td><td><a href="report-ed4cba.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-ed4cba.html" -->
+</tr>
+<tr class="bt_dead_store_dead_assignment"><td class="DESC">Dead store</td><td class="DESC">Dead assignment</td><td>likelihoodinit.h</td><td class="DESC">likelihoodinit</td><td class="Q">292</td><td class="Q">1</td><td><a href="report-1aa38e.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-1aa38e.html" -->
+</tr>
+<tr class="bt_dead_store_dead_assignment"><td class="DESC">Dead store</td><td class="DESC">Dead assignment</td><td>observation.h</td><td class="DESC">altertemperature</td><td class="Q">176</td><td class="Q">1</td><td><a href="report-3e39fd.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-3e39fd.html" -->
+</tr>
+<tr class="bt_dead_store_dead_assignment"><td class="DESC">Dead store</td><td class="DESC">Dead assignment</td><td>check.h</td><td class="DESC">checkderive</td><td class="Q">755</td><td class="Q">1</td><td><a href="report-cedbeb.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-cedbeb.html" -->
+</tr>
+<tr class="bt_dead_store_dead_assignment"><td class="DESC">Dead store</td><td class="DESC">Dead assignment</td><td>equation.h</td><td class="DESC">getparamname</td><td class="Q">461</td><td class="Q">1</td><td><a href="report-d3bfc8.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-d3bfc8.html" -->
+</tr>
+<tr class="bt_dead_store_dead_assignment"><td class="DESC">Dead store</td><td class="DESC">Dead assignment</td><td>multimove.h</td><td class="DESC">multimove</td><td class="Q">42</td><td class="Q">1</td><td><a href="report-f94fe3.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-f94fe3.html" -->
+</tr>
+<tr class="bt_dead_store_dead_assignment"><td class="DESC">Dead store</td><td class="DESC">Dead assignment</td><td>check.h</td><td class="DESC">checklike</td><td class="Q">490</td><td class="Q">1</td><td><a href="report-5e05e4.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-5e05e4.html" -->
+</tr>
+<tr class="bt_dead_store_dead_assignment"><td class="DESC">Dead store</td><td class="DESC">Dead assignment</td><td>part_propnew.h</td><td class="DESC">part_simsec</td><td class="Q">416</td><td class="Q">1</td><td><a href="report-22f43d.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-22f43d.html" -->
+</tr>
+<tr class="bt_dead_store_dead_assignment"><td class="DESC">Dead store</td><td class="DESC">Dead assignment</td><td>param_prop.h</td><td class="DESC">changeparam</td><td class="Q">192</td><td class="Q">1</td><td><a href="report-b6d037.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-b6d037.html" -->
+</tr>
+<tr class="bt_dead_store_dead_assignment"><td class="DESC">Dead store</td><td class="DESC">Dead assignment</td><td>multimove.h</td><td class="DESC">multimove</td><td class="Q">109</td><td class="Q">1</td><td><a href="report-1f93ed.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-1f93ed.html" -->
+</tr>
+<tr class="bt_dead_store_dead_increment"><td class="DESC">Dead store</td><td class="DESC">Dead increment</td><td>indsim_prop.h</td><td class="DESC">probindsim</td><td class="Q">257</td><td class="Q">1</td><td><a href="report-06a73f.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-06a73f.html" -->
+</tr>
+<tr class="bt_dead_store_dead_increment"><td class="DESC">Dead store</td><td class="DESC">Dead increment</td><td>life_prop.h</td><td class="DESC">lifechange</td><td class="Q">275</td><td class="Q">1</td><td><a href="report-9c692e.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-9c692e.html" -->
+</tr>
+<tr class="bt_logic_error_result_of_operation_is_garbage_or_undefined"><td class="DESC">Logic error</td><td class="DESC">Result of operation is garbage or undefined</td><td>ratecalc.h</td><td class="DESC">ratecalcdep</td><td class="Q">40</td><td class="Q">45</td><td><a href="report-d3b87b.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-d3b87b.html" -->
+</tr>
+<tr class="bt_logic_error_result_of_operation_is_garbage_or_undefined"><td class="DESC">Logic error</td><td class="DESC">Result of operation is garbage or undefined</td><td>equation.h</td><td class="DESC">calculate</td><td class="Q">620</td><td class="Q">46</td><td><a href="report-b9883d.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-b9883d.html" -->
+</tr>
+<tr class="bt_logic_error_result_of_operation_is_garbage_or_undefined"><td class="DESC">Logic error</td><td class="DESC">Result of operation is garbage or undefined</td><td>ratecalc.h</td><td class="DESC">ratecalcdep</td><td class="Q">37</td><td class="Q">44</td><td><a href="report-fb5d3a.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-fb5d3a.html" -->
+</tr>
+<tr class="bt_logic_error_result_of_operation_is_garbage_or_undefined"><td class="DESC">Logic error</td><td class="DESC">Result of operation is garbage or undefined</td><td>equation.h</td><td class="DESC">calculate</td><td class="Q">619</td><td class="Q">46</td><td><a href="report-28e850.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-28e850.html" -->
+</tr>
+<tr class="bt_logic_error_result_of_operation_is_garbage_or_undefined"><td class="DESC">Logic error</td><td class="DESC">Result of operation is garbage or undefined</td><td>equation.h</td><td class="DESC">calculate</td><td class="Q">622</td><td class="Q">47</td><td><a href="report-d73bee.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-d73bee.html" -->
+</tr>
+<tr class="bt_logic_error_result_of_operation_is_garbage_or_undefined"><td class="DESC">Logic error</td><td class="DESC">Result of operation is garbage or undefined</td><td>equation.h</td><td class="DESC">calculatenotdep</td><td class="Q">676</td><td class="Q">34</td><td><a href="report-d917ec.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-d917ec.html" -->
+</tr>
+<tr class="bt_logic_error_result_of_operation_is_garbage_or_undefined"><td class="DESC">Logic error</td><td class="DESC">Result of operation is garbage or undefined</td><td>ratecalc.h</td><td class="DESC">ratecalcdep</td><td class="Q">39</td><td class="Q">44</td><td><a href="report-040308.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-040308.html" -->
+</tr>
+<tr class="bt_logic_error_result_of_operation_is_garbage_or_undefined"><td class="DESC">Logic error</td><td class="DESC">Result of operation is garbage or undefined</td><td>equation.h</td><td class="DESC">calculatenotdep</td><td class="Q">678</td><td class="Q">35</td><td><a href="report-f369a8.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-f369a8.html" -->
+</tr>
+<tr class="bt_logic_error_result_of_operation_is_garbage_or_undefined"><td class="DESC">Logic error</td><td class="DESC">Result of operation is garbage or undefined</td><td>equation.h</td><td class="DESC">calculatenotdep</td><td class="Q">677</td><td class="Q">34</td><td><a href="report-5fefd6.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-5fefd6.html" -->
+</tr>
+<tr class="bt_logic_error_result_of_operation_is_garbage_or_undefined"><td class="DESC">Logic error</td><td class="DESC">Result of operation is garbage or undefined</td><td>ratecalc.h</td><td class="DESC">ratecalcdep</td><td class="Q">38</td><td class="Q">44</td><td><a href="report-f50e11.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-f50e11.html" -->
+</tr>
+<tr class="bt_logic_error_result_of_operation_is_garbage_or_undefined"><td class="DESC">Logic error</td><td class="DESC">Result of operation is garbage or undefined</td><td>equation.h</td><td class="DESC">calculate</td><td class="Q">621</td><td class="Q">46</td><td><a href="report-0d4023.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-0d4023.html" -->
+</tr>
+<tr class="bt_logic_error_result_of_operation_is_garbage_or_undefined"><td class="DESC">Logic error</td><td class="DESC">Result of operation is garbage or undefined</td><td>equation.h</td><td class="DESC">calculatenotdep</td><td class="Q">675</td><td class="Q">34</td><td><a href="report-cd45cf.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-cd45cf.html" -->
+</tr>
+<tr class="bt_logic_error_uninitialized_argument_value"><td class="DESC">Logic error</td><td class="DESC">Uninitialized argument value</td><td>ratecalc.h</td><td class="DESC">ratecalcdep</td><td class="Q">41</td><td class="Q">44</td><td><a href="report-6e17a4.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-6e17a4.html" -->
+</tr>
+<tr class="bt_logic_error_uninitialized_argument_value"><td class="DESC">Logic error</td><td class="DESC">Uninitialized argument value</td><td>equation.h</td><td class="DESC">calculatenotdep</td><td class="Q">679</td><td class="Q">34</td><td><a href="report-c9a166.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-c9a166.html" -->
+</tr>
+<tr class="bt_logic_error_uninitialized_argument_value"><td class="DESC">Logic error</td><td class="DESC">Uninitialized argument value</td><td>equation.h</td><td class="DESC">calculate</td><td class="Q">623</td><td class="Q">46</td><td><a href="report-d89494.html#EndPath">View Report</a></td>
+<!-- REPORTBUG id="report-d89494.html" -->
+</tr>
+</tbody>
+</table>
+
+</body></html>
