@@ -1,0 +1,102 @@
+#!/bin/bash
+
+# Usage: ./submit-bici-dmtcp --input Scotland_bici_input.xml --samples 1000 --nprocs 4 --walltime 1:00:00 --dir /path/to/run/dir
+
+set -e
+set -u
+
+while [ $# -gt 0 ]; do
+    if [ $1 = "--input" ]; then
+        inputfile=$2
+        shift 2
+    elif [ $1 == "--samples" ]; then
+        nsamples=$2
+        shift 2
+    elif [ $1 == "--dir" ]; then
+        dir=$2
+        shift 2
+    elif [ $1 == "--nprocs" ]; then
+        nprocs=$2
+        shift 2
+    elif [ $1 == "--walltime" ]; then
+        walltime=$2
+        shift 2
+    else
+        echo "Unrecognised arguments: $*" >&2
+        exit 1
+    fi
+done
+
+jobname=$(basename $dir)
+
+mkdir $dir
+mkdir $dir/Output
+cp ./bici_mpi $dir
+cp $inputfile $dir
+inputbasename=$(basename $inputfile)
+
+cat >$dir/submit.sh <<EOF
+#!/bin/bash
+#SBATCH --job-name $jobname
+#SBATCH --account DIRAC-DC003-CPU
+#SBATCH --output log.out
+#SBATCH --error log.err
+#SBATCH --mail-type ALL
+#SBATCH --ntasks $nprocs
+#SBATCH --open-mode append
+#SBATCH --signal B:SIGUSR1@200
+#SBATCH --dependency singleton
+#SBATCH --time $walltime
+#SBATCH -p skylake
+
+. /etc/profile.d/modules.sh
+module purge
+module load rhel7/default-peta4
+module load dmtcp/2.6.0-intel-17.0.4
+
+ulimit -s 8192
+
+# Catch the SIGUSR1 signal
+_requeue() {
+    echo "\$(date): job \$SLURM_JOBID received SIGUSR1, checkpointing"
+    port=\$(<port.txt)
+    dmtcp_command --bcheckpoint -p "\$port"
+    echo "\$(date): job \$SLURM_JOBID checkpoint complete, re-queueing"
+    scontrol requeue \$SLURM_JOBID
+}
+trap '_requeue' SIGUSR1
+
+cd \$SLURM_SUBMIT_DIR
+
+export DMTCP_QUIET=0
+
+mkdir -p tmpdir-\$SLURM_JOB_ID
+export TMPDIR="tmpdir-\$SLURM_JOB_ID"
+
+echo "\$(date): Starting the coordinator"
+eval "dmtcp_coordinator --daemon --coord-logfile dmtcp_log.txt --exit-after-ckpt --exit-on-last -i 0 --port-file port.txt -p 0"
+sleep 2
+
+export DMTCP_COORD_HOST=\`hostname\`
+export DMTCP_COORD_PORT=\$(<port.txt)
+
+numnodes=\$SLURM_JOB_NUM_NODES
+mpi_tasks_per_node=\$(echo "\$SLURM_TASKS_PER_NODE" | sed -e  's/^\([0-9][0-9]*\).*$/\1/')
+np=\$[\${numnodes}*\${mpi_tasks_per_node}]
+
+restart_script="dmtcp_restart_script.sh"
+if [ -f "\$restart_script" ]
+then
+    echo "\$(date): Resuming BICI"
+    \$restart_script -h \$DMTCP_COORD_HOST -p \$DMTCP_COORD_PORT &
+else
+    echo "\$(date): Starting BICI"
+    mpirun -env I_MPI_FABRICS tcp -ppn \$mpi_tasks_per_node -np \$np dmtcp_launch --no-gzip --rm --ckpt-open-files --allow-file-overwrite -h \$DMTCP_COORD_HOST -p \$DMTCP_COORD_PORT ./bici_mpi $inputbasename $nsamples &
+fi
+
+wait
+EOF
+
+cd $dir
+chmod u+x submit.sh
+sbatch submit.sh
