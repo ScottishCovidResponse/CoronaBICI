@@ -39,6 +39,6 @@ jobs:
         mkdir -p $(dirname $dir)
         ln -s $PWD/Analysis/buildhtml/* $dir
         find $dir
-        rsync --relative -avz --no-implied-dirs $dir ian@152.67.131.35:
+        rsync --relative -avz --no-implied-dirs $dir/ ian@152.67.131.35:
         url=http://152.67.131.35/coronabici/${dir}/
         echo "::message ::Static analysis output available at $url" >&2
