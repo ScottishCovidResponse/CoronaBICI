@@ -1,0 +1,34 @@
+name: StaticAnalysis
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Install packages
+      run: sudo apt-get update && sudo apt-get install -y git build-essential mpich clang-tools
+
+    # - name: Compile (serial)
+    #   run: |
+    #     cd Analysis
+    #     sed -i 's|#define MP|// #define MP|g' bici.cc
+    #     g++ bici.cc header/tinyxml2.cc -O3 -o bici
+
+    - name: Perform static analysis
+      run: |
+        cd Analysis
+        sed -i 's|#define MP|// #define MP|g' bici.cc
+        scan-build -o buildhtml make -e
+
+    - name: Set up ssh agent
+      uses: webfactory/ssh-agent@v0.2.0
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Upload results to website
+      run: |
+        rsync -avz buildhtml ian@152.67.131.35:
