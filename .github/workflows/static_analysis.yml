@@ -35,7 +35,7 @@ jobs:
 
     - name: Upload results to website
       run: |
-        dir=$GITHUB_RUN_ID/$GITHUB_WORKFLOW/clang-analyzer/
+        dir=$GITHUB_RUN_ID/$GITHUB_WORKFLOW/clang-analyzer
         mkdir -p $(dirname $dir)
         ln -s Analysis/buildhtml/* $dir
         find $dir
