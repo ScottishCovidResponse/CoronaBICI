@@ -875,7 +875,7 @@ void emsg(string msg)
  
 	storeemsg(msg);
 	
-	#ifdef MP
+	#ifdef USE_MPI
 	MPI_Finalize();
 	#endif
 	

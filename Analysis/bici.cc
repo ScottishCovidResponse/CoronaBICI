@@ -23,9 +23,8 @@ c) "Bici[X].txt" is an output file which can be read into the BICI GUI for visua
 d) "Stats.txt" calculates the posterior means, 90% credible intervals, effective sample sizes and 
    Gelman-Rubin diagnostic statics (these last two are used to confirm that MCMC is well mixed).
 */
-	 
-// The is turned on when performing MPI on multiple chains
-//#define MP 1                        
+
+// In order to use MPI, compile with -DUSE_MPI
 
 const long noout = 0;                 // Suppresses the output when error checking
 const long checkon = 0;               // Determines if checking is done
@@ -37,7 +36,7 @@ using namespace tinyxml2;
 
 using namespace std;
 
-#ifdef MP
+#ifdef USE_MPI
 #include <mpi.h>
 #endif
 
@@ -88,7 +87,7 @@ int main(int argc, char** argv)
   string file;
   vector <double> v;
  
-	#ifdef MP
+	#ifdef USE_MPI
 	int process_Rank, size_Of_Cluster;
   MPI_Init(&argc, &argv);
   MPI_Comm_size(MPI_COMM_WORLD, &size_Of_Cluster);
@@ -97,10 +96,19 @@ int main(int argc, char** argv)
 	nrun = size_Of_Cluster;
   #endif
  
-  #ifndef MP
+  #ifndef USE_MPI
 	simnum = 0;
 	nrun = 1;
   #endif
+
+	if (simnum == 0) {
+		cout << "CoronaBICI running ";
+#ifdef USE_MPI
+		cout << "on " << size_Of_Cluster << " MPI processes" << endl;
+#else
+		cout << "in serial" << endl;
+#endif
+	}
  
 	if(argc != 3) emsg("Not the right number of arguments");
 	file = argv[1]; 
@@ -115,7 +123,7 @@ int main(int argc, char** argv)
 	}
 	
 	// Ensure directories are created before other processes proceed
-#ifdef MP
+#ifdef USE_MPI
 	MPI_Barrier(MPI_COMM_WORLD);
 #endif
 
@@ -202,7 +210,7 @@ int main(int argc, char** argv)
 			ch[0]->savesimulated();
 		}
 		
-		#ifdef MP
+		#ifdef USE_MPI
 		MPI_Finalize();
 		#endif
     return 0;
@@ -240,7 +248,7 @@ int main(int argc, char** argv)
 	ch[0]->diagnosticsfile();
 	stats();
 	
-	#ifdef MP
+	#ifdef USE_MPI
 	MPI_Finalize();
 	#endif
 }

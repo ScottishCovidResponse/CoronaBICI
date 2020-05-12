@@ -21,12 +21,12 @@ jobs:
     - name: Compile (MPI)
       run: |
         cd Analysis
-        make
+        make bici_mpi
 
     - name: Run test model
       run: |
         cd Analysis
-        stdbuf -oL -eL mpirun -n 4 ./bici Scotland_bici_input.xml 1000
+        stdbuf -oL -eL mpirun -n 4 ./bici_mpi Scotland_bici_input.xml 1000
 
     - name: Check output files
       run: |
