@@ -29,7 +29,7 @@ void Chain::param_prop()          // Makes random walk proposals on model parame
 			}
     }
   }
-if(isinf(L()) || isnan(L())) emsg("dp");
+
   for(s = 0; s < nsmooth; s++){    // Makes changes to all smooth parameters at the same time
     dparam = normal(0,jump_smooth[s]);
 

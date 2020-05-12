@@ -1,4 +1,4 @@
- // This file considers making multiple event time proposals
+// This file considers making multiple event time proposals
 
 void Chain::multimove()   // Each transition type is considered in turn and multiple event move are made
 {
@@ -144,44 +144,6 @@ void Chain::multimove()   // Each transition type is considered in turn and mult
 	}
 }
 
-/*
-double Chain::multial(long tr, double t, double tst)     // Predicts the acceptance rate for a move
-{
-	long ci, cf, k, kmax, ref, j, jmax;
-	double grad;
-	NDEQCH ndeqch;
-	
-	ddti = DDconv[long(t*DDfac)]; if(DDt[ddti+1] < t) ddti++;
-		
-	ci = tra[tr].ci; cf = tra[tr].cf;
-	
-	grad = 0;
-	kmax = transchref[ci][cf].size();   
-	for(k = 0; k < kmax; k++){
-    ref = transchref[ci][cf][k];
-		
-		jmax = transnotdepeqch[ref].size();
-		for(j = 0; j < jmax; j++){        
-			ndeqch = transnotdepeqch[ref][j];
-			grad += transnotdepeq_val[ndeqch.d]*ndeqch.n;
-		}
-	}
-	
-	al = exp(grad*(t-tst));
-	 
-	eq = tra[tr].eq; 
-	if(transdep[eq] == 1){
-		
-		al *= transrate(eq,tst)/transrate(eq,t);  
-	
-		if(DDcalc[d*nDD + ddti] == 0)
-	}	
-
-	if(al > 1) al = 1;
-	return al;
-}
-*/
-
 double Chain::movecalcgrad(long tr, double t)            // Works out the gradient in the loglikelihood
 {
 	long e, ee, dn, d, j, jmax, k, kmax, ref, ci, cf;
@@ -265,54 +227,5 @@ void Chain::multimoveinit()              // Initialises multimove proposals
 		jump_multimove.push_back(1); multimovepr.push_back(0.1);
 		ntr_multimove.push_back(0); nac_multimove.push_back(0);	nfa_multimove.push_back(0);
 		ntr_multimovetot.push_back(0); nac_multimovetot.push_back(0);
-	}
-
-}
-
-void addsettime()                       // Adds settimes to a constructed event sequence evnew
-{
-	long e, s, val, ci, cf, tr, ee, nev;
-	double t;
-
-	val = classmult[settimecl];
-	e = 1; nev = evnew.size();
-	for(s = 0; s < nsettime; s++){
-		t = settime[s];
-		while(e < nev && evnew[e].t < t) e++; if(e == nev) emsg("Multimove: EC1");
-		
-		ci = tra[evnew[e].tr].ci;
-		cf = ci + val;
-		EV ev; ev.tr = compiftra[ci][cf]; ev.t = t; evnew.insert(evnew.begin()+e,ev);	
-		e++; nev++;
-		for(ee = e; ee < nev; ee++){
-			tr = evnew[ee].tr;
-			ci = tra[tr].ci+val; cf = tra[tr].cf; 
-			if(cf != NOTALIVE) tr = compiftra[ci][cf+val];
-			else tr = traend+ci;
-			evnew[ee].tr = tr;
-		}
-	}
-}
-
-void remsettime()                      // Removes settimes to a constructed event sequence evnew
-{
-	long e, s, val, ci, cf, tr, ee, nev;
-	double t;
-	
-	val = classmult[settimecl];
-	
-	e = 1; nev = evnew.size();
-	for(s = 0; s < nsettime; s++){
-		t = settime[s];
-		while(e < nev && evnew[e].t < t) e++; if(evnew[e].t != t) emsg("Multimove: EC2");
-		
-		evnew.erase(evnew.begin()+e);	
-		for(ee = e; ee < nev; ee++){
-			tr = evnew[ee].tr;
-			ci = tra[tr].ci-val; cf = tra[tr].cf; 
-			if(cf != NOTALIVE) tr = compiftra[ci][cf-val];
-			else tr = traend+ci;
-			evnew[ee].tr = tr;
-		}
 	}
 }

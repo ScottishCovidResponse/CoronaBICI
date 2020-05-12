@@ -586,7 +586,7 @@ void Chain::initinflist()  // Initialises the list of observed /infected / noinf
 {
 	long i, c, e;
 
-	inflist.resize(ncompswa); obsinflist.resize(ncompswa); notinflist.resize(ncompswa);
+	inflist.resize(ncomp); obsinflist.resize(ncomp); notinflist.resize(ncomp);
 	
 	indinflist.resize(nind);
 	for(i = 0; i < nind; i++){

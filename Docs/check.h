@@ -154,7 +154,7 @@ void Chain::checkinflist(short num)      // Checks the lists of infected / not i
 	}
 	
 	tot = 0;
-	for(c = 0; c < ncompswa; c++){
+	for(c = 0; c < ncomp; c++){
 		tot += long(inflist[c].size()) + long(notinflist[c].size()) + long(obsinflist[c].size());
 	}
 	
@@ -274,7 +274,7 @@ void Chain::checklikedisc(long num)             // Checks the likelihood based o
 	}
 	
 	if(corona == 1){
-		for(cinit = 0; cinit < ncompswa; cinit++){
+		for(cinit = 0; cinit < ncomp; cinit++){
 			s1 = obsinflist[cinit].size(); s2 = inflist[cinit].size();
 			for(ii = 0; ii < s1+s2; ii++){
 				if(ii < s1) i = obsinflist[cinit][ii];

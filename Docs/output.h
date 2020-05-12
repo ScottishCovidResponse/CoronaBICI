@@ -852,7 +852,7 @@ string rep(string s, string s1, string s2)           // Replaces string s1 in s 
 
 void tracefileinit()                                 // Initialises the trace file
 {
-	long r, p, s;
+	long r, a, p;
 	string st;
 
 	trace << "state\t";
@@ -885,7 +885,7 @@ void tracefileinit()                                 // Initialises the trace fi
 
 void Chain::tracefile()               // Outputs the trace file
 {
-	long p, r, c, num, tot[nclassval[1]], tots[nsettime+1], s, cf, i, e, k;
+	long p, r, c, num, tot[nclassval[1]];
 	
   trace << samp << "\t";
 	for(p = 0; p < nparam; p++) trace << param[p] << "\t"; 
@@ -893,32 +893,9 @@ void Chain::tracefile()               // Outputs the trace file
 	for(r = 0; r < nclassval[1]; r++) tot[r] = 0;
 	
 	for(c = 0; c < ncomp; c++) tot[compval[c][1]] += obsinflist[c].size()+inflist[c].size();
-
-	for(s = 0; s <= nsettime; s++) tots[s] = 0; 
-
-	for(c = 0; c < ncompswa; c++){
-		for(k = 0; k < obsinflist[c].size(); k++){
-			i = obsinflist[c][k];
-			for(e = 1; e < nindev[i]-1; e++) if(tra[indev[i][e].tr].cl == 0) break;
-			if(e == nindev[i]-1) emsg("Output: EC12");
-			
-			cf = tra[indev[i][e].tr].cf;
-			tots[compval[cf][settimecl]]++;
-		}
-		
-		for(k = 0; k < inflist[c].size(); k++){
-			i = inflist[c][k];
-			for(e = 1; e < nindev[i]-1; e++) if(tra[indev[i][e].tr].cl == 0) break;
-			if(e == nindev[i]-1) emsg("Output: EC12");
-			
-			cf = tra[indev[i][e].tr].cf;
-			tots[compval[cf][settimecl]]++;
-		}
-	}
-	for(s = 0; s <= nsettime; s++) trace << tots[s] << "\t";
 	
 	num = 0; for(r = 0; r < nclassval[1]; r++){ trace << tot[r] << "\t"; num += tot[r];}
-
+	
 	trace << num << "\t" << L() << "\t";
 	
 	for(r = 0; r < nclassval[1]; r++) trace << multacf[r] << "\t"; trace << "0\n";
@@ -1003,9 +980,9 @@ void Chain::savesimulated()
 
 void Chain::outputcoronadata()
 {
-	long r, day, tr, i, e, ci, cf, j, num = 0;
+	long r, day, tr, i, e, ci, cf, j;
 	double t;
-	vector <long> ncase;
+	vector <long> ncase, ncaserec, ninf;
 	vector <EV> ev;
 
   for(i = 0; i < nindtot_sim; i++){
@@ -1014,30 +991,28 @@ void Chain::outputcoronadata()
 	
 	sort(ev.begin(),ev.end(),compareev);
 
-	ncase.resize(nclassval[1]);
-	for(r = 0; r < nclassval[1]; r++) ncase[r] = 0;
+	ncase.resize(nclassval[1]); ncaserec.resize(nclassval[1]); ninf.resize(nclassval[1]);
+	for(r = 0; r < nclassval[1]; r++){ ncase[r] = 0; ncaserec[r] = 0; ninf[r] = 0;}
 	
 	stringstream sdi; sdi << root << "/case" << simnum << ".txt";
 	ofstream casedata(sdi.str().c_str());
-	
-	HH = 4;
-
-	j = 0; num = 0;
+	j = 0;
 	for(day = 0; day < tmax2; day++){
 		t = day;
     while(j < ev.size() && ev[j].t <= t){
 			tr = ev[j].tr;
-			if(tra[tr].cl == 0){
-				ci = tra[tr].ci;
-				cf = tra[tr].cf;
-				r = compval[ci][1];
-				
-				if(ci != NOTALIVE && cf != NOTALIVE){
-					num++;
-					if(compval[cf][0] == HH) ncase[r]++;
-				}
+			ci = tra[tr].ci;
+			cf = tra[tr].cf;
+			if(ci != NOTALIVE && cf != NOTALIVE){
+				if(compval[ci][0] != compval[cf][0] && compval[cf][0] == HH) ninf[r]++;
+				//r = compval[cf][1];
+				//if(compval[ci][0] == SS && compval[cf][0] == EE) ninf[r]++;
+				//if(compval[ci][0] == II && compval[cf][0] == HH) ncase[r]++;
+				//if(compval[ci][0] == AA && compval[cf][0] == II) ncase[r]++;
+				//if(compval[ci][0] == AA && compval[cf][0] == RR) ncaserec[r]++;
+				//if(compval[ci][0] == II && compval[cf][0] == RR) ncaserec[r]++;
 			}
-			j++;
+	    j++;
     }
 		
 		for(r = 0; r < nclassval[1]; r++){
@@ -1045,5 +1020,4 @@ void Chain::outputcoronadata()
 			casedata << day << "\tname\t" << classval[1][r] << "\tname\t" << ncase[r] << "\n";
 		}
 	}
-	cout << num << " Total number of events\n";
 }

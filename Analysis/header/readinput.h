@@ -285,6 +285,7 @@ void readinput(string file)    // Reads the input XML file
 	if(corona == 1){
 		for(c = 0; c < nsettime; c++) settime[c] += 0.1;
 	}
+	settime.push_back(large);
 	
   if(nage == 0) age.push_back(1);   // arbitratily sets an upper bound on the age
 	else age.push_back(age[nage-1]*(1+1.0/nage)); 

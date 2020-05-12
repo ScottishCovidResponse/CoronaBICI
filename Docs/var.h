@@ -13,9 +13,22 @@ vector <double> probsum;
 double probsumtot;
 
 double fracnotH;                   // The fraction of infected individuals not going to hostital
-short HH;
-long nrun;                                    // The number of MCMC runs
 
+/*
+//const long SS = 0, EE = 1, AA = 2, II = 3;    // Used to specify states
+//const long HH = 4, RR = 5, DD = 6;
+
+vector <double> proba;
+vector <double> probsuma;
+double probsumatot;
+double rEA, rAR, rAI, rIR[7], rIH[7], rID[7], rHR[7], rHD[7], rAIcor;
+*/
+short HH;
+
+//long nregion;                                 // Number of regions
+//long nag;                                     // Number of age groups in model
+long nrun;                                    // The number of MCMC runs
+//double tAbeg, tAend, Afac, tIbeg, tIend, Ifac;
 // END CORONA SPECIFIC
 
 const double gammalim = 0.05;                 // Limit on gamma / beta distribution shape parameter

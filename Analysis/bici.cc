@@ -77,6 +77,8 @@ using namespace std;
 #include "header/addrem_prop.h"		// Proposals to add and remove individuals from the system
 #include "header/indsim_prop.h"		// Proposals which simulate event sequences for individuals
 #include "header/addreminf.h"     // Proposals for adding and removing infected individuals (Corona)
+#include "header/samplers.h"      // Different event samplers used in proposals
+#include "header/singlefixed_prop.h"   // Proposals for individuals with a single fixed event specified
 
 #include "header/stats.h"         // Generate statistics to be output at the end of execution 
 
@@ -164,9 +166,11 @@ int main(int argc, char** argv)
 
   ch[0]->initchain(); 
 
-	if(corona == 1) ch[0]->addreminfinit();
-
-  if(simon == 0) ch[0]->start();
+  if(simon == 0){
+		if(corona == 1) ch[0]->addreminfinit();
+		if(corona == 1) ch[0]->samplerinit();
+		ch[0]->start();
+	}
  
   bout << "3|90|\n"; bout.flush();
   //
@@ -188,9 +192,9 @@ int main(int argc, char** argv)
 	
   if(simon == 1){
 		bout << "8|\n"; bout << "3|0|\n"; bout.flush();
-    for(samp = 0; samp < nsamp; samp++){ 
+	 for(samp = 0; samp < nsamp; samp++){ 
       ch[0]->eventplot();
-      ch[0]->traceplot();
+		  ch[0]->traceplot();
     }
 		
 		if(corona == 1){
@@ -207,13 +211,13 @@ int main(int argc, char** argv)
 	if(corona == 1)	ch[0]->initinflist();
 	ch[0]->multimoveinit();
 	
-	if(corona == 1) ch[0]->addstartuoinf();
+	//if(corona == 1) ch[0]->addstartuoinf();
 	ch[0]->paramstart(); 
 	
   ch[0]->check(-1);
 
 	tracefileinit();
-	
+
   for(samp = 0; samp < nsamp; samp++){
 		ch[0]->update();
 
@@ -256,9 +260,14 @@ void Chain::update()                                                // Performs 
 	timeprop[ADDREMINF_PROP] += clock();
 
 	timeprop[MULTIMOVE_PROP] -= clock();
-	if(ran() < 0.02) multimove();
+	//if(ran() < 0.02) multimove();
 	timeprop[MULTIMOVE_PROP] += clock();
-
+	
+	timeprop[SINGFIX_PROP] -= clock();
+	//singlefixed_prop();
+	singlefixed_prop2();
+	timeprop[SINGFIX_PROP] += clock();
+	
 	// These MCMC proposals are currently turned off as not needed for analysing Corona data (yet)
 	/*  
 	 long chon = 0, paramloop, loop, loopmax, i, imax, r;
