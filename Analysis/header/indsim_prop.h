@@ -487,6 +487,9 @@ long Chain::getlifespan(long i)                    // Gets the time over which a
   tent = indev[i][0].t; e = nindev[i]-1; 
   while(e > 0 && tra[indev[i][e].tr].cf != NOTALIVE) e--;
   tlea = indev[i][e].t;
-  if(tlea > tmax || e == 0) emsg("Indsim: EC22");
+  if(tlea > tmax || e == 0) {
+		oe("pp",indev[i]);
+		cout << i << " " << tent << " " << tlea << " " << tmax << "  tt\n"; emsg("Indsim: EC22");
+	}
   return e;
 }

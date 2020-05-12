@@ -66,7 +66,7 @@ void Chain::sim(double tmin)              // Simulates from the model starting a
       nindev_sim.resize(nind); indev_sim.resize(nind); 
 			indtbirth_sim.resize(nind); sim_statind.resize(nind);
 			
-			if(corona == 1){ tmin = 40; indext = 39.9;}
+			if(corona == 1){ tmin = 40; indext = 39;}
 			
       for(i = 0; i < nind; i++){
 				if(corona == 1) cc = indinit[i];
@@ -84,10 +84,10 @@ void Chain::sim(double tmin)              // Simulates from the model starting a
         nindev_sim[i] = 1;
         EV evbeg; evbeg.t = 0; evbeg.tr = trabeg+cc; indev_sim[i].push_back(evbeg);
 
-				if(corona == 1 && flindex < 3 && compname[cc] == "S_T<80"){
-					EV evindex; evindex.t = indext; evindex.tr = compiftra[cc][cc+EE]; indev_sim[i].push_back(evindex);
+				if(corona == 1 && flindex < 3){
+					EV evindex; evindex.t = indext+ran(); evindex.tr = compiftra[cc][cc+1]; indev_sim[i].push_back(evindex);
 					flindex++;
-					cc = cc+EE;
+					cc = cc+1;
 				}
         sim_statind[i] = cc;
 
@@ -262,7 +262,7 @@ void Chain::sim(double tmin)              // Simulates from the model starting a
     do{
 		  if(simon == 1){ 
 				pernew = long(100*(samp + t/tmax2)/nsamp); 
-				if(pernew > per){ per = pernew; cout << "3|" << per << "|\n"; cout.flush();}
+				if(pernew > per){ per = pernew; bout << "3|" << per << "|\n"; cout.flush();}
 			}
 			 
       R = 0;
@@ -273,7 +273,7 @@ void Chain::sim(double tmin)              // Simulates from the model starting a
       for(d = 0; d < ntransnotdepeq; d++){ 
 				R += long(sim_transnotdeplist[d].size())*sim_Rtransnotdep[d]; Rst[ntransdepeq+d] = R;
 			}
-		
+
 			if(1 == 0){
 				for(d = 0; d < ntransdepeq; d++){
 					cout << sim_transdeplist[d].size() << " "<< eqnstr[transdepeq[d]]

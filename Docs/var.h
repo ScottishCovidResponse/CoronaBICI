@@ -13,9 +13,22 @@ vector <double> probsum;
 double probsumtot;
 
 double fracnotH;                   // The fraction of infected individuals not going to hostital
-short HH;
-long nrun;                                    // The number of MCMC runs
 
+/*
+//const long SS = 0, EE = 1, AA = 2, II = 3;    // Used to specify states
+//const long HH = 4, RR = 5, DD = 6;
+
+vector <double> proba;
+vector <double> probsuma;
+double probsumatot;
+double rEA, rAR, rAI, rIR[7], rIH[7], rID[7], rHR[7], rHD[7], rAIcor;
+*/
+short HH;
+
+//long nregion;                                 // Number of regions
+//long nag;                                     // Number of age groups in model
+long nrun;                                    // The number of MCMC runs
+//double tAbeg, tAend, Afac, tIbeg, tIend, Ifac;
 // END CORONA SPECIFIC
 
 const double gammalim = 0.05;                 // Limit on gamma / beta distribution shape parameter
@@ -715,7 +728,7 @@ class Chain                                    // Store all quantities and funci
   void addreminit();                               
   void addrem_prop();                              
   void simsumcalc();                              
-  void Lout();
+  double Lout();                                     
   void plotparamlike(long p, double min, double max);
   long numwrong(long i, vector<EV> &vec);            
   void sing_prop(long i);
@@ -767,7 +780,7 @@ class Chain                                    // Store all quantities and funci
 	double probsimfromfixed(vector<EV> &vec, long i);
 	void addsamp(long c, long leave, double r);
 	void addsamp2(long c, long leave1, long leave2, double r, double prob);
-	void samplerinit();
+	double samplerinit();
 	void addsamprev(long c, long enter, double r);
 	void singlefixed_prop();
 	void singlefixed_prop2();
@@ -869,17 +882,13 @@ void storeemsg(string msg)
 	err.flush();
 }
 
-#define STRING(x) STRING2(x)
-#define STRING2(x) #x
-#define LINE_STRING STRING(__LINE__)
-
 void emsg(string msg)
 {
   cout << "e|ERROR MSG: " << msg << "    Sample number:" << samp << "\n";
  
 	storeemsg(msg);
 	
-	#ifdef USE_MPI
+	#ifdef MP
 	MPI_Finalize();
 	#endif
 	
