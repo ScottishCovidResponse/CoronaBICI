@@ -35,4 +35,7 @@ jobs:
 
     - name: Upload results to website
       run: |
-        rsync -avz Analysis/buildhtml ian@152.67.131.35:
+        dir=$GITHUB_RUN_ID/$GITHUB_WORKFLOW/clang-analyzer/
+        rsync -avz Analysis/buildhtml/*/ ian@152.67.131.35:${dir}/
+        url=http://152.67.131.35/coronabici/${dir}/
+        echo "::message ::Static analysis output available at $url" >&2
