@@ -16,13 +16,6 @@ double ratecalcdep(long d, double *popnum, double *param) // Calculates the rate
 
   eq = transdepeq[d];
   for(i = 0; i < neqncalc[eq]; i++){
-    switch(eqncalc1[eq][i]){
-    case PARAM: num1 = param[eqncalcnum1[eq][i]]; break;
-    case POPNUM: num1 = popnum[eqncalcfastnum1[d][i]]; break;
-    case REG: num1 = regcalc[eqncalcnum1[eq][i]]; break;
-    case NUMERIC: num1 = numeric[eqncalcnum1[eq][i]]; break;
-    default: ; // empty
-    }
 
     switch(eqncalc2[eq][i]){
     case PARAM: num2 = param[eqncalcnum2[eq][i]]; break;
@@ -32,6 +25,20 @@ double ratecalcdep(long d, double *popnum, double *param) // Calculates the rate
     default:
       emsg("Invalid default on " LINE_STRING " in " __FILE__);
     }
+
+    switch(eqncalcop[eq][i]) {
+      case ADD: case TAKE: case MULTIPLY: case DIVIDE: case POWER:
+        switch(eqncalc1[eq][i]){
+        case PARAM: num1 = param[eqncalcnum1[eq][i]]; break;
+        case POPNUM: num1 = popnum[eqncalcfastnum1[d][i]]; break;
+        case REG: num1 = regcalc[eqncalcnum1[eq][i]]; break;
+        case NUMERIC: num1 = numeric[eqncalcnum1[eq][i]]; break;
+        default:
+          emsg("Invalid default on " LINE_STRING " in " __FILE__);
+        }
+      default: ; // Pass, don't need num1 in equation.
+    }
+
 
     switch(eqncalcop[eq][i]){
     case ADD: num = num1+num2; break;
