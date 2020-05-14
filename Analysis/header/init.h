@@ -3,22 +3,22 @@
 void init()
 {
   long ob, fi, c, tr, cl, eq, j;
-  long i;
   double sum, t;
   vector <long> eqfl;
 
   for(ob = 0; ob < nobs; ob++){
+    long i = obsi[ob];
     indobs[i].push_back(ob);
     indobst[i].push_back(obst[ob]);
   }
 
   indfixev.resize(nind);
   for(fi = 0; fi < nfixev; fi++){
-    i = fixev[fi].i;
+    long i = fixev[fi].i;
     indfixev[i].push_back(fi); 
   }
 
-  for(i = 0; i < nind; i++){
+  for(long i = 0; i < nind; i++){
     nindobs.push_back(indobs[i].size());
     nindfixev.push_back(indfixev[i].size());
     if(nindobs[i] == 0 && nindfixev[i] == 0 && indfixtenter[i] == large && indfixtleave[i] == large && indinit[i] == -1) emsg("Init: EC1");
@@ -26,7 +26,7 @@ void init()
 
 	if(logsummax < 2*nind) logsummax = 2*nind;
 	logsum.resize(logsummax);
-  sum = 0; logsum[0] = 0; for(i = 1; i < logsummax; i++){ sum += log(i); logsum[i] = sum;}
+  sum = 0; logsum[0] = 0; for(long i = 1; i < logsummax; i++){ sum += log(i); logsum[i] = sum;}
 
   compleave.resize(ncomp+1); for(tr = 0; tr < ntra; tr++) compleave[tra[tr].ci].push_back(tr);
   ncompleave.resize(ncomp+1); for(c = 0; c <= ncomp; c++) ncompleave[c] = compleave[c].size();
@@ -100,7 +100,7 @@ void init()
 
   if(simon == 0){
     firstobst.resize(nind); lastobst.resize(nind);
-    for(i = 0; i < nind; i++){
+    for(long i = 0; i < nind; i++){
       t = tmax;
       if(nindobs[i] > 0){ if(indobst[i][0] < t) t = indobst[i][0];}
       if(nindfixev[i] > 0){ if(fixev[indfixev[i][0]].t < t) t = fixev[indfixev[i][0]].t;}
