@@ -873,7 +873,7 @@ void storeemsg(string msg)
 #define STRING2(x) #x
 #define LINE_STRING STRING(__LINE__)
 
-void emsg(string msg)
+[[ noreturn ]] void emsg(string msg)
 {
   cout << "e|ERROR MSG: " << msg << "    Sample number:" << samp << "\n";
  
