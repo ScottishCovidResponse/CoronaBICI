@@ -8,6 +8,7 @@ void init()
   vector <long> eqfl;
 
   for(ob = 0; ob < nobs; ob++){
+		i = obsi[ob];
     indobs[i].push_back(ob);
     indobst[i].push_back(obst[ob]);
   }
