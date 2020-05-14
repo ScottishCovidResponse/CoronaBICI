@@ -456,9 +456,9 @@ void printop()                                // Outputs the operations for an e
 
 long getparamname(string text, long i)                  // Tries to get a parameter from a string
 {
-  long p, l, maxlen, pmax;
+  long p, l, pmax;
 
-  maxlen = 0; pmax = -1;
+  pmax = -1;
   for(p = 0; p < paramname.size(); p++){
     l = paramname[p].length();
     if(text.substr(i,l+2) == "["+paramname[p]+"]"){

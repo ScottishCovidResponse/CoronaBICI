@@ -4,7 +4,7 @@ void Chain::multimove()   // Each transition type is considered in turn and mult
 {
 	double facup = 1.005, facdo = 0.995, facup2 = 1.05, facdo2 = 0.95;
 	
-	long i, e, trr, trm, c, eq, loop, loopmax, ddti, ddtf, ddi, ddf;
+	long i, e, trr, trm, eq, loop, loopmax, ddti, ddtf, ddi, ddf;
 	double t, tst, gr, al, probif, probfi, Ltoti, Ltotf, pr, jump;
 	vector <double> timest, timeoldst, grst;
 	vector <long> ist, est, mv, ddist, ddfst;
@@ -39,7 +39,7 @@ void Chain::multimove()   // Each transition type is considered in turn and mult
 				if(ran() < pr){
 					i = movetri[trm][loop];
 					e = movetre[trm][loop];
-					c = indinit[i];
+					// c = indinit[i]; // c is never read
 
 					tst = indev[i][e].t;
 					if(checkiffixed(i,tst) == 0){ 

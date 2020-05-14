@@ -4,7 +4,7 @@ void Chain::addreminf()
 {
 	double upfac = 1.05, downfac = 0.975;
 	long checkon = 0;
-	long l, i, c, tb, m, si, multac;
+	long l, i, tb, m, si, multac;
 	double probif, probfi, Ltoti, Ltotf, al, dd, z;
 	double t;
 	vector <long> ist;
@@ -31,7 +31,7 @@ void Chain::addreminf()
 					si = notinflist[cinit].size(); if(si == 0) break;
 					l = long(ran()*si); probif += log(1.0/si);
 					i = notinflist[cinit][l];
-					c = indinit[i];			
+					//c = indinit[i]; // c is never read
 				
 					t = (tb+ran())*tmax/tbin; probif += log(tbin/tmax);
 					

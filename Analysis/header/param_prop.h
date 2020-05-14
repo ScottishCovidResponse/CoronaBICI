@@ -167,7 +167,7 @@ void Chain::param_gradprop()             // Makes proposals to increase posterio
 
 void Chain::changeparam(long dir, long p, double param_new)    // Makes changes to parameters
 {
-  long j, d, eq, pr, m, s, kd;
+  long j, d, pr, m, s, kd;
   double t, tt, valold, valnew, valold2, valnew2, pd, op;
   long e, ee, i;
   
@@ -189,7 +189,6 @@ void Chain::changeparam(long dir, long p, double param_new)    // Makes changes 
 	
   for(j = 0; j < nparam_dep[p]; j++){
     d = param_dep[p][j];
-    eq = transdepeq[d];
 
 		if(discon == 1){
 			for(kd = d*nDD; kd < d*nDD+nDD; kd++){
@@ -301,7 +300,7 @@ void Chain::changeparam(long dir, long p, double param_new)    // Makes changes 
 
 void Chain::paramgrad(long p)              // Calculates the gradient and curvature on a parameter
 {
-  long j, d, eq, pr,  e, ee, i, kd;
+  long j, d, pr,  e, ee, i, kd;
   double t, tt, valold, valnewup, valnewdo, valold2, valnewup2, valnewdo2, pd;
 	double dLup, dLdo, va, val, pcurve, dd, Linmtemp;
 
@@ -323,7 +322,6 @@ void Chain::paramgrad(long p)              // Calculates the gradient and curvat
 
   for(j = 0; j < nparam_dep[p]; j++){
     d = param_dep[p][j];
-    eq = transdepeq[d];
 
 		if(discon == 1){
 			for(kd = d*nDD; kd < d*nDD+nDD; kd++){

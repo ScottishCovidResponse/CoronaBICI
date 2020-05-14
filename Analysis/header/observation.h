@@ -170,10 +170,10 @@ long Chain::numwrong(long i, vector<EV> &vec)       // Calcilates the number of 
 void altertemperature()                // Alter the temperature for population and derived data
 {
   long p, j;
-  double dd, f;
+  double dd;
 
   if(ch[0]->invT_pop > 1){  // Looks to relax population measurements
-    if(ch[0]->invT_pop > 5) f = 0.5; else f = 2;
+    // if(ch[0]->invT_pop > 5) f = 0.5; else f = 2; // f is never used
 
     for(p = 0; p < npopm; p++){
       dd = ch[0]->pop[p] - popmal[p]/popmbe[p];

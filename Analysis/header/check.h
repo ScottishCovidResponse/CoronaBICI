@@ -717,7 +717,7 @@ void Chain::checklike(long num)                  // Checks that the likelihood i
 
 void Chain::checkderive()               // Checks the likelihood for derived observations is correct
 {
-  long d, dm, i, j, k, e, tr, p, c;
+  long dm, i, j, k, e, tr, p, c;
   double t, popnum[npopnum], sum, L, LL, dd;
   vector <EV> ev;
   vector <long> nc;
@@ -745,7 +745,7 @@ void Chain::checkderive()               // Checks the likelihood for derived obs
       popnum[p] = sum;
     }
 
-    d = derm[dm];
+    // d = derm[dm]; // d is never read
     LL = dercalc(dm,popnum,param);
     dd = LL-derL[dm]; if(dd*dd > tiny) emsg("Check: EC91");
     L += LL;

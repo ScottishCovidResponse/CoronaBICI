@@ -331,7 +331,7 @@ void Chain::addexistingfute(PART &pa, long tr, double tbeg, double tend) // Adds
 void Chain::part_simsec(long i, long evpbeg, long evpend, PART &pa)      // Simulates new sequence
 {
   long e, k, co, j, c, p, n, fev, cl;
-  double t, tt, tst, tnext, tnextold, z, R, r, futnext, tmid;
+  double t, tt, tnext, tnextold, z, R, futnext, tmid;
   long tr;
 
   t = evp[evpbeg].t;
@@ -406,20 +406,21 @@ void Chain::part_simsec(long i, long evpbeg, long evpend, PART &pa)      // Simu
 
         if(R == 0) t = tt;
         else{
-          tst = t;
           t += -log(ran())/R;
           if(t > tt) t = tt;
           else{ // actual event
             z = ran()*R;
             if(z <= Rdep){
               j = 0; while(j < nRdep && z > Rdepst[j]) j++; if(j == nRdep) emsg("Part: EC13");
-              r = rdep[j]; tr = compleavesimcldep[partcl][c][j];
+              //r = rdep[j]; // r is never read
+              tr = compleavesimcldep[partcl][c][j];
             }
             else{
               z -= Rdep;
               j = 0; while(j < nRnotdep && z > Rnotdepst[j]) j++; 
 							if(j == nRnotdep){ emsg("Part: EC14",simnum);}
-              r = rnotdep[j]; tr = compleavesimclnotdep[partcl][c][j];
+              // r = rnotdep[j]; // r is never read
+              tr = compleavesimclnotdep[partcl][c][j];
             }
             c = addevnew(tr,t);
           }
