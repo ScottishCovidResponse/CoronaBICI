@@ -240,7 +240,7 @@ void checkevseqsimp(vector<EV> &vec)       // Checks that an event sequnece is c
 
 void Chain::checklikedisc(long num)             // Checks the likelihood based on a discretises timeline
 {
-	long i, kd, d, eq, c, p, j, jj, e, tr, kdi, kdf, s1, s2, r, a, ii, ddt, ddti, ddtf;
+	long i, kd, d, eq, c, p, j, jj, e, tr, kdi, kdf, s1, s2, ii, ddt, ddti, ddtf;
 	double dd, t, tt, Lr, Lexp, dpop;
 	vector<long> depeq_disc_evn_ch;  
 	vector<double> depeq_disc_evdt_ch;

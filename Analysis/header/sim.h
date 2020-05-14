@@ -430,7 +430,7 @@ void Chain::sim(double tmin)              // Simulates from the model starting a
 
 void Chain::addfuture(long i, long c, long cl, double tstart)  // When simulating adds future events 
 {
-  long k, j, loop;
+  long k, j;
   long tr;
   double mean, shape, lam, kk, dt, tadd;
 
@@ -452,7 +452,7 @@ void Chain::addfuture(long i, long c, long cl, double tstart)  // When simulatin
       case WEI_TR:
         lam = calculatenotdep(tra[tr].eq,param);
         kk = calculatenotdep(tra[tr].eqshape,param);
-        dt = weibullsamp(lam,kk); loop++;
+        dt = weibullsamp(lam,kk);
         break;
 
       case GROW_TR:

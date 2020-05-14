@@ -4,9 +4,9 @@ void Chain::addreminf()
 {
 	double upfac = 1.05, downfac = 0.975;
 	long checkon = 0;
-	long l, i, c, cc, tb, m, si, multac, a, r, s;
+	long l, i, c, tb, m, si, multac;
 	double probif, probfi, Ltoti, Ltotf, al, dd, z;
-	double t, tt;
+	double t;
 	vector <long> ist;
 	vector < vector <EV> > evrevst;	
 
@@ -206,7 +206,7 @@ void Chain::addreminf()
 
 void Chain::getprob(long c)      // Calculates probability distribution for samping infection times
 {
-	long e, ee, tb, d, ci, cf, a, dst[nsettime+1], s, ddti;
+	long e, ee, tb, d, ci, cf, dst[nsettime+1], s, ddti;
 	double sum, t, tt;
 	
 	timeprop[SAMPPROB] -= clock();
@@ -272,8 +272,7 @@ void Chain::addreminfinit()     // Initialises the procedure
 
 void Chain::addstartuoinf()                                  // Adds infected unobserved individuals in the initial state
 {
-	long div, ndiv = 20, c, cc, tr, e, i, num, numadd, l;
-	double probH, fac, t, tt;
+	long div, ndiv = 20, c, tr, e, i;
 	vector <vector <long> > bin;
 	
 	bin.resize(ncomp);
