@@ -212,7 +212,7 @@ void Chain::getprob(long c)      // Calculates probability distribution for samp
 	timeprop[SAMPPROB] -= clock();
 
 	if(ncompleavedep[c] != 1) emsg("addreminf: EC58");
-	auto tr = compleavedep[c][0];
+	long tr = compleavedep[c][0];
 	ci = tra[tr].ci; cf = tra[tr].cf;
 	
 	for(s = 0; s <= nsettime; s++){
