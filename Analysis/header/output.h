@@ -990,7 +990,7 @@ void Chain::loadsimulated()
 	for(i = 0; i < nindtot_sim; i++){
 		addemptyind(0);
 			
-		if(i%100000 == 0) cout << i << " " << Lir << " " << Liexp << " " << L() << " Load simulated\n";
+		if(i%100000 == 0) cout << " Load simulated\n";
 		savesim >> id >> c >> nev;
 		
 		indinit[i] = c;
@@ -1000,9 +1000,6 @@ void Chain::loadsimulated()
 		tlast = -large;
     for(e = 0; e < nev; e++){
 			savesim >> t >> tr;
-			
-			if(i == 196638 && e == 2) t += 0.01;
-			if(i == 45174i&& e == 2) t += 0.1;
 			
 			if(t < tlast) t = tlast + tiny*ran();
 			if(tra[tr].cl == settimecl){
@@ -1034,7 +1031,7 @@ void Chain::loadsimulated()
 		if(c != NOTALIVE){
 			EV eve; eve.tr = traend+c; eve.t = tmax; evnew.push_back(eve);	
 		}
-		//if(i == 19663){ cout << i << " indi\n"; oe("ind",evnew);}
+		
 		indcha(i);
 		if(isinf(L())){ cout << i << " indpr\n"; emsg("pro");}
   }
